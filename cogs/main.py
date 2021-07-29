@@ -28,19 +28,28 @@ class MainCog(commands.Cog, name="Основное"):
         """помощь по командам!"""
         if command:
             command = self.bot.get_command(command)
-            builder = f"{command.cog_name} -> {command.name}\n {command.help}"
-            await ctx.send(builder)
+            if command:
+                if not command.hidden:
+                    builder = f"{command.cog_name} -> {command.name}\n" \
+                              f"{command.help}"
+                    await ctx.send(builder)
+                else:
+                    await ctx.send("Комманда не найдена!")
+            else:
+                await ctx.send("Комманда не найдена!")
+
         else:
             cogs = self.bot.cogs
             for cog in cogs:
                 builder = f"{cog} - {cogs[cog].description}\n"
                 await ctx.send(builder)
                 for command in cogs[cog].get_commands():
-                    command_name = command.name
-                    command_desc = command.short_doc
-                    cbuilder = f"  {command_name} <{command.usage}> " \
-                               f"- {command_desc}\n"
-                    await ctx.send(cbuilder)
+                    if not command.hidden:
+                        command_name = command.name
+                        command_desc = command.short_doc
+                        cbuilder = f"  {command_name} <{command.usage}>" \
+                                   f"- {command_desc}\n"
+                        await ctx.send(cbuilder)
 
     help.usage = "команда"
 

@@ -14,11 +14,13 @@ class GodPitsaCog(commands.Cog, name="Команды Питсы"):
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author.id != 869082304033751120:
-            pitsas = ['питса', "питсы", "питсе", "питсу", "питсой", "питсе",
+            pitsas = ['питса', "питсы", "питсу", "питсой", "питсе",
                       "pitsa"]
+            flag = True
             for pitsa in pitsas:
-                if pitsa in message.content.lower():
+                if pitsa in message.content.lower() and flag:
                     await message.channel.send(":pizza:")
+                    flag = False
 
 
 def setup(bot):

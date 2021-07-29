@@ -19,7 +19,7 @@ class TemplateCog(commands.Cog, name=""):
 
     @commands.Command
     async def template_command(self, ctx, arg):
-        """этак команда ничего не делает, она просто для ознакомления"""
+        """эта команда ничего не делает, она просто для ознакомления"""
         pass
 
     @commands.Cog.listener()
