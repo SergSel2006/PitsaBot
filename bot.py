@@ -2,8 +2,17 @@ import logging
 import os
 import pathlib
 import sys
+import asyncio
 
 import discord
+try:
+    from yaml import CLoader as loader
+except ImportError:
+    from yaml import Loader as loader
+try:
+    from yaml import CDumper as dumper
+except ImportError:
+    from yaml import Dumper as dumper
 import yaml
 from discord.ext import commands
 
@@ -25,41 +34,41 @@ logger.addHandler(handler)
 
 async def check_configs(bot):
     for guild in bot.guilds:
-        guild_folder = pathlib.Path(f"data\\servers_config\\{guild.id}")
-        guild_config = pathlib.Path(f"data\\servers_config\\{guild.id}\\"
-                                    f"config.yml")
+        guild_folder = pathlib.Path("data", "servers_config", str(guild.id))
+        guild_config = pathlib.Path("data", "servers_config", str(guild.id),
+                                    "config.yml")
         if not guild_folder.exists():
             guild_folder.mkdir()
         if not guild_config.exists():
             con_logger.info(f"adding config for {guild.name} with id "
-                            f"{guild.id}")
-            with open(pathlib.Path(f"data\\servers_config\\template.yml"),
+                            f"{str(guild.id)}")
+            with open(pathlib.Path(f"data", "servers_config", "template.yml"),
                       "r") as template:
                 with open(guild_config, "w+") as config:
                     for i in template.readlines():
                         config.write(i)
         else:
             with open(guild_config, "r") as config_raw:
-                with open(pathlib.Path(f"data\\servers_config\\template.yml"),
+                with open(pathlib.Path(f"data", "servers_config", "template.yml"),
                           "r") as template:
-                    config = yaml.load(config_raw, yaml.CLoader)
-                    template = yaml.load(template, yaml.CLoader)
+                    config = yaml.load(config_raw, loader)
+                    template = yaml.load(template, loader)
                     for key in template.keys():
                         try:
                             config[key]
                         except KeyError:
                             with open(guild_config, "w") as config_change:
                                 config[key] = template[key]
-                                yaml.dump(config, config_change, yaml.CDumper)
+                                yaml.dump(config, config_change, dumper)
 
 
 def server_prefix(bot, message):
     if isinstance(message.channel, discord.TextChannel):
-        with open(pathlib.Path(f"data\\servers_config\\"
-                               f"{message.guild.id}\\config.yml"),
+        with open(pathlib.Path("data", "servers_config",
+                               str(message.guild.id), "config.yml"),
                   "r") as config:
             try:
-                config = yaml.load(config, yaml.CLoader)
+                config = yaml.load(config, loader)
                 prefix = config["prefix"]
                 return prefix
             except ValueError:
@@ -69,7 +78,7 @@ def server_prefix(bot, message):
 
 
 with open('config.yml', 'r') as o:
-    settings = yaml.load(o, yaml.CLoader)
+    settings = yaml.load(o, loader)
 if not settings:
     raise ValueError("No Settings")
 
@@ -80,6 +89,10 @@ devs = settings['developers']
 all_cogs = []
 loaded_cogs = []
 
+
+def heartbeat_check(bot):
+    if bot.latency > 1:
+        con_logger.warning(f"Can't keep up! Is the computer overloaded? Running {bot.latency} ms.")
 
 @bot.command(hidden=True)
 async def load_cog(ctx, cog):
@@ -96,13 +109,13 @@ async def load_cog(ctx, cog):
                                    " нестабильны! Бот может отключится"
                                    " при загрузке такого кога!")
                 try:
-                    loading_cog = str(pathlib.Path(cog)).replace("\\", ".")
+                    loading_cog = str(pathlib.Path(cog)).replace("\\" if os.name == "nt" else "/", ".")
                     bot.load_extension(loading_cog)
                     loaded_cogs.append(pathlib.Path(cog))
                     await ctx.send("Ког " + cog + " успешно загружен!")
                 except Exception as e:
                     await ctx.send(
-                        "Ког " + cog + " Не был загружен!\n" + str(e))
+                        "Ког " + cog + " Не был загружен!" + "\n" + str(e))
             else:
                 await ctx.send('Ког уже загружен!')
         else:
@@ -130,7 +143,7 @@ async def unload_cog(ctx, cog):
                     loaded_cogs.remove(pathlib.Path(cog))
                 except Exception as e:
                     await ctx.send(
-                        "Ког " + cog + " не был выгружен!\n" + str(e))
+                        "Ког " + cog + " не был выгружен!" + "\n" + str(e))
             else:
                 await ctx.send("Ког и так уже разгружен")
         else:
@@ -148,13 +161,13 @@ async def reload_cog(ctx, cog):
         if pathlib.Path(cog) in all_cogs:
             if pathlib.Path(cog) in loaded_cogs:
                 try:
-                    reloading_cog = str(pathlib.Path(cog)).replace("\\", ".")
+                    reloading_cog = str(pathlib.Path(cog)).replace("\\" if os.name == "nt" else "/", ".")
                     bot.unload_extension(reloading_cog)
                     bot.load_extension(reloading_cog)
                     await ctx.send("Ког " + cog + " успешно перезагружен!")
                 except Exception as e:
                     await ctx.send(
-                        "Ког " + cog + " не был перезагружен!\n" + str(e))
+                        "Ког " + cog + " не был перезагружен!" + "\n" + str(e))
                     loaded_cogs.remove(pathlib.Path(cog))
             else:
                 await ctx.send("сперва загрузите этот ког!")
@@ -214,12 +227,13 @@ async def on_message(message):
     if message.mention_everyone:
         await message.channel.send("я триггернулся от " + author.mention)
         await author.edit(nick='Триггернул PitsaBot', reason="ТРИГГЕРНУЛ МЕНЯ")
-
+    heartbeat_check(bot=bot)
 
 @bot.event
 async def on_ready():
     await check_configs(bot=bot)
     con_logger.info("Bot is ready")
+    heartbeat_check(bot=bot)
 
 
 def recursive_cog_search(folder):
@@ -233,7 +247,7 @@ def recursive_cog_search(folder):
                 all_cogs.append(pathlib.Path(folder, i[:-3]))
                 if not i.startswith("dev_"):
                     loading_cog = str(pathlib.Path(folder, i[:-3])).replace(
-                        "\\", ".")
+                        "\\" if os.name == "nt" else "/", ".")
                     bot.load_extension(loading_cog)
                     loaded_cogs.append(pathlib.Path(folder, i[:-3]))
                     con_logger.info("Loaded cog " + i)

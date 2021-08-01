@@ -15,7 +15,7 @@ class GodPitsaCog(commands.Cog, name="Команды Питсы"):
     async def on_message(self, message):
         if message.author.id != 869082304033751120:
             pitsas = ['питса', "питсы", "питсу", "питсой", "питсе",
-                      "pitsa"]
+                      "pitsa", "питс", "питсам", "питсами", "питсах"]
             flag = True
             for pitsa in pitsas:
                 if pitsa in message.content.lower() and flag:
