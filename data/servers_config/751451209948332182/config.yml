@@ -1,0 +1,5 @@
+disabled_commands: null
+modlog:
+  modlog_channel: ''
+  modlog_enabled: false
+prefix: p
