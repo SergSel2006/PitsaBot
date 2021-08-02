@@ -31,7 +31,12 @@ class SettingsCog(commands.Cog, name="настроики сервера"):
     @commands.Command
     @can_manage_channels()
     async def prefix(self, ctx, prefix):
-        """Меняет префикс"""
+        """||descstart||
+        ||shortstart||Меняет префикс.||shortend||
+        ||longstart||Только для администраторов! Меняет префикс на
+        указанный. Не советую ставить название команды как префикс.||longend||
+        ||usage||префикс||end||
+        ||descend||"""
         with open(
                 pathlib.Path(
                         "data", "servers_config", str(ctx.guild.id),
@@ -57,7 +62,12 @@ class SettingsCog(commands.Cog, name="настроики сервера"):
     @commands.Command
     @can_manage_channels()
     async def change_modlog_channel(self, ctx):
-        """(де)Активирует modlog на указанном канале."""
+        """||descstart||
+        ||shortstart||(де)Активирует modlog на указанном канале.||shortend||
+        ||longstart||Только для администраторов! Включает модлог на
+        указанный канал или выключает его посредством disable||longend||
+        ||usage||канал/disable||end||
+        ||descend||"""
         if not "disable" in ctx.message.content:
             with open(
                     pathlib.Path(
