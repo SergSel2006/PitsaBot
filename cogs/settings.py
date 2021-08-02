@@ -14,6 +14,14 @@ except ImportError:
     from yaml import Dumper as Dumper
 
 
+def can_manage_channels():
+    async def predicate(ctx):
+        perms = ctx.author.top_role.permissions
+        return perms.manage_channels or perms.administrator
+    
+    return commands.check(predicate)
+
+
 class SettingsCog(commands.Cog, name="настроики сервера"):
     """Изменяет всяческие настроики сервера."""
     def __init__(self, bot, cwd: pathlib.Path):
@@ -21,6 +29,7 @@ class SettingsCog(commands.Cog, name="настроики сервера"):
         self.cwd = cwd
     
     @commands.Command
+    @can_manage_channels()
     async def prefix(self, ctx, prefix):
         """Меняет префикс"""
         with open(
@@ -46,6 +55,7 @@ class SettingsCog(commands.Cog, name="настроики сервера"):
                 await ctx.send("Укажите префикс!")
     
     @commands.Command
+    @can_manage_channels()
     async def change_modlog_channel(self, ctx):
         """(де)Активирует modlog на указанном канале."""
         if not "disable" in ctx.message.content:

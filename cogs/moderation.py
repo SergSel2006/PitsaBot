@@ -14,6 +14,14 @@ import yaml
 from discord.ext import commands
 
 
+def can_manage_channels():
+    async def predicate(ctx):
+        perms = ctx.author.top_role.permissions
+        return perms.manage_channels or perms.administrator
+    
+    return commands.check(predicate)
+
+
 class ModCog(commands.Cog, name="Команды для модераторов"):
     """Команды для модераторов сервера. Также имеет модлог"""
     
