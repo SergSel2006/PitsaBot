@@ -2,4 +2,4 @@ prefix: "p"
 disabled_commands: null
 modlog:
   channel: ""
-  enabled: False
+  enabled: false

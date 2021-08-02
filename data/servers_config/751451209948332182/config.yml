@@ -1,5 +1,5 @@
 disabled_commands: null
 modlog:
-  modlog_channel: ''
-  modlog_enabled: false
+  channel: 751469620149616740
+  enabled: false
 prefix: p

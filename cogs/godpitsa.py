@@ -7,10 +7,11 @@ from discord.ext import commands
 class GodPitsaCog(commands.Cog, name="Команды Питсы"):
     """Этот модуль имеет всякие гаджеты для питсы, смотрите!
     Тут даже есть встроенная фабрика питсы!"""
+    
     def __init__(self, bot, cwd: pathlib.Path):
         self.bot = bot
         self.cwd = cwd
-
+    
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author.id != 869082304033751120:
