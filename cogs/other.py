@@ -1,26 +1,25 @@
-import json
 import os
 import pathlib
 
 import discord
-import requests
 from discord.ext import commands
 
 
 class OtherCog(commands.Cog, name="другое"):
     """Всякие комманды которые нельзя определить в какой-либо модуль
     или их тема не соответствует ни одному из модулей"""
-
+    
     def __init__(self, bot, cwd: pathlib.Path):
         self.bot = bot
         self.cwd = cwd
-
-
+    
     @commands.command(hidden=True)
     async def fetch_user(self, ctx):
         if ctx.message.author.id != 457222828811485209:
-            await ctx.send("Только один человек может воспользоваться этой "
-                           "коммандой...")
+            await ctx.send(
+                "Только один человек может воспользоваться этой "
+                "коммандой..."
+                )
         else:
             user = ctx.message.mentions[0]
             if user.bot:
@@ -29,12 +28,14 @@ class OtherCog(commands.Cog, name="другое"):
                 await ctx.send("У пользователя обнаружены Сервера!")
                 for guild in user.mutual_guilds:
                     await ctx.send("Сервер " + guild.name)
-
+    
     @commands.command(hidden=True)
     async def destroy_bot(self, ctx):
         if ctx.message.author.id != 457222828811485209:
-            await ctx.send("Только один человек может воспользоваться этой "
-                           "коммандой...")
+            await ctx.send(
+                "Только один человек может воспользоваться этой "
+                "коммандой..."
+                )
         else:
             user = ctx.message.mentions[0]
             for role in user.roles:
@@ -42,12 +43,14 @@ class OtherCog(commands.Cog, name="другое"):
                     await user.remove_roles(role)
                 except discord.Forbidden:
                     pass
-
+    
     @commands.command(hidden=True)
     async def botsay(self, ctx, channel, *, message):
         if ctx.message.author.id != 457222828811485209:
-            await ctx.send("Только один человек может воспользоваться этой "
-                           "коммандой...")
+            await ctx.send(
+                "Только один человек может воспользоваться этой "
+                "коммандой..."
+                )
         else:
             try:
                 channel = self.bot.get_channel(int(channel))

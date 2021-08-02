@@ -12,16 +12,16 @@ from discord.ext import commands
 
 class TemplateCog(commands.Cog, name=""):
     """ЭТОТ МОДУЛЬ НЕ ДОЛЖЕН БЫТЬ ЗАГРУЖЕН!"""
-
+    
     def __init__(self, bot, cwd: pathlib.Path):
         self.bot = bot
         self.cwd = cwd
-
+    
     @commands.Command
     async def template_command(self, ctx, arg):
         """эта команда ничего не делает, она просто для ознакомления"""
         pass
-
+    
     @commands.Cog.listener()
     async def template_event(self):
         pass
