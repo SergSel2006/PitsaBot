@@ -37,6 +37,9 @@ class MainCog(commands.Cog, name="Основное"):
         ||usage||команда||end||
         ||descend||"""
         def help_parser_3000(command: commands.Command):
+            """this function now just tplit docstring into a sort
+            description? long description and usage. Soon will load
+             language files."""
             desc = command.help
             desc = desc[desc.find("||descstart||"):desc.find(
                 "||descend||")]
@@ -62,6 +65,10 @@ class MainCog(commands.Cog, name="Основное"):
                 await ctx.send("Комманда не найдена!")
         
         else:
+            owner_id = 457222828811485209
+            owner = self.bot.get_user(owner_id)
+            await ctx.send(f"PitsaBot 0.1A Pre-Release. Сейчас активно "
+                           f"поддерживается {owner.name}\n")
             cogs = self.bot.cogs
             for cog in cogs:
                 builder = f"{cog} - {cogs[cog].description}\n"

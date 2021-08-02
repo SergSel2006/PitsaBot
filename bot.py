@@ -16,6 +16,9 @@ except ImportError:
 import yaml
 from discord.ext import commands
 
+
+intents = discord.Intents.default()
+intents.members = True
 con_logger = logging.getLogger("Bot")
 sh = logging.StreamHandler(stream=sys.stdout)
 sh.setFormatter(
@@ -132,7 +135,7 @@ with open('config.yml', 'r') as o:
 if not settings:
     raise ValueError("No Settings")
 
-bot = commands.Bot(command_prefix=server_prefix)
+bot = commands.Bot(command_prefix=server_prefix, intents=intents)
 bot.remove_command("help")
 
 devs = settings['developers']
