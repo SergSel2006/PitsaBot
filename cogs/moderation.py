@@ -54,7 +54,7 @@ class ModCog(commands.Cog, name="Команды для модераторов"):
             if config["modlog"]["enabled"]:
                 ch = self.bot.get_channel(config["modlog"]["channel"])
                 await ch.send(
-                    f"Пользователь {msg.author.mention} изменил сообщение. "
+                    f"Пользователь {msg.author} изменил сообщение. "
                     f"Содержание сообщения до изменения:"
                     f"\n{msg_before.content}\nСодержание сообщения "
                     f"после изменения:\n{msg.content}"

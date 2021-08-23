@@ -144,7 +144,7 @@ loaded_cogs = []
 
 
 def heartbeat_check(bot):
-    if bot.latency > 1:
+    if bot.latency > 5:
         con_logger.warning(
             f"Can't keep up! Is the computer overloaded? "
             f"Running {bot.latency} ms."

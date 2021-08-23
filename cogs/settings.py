@@ -76,7 +76,10 @@ class SettingsCog(commands.Cog, name="настроики сервера"):
                             ),
                     "r"
                     ) as config:
-                channel = ctx.message.channel_mentions[0]
+                if not "this" in ctx.message.content:
+                    channel = ctx.message.channel_mentions[0]
+                else:
+                    channel = ctx.channel
                 config = yaml.load(config, Loader)
                 if not config["modlog"]["enabled"]:
                     config["modlog"]["enabled"] = True
