@@ -22,7 +22,7 @@ def can_manage_channels():
     return commands.check(predicate)
 
 
-class ModCog(commands.Cog, name="Команды для модераторов"):
+class ModCog(commands.Cog):
     """Команды для модераторов сервера. Также имеет модлог"""
     
     def __init__(self, bot, cwd: pathlib.Path):

@@ -1,0 +1,46 @@
+cogs:
+  GodPitsaCog:
+    name: Pitsa's commands (and hlep's)
+    desc: this module has vereything for pitsa and hlep
+  MainCog:
+    name: Main
+    desc: Start of all starts! this module has everything.
+  ModCog:
+    name: Moderation
+    desc: Commands for moderators. Also is a core for modlog
+  OtherCog:
+    name: Other
+    desc: commands that developers didn't put in any of modules
+  SettingsCog:
+    name: Settings
+    desc: Changes server settings.
+help:
+  help_me:
+    long: Помоги PitsaBot выити из красной книги
+    short: Помоги PitsaBot выити из красной книги
+    usage: ""
+    returns: информация как помочь
+  help:
+    long: You can use this command to find usage about a command or find all commands
+    short: help about commands!
+    usage: command/nothing
+    returns: help about command/all command
+  prefix:
+    long: Only for administrators! Changes prefix to selected. not recomended to put command name as a prefix.
+    short: changes prefix.
+    usage: prefix
+    returns: prefix changing
+  change_modlog_channel:
+    long: Only for administrators! Enables modlog on a selected channel or disables it by typing disable
+    short: (de)Activates modlog on selected channel.
+    usage: channel/disable
+    returns: enables/disables modlog
+misc:
+  command_not_found: Command not found!
+  help_msg: PitsaBot 0.1A Pre-Release. Now actively supported by
+  prefix_changed_successfully: prefix changed successfully!
+  current_prefix: "Current prefix:"
+  modlog_activated: Modlog activated!
+  modlog_deactivated: Modlog deactivated!
+  language_changed_successfully: language changed successfully!
+  invalid_language: invalid language!

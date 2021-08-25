@@ -10,7 +10,7 @@ import pathlib
 from discord.ext import commands
 
 
-class TemplateCog(commands.Cog, name=""):
+class TemplateCog(commands.Cog):
     """ЭТОТ МОДУЛЬ НЕ ДОЛЖЕН БЫТЬ ЗАГРУЖЕН!"""
     
     def __init__(self, bot, cwd: pathlib.Path):

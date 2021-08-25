@@ -13,6 +13,29 @@ try:
 except ImportError:
     from yaml import Dumper as Dumper
 
+def load_server_language(message):
+    config = find_server_config(message)
+    language = load_language(config["language"])
+    return language
+
+
+def load_language(lang):
+    with open(pathlib.Path("data", "languages", f"{lang}.yml"), "r", encoding="utf8") as \
+            lang:
+        lang = yaml.load(lang, Loader=Loader)
+        return lang
+
+
+def find_server_config(message):
+    with open(
+            pathlib.Path(
+                    "data", "servers_config", str(message.guild.id),
+                    "config.yml"
+                    ), "r", encoding="utf8"
+            ) as config:
+        config = yaml.load(config, Loader=Loader)
+        return config
+
 
 def can_manage_channels():
     async def predicate(ctx):
@@ -22,42 +45,46 @@ def can_manage_channels():
     return commands.check(predicate)
 
 
-class SettingsCog(commands.Cog, name="настроики сервера"):
+class SettingsCog(commands.Cog):
     """Изменяет всяческие настроики сервера."""
+    
     def __init__(self, bot, cwd: pathlib.Path):
         self.bot = bot
         self.cwd = cwd
     
     @commands.Command
     @can_manage_channels()
-    async def prefix(self, ctx, prefix):
+    async def prefix(self, ctx, prefix=None):
         """||descstart||
         ||shortstart||Меняет префикс.||shortend||
         ||longstart||Только для администраторов! Меняет префикс на
         указанный. Не советую ставить название команды как префикс.||longend||
         ||usage||префикс||end||
         ||descend||"""
+        language = load_server_language(ctx.message)
         with open(
                 pathlib.Path(
-                        "data", "servers_config", str(ctx.guild.id),
-                        "config.yml"
-                        ),
+                    "data", "servers_config", str(ctx.guild.id),
+                    "config.yml"
+                    ),
                 "r"
                 ) as config:
+            config = yaml.load(config, Loader)
             if prefix:
-                config = yaml.load(config, Loader)
                 config["prefix"] = prefix
                 with open(
                         pathlib.Path(
-                                "data", "servers_config", str(ctx.guild.id),
-                                "config.yml"
-                                ),
+                            "data", "servers_config", str(ctx.guild.id),
+                            "config.yml"
+                            ),
                         "w"
                         ) as config_raw:
                     yaml.dump(config, config_raw, Dumper)
-                await ctx.send("Префикс успешно сменён!")
+                await ctx.send(language["misc"][
+                                   "prefix_changed_successfully"])
             else:
-                await ctx.send("Укажите префикс!")
+                await ctx.send(language["misc"]["current_prefix"] + config[
+                    "prefix"])
     
     @commands.Command
     @can_manage_channels()
@@ -68,12 +95,13 @@ class SettingsCog(commands.Cog, name="настроики сервера"):
         указанный канал или выключает его посредством disable||longend||
         ||usage||канал/disable||end||
         ||descend||"""
+        language = load_server_language(ctx.message)
         if not "disable" in ctx.message.content:
             with open(
                     pathlib.Path(
-                            "data", "servers_config", str(ctx.guild.id),
-                            "config.yml"
-                            ),
+                        "data", "servers_config", str(ctx.guild.id),
+                        "config.yml"
+                        ),
                     "r"
                     ) as config:
                 if not "this" in ctx.message.content:
@@ -92,8 +120,8 @@ class SettingsCog(commands.Cog, name="настроики сервера"):
                         "w"
                         ) as config_raw:
                     yaml.dump(config, config_raw, Dumper)
-                    await ctx.send("Модлог активирован")
-
+                    await ctx.send(language["misc"]["modlog_activated"])
+        
         else:
             with open(
                     pathlib.Path(
@@ -113,7 +141,26 @@ class SettingsCog(commands.Cog, name="настроики сервера"):
                         "w"
                         ) as config_raw:
                     yaml.dump(config, config_raw, Dumper)
-                    await ctx.send("Модлог деактивирован")
+                    await ctx.send(language["misc"]["modlog_deactivated"])
+
+    @commands.Command
+    @can_manage_channels()
+    async def chlang(self, ctx, language='en'):
+        avaliable = ["ru", "en"]
+        languagedict = load_server_language(ctx.message)
+        configs = find_server_config(ctx.message)
+        if language in avaliable:
+            configs["language"] = language
+            with open(
+                    pathlib.Path(
+                        "data", "servers_config", str(ctx.guild.id),
+                        "config.yml"
+                        ), "w", encoding="utf8"
+                    ) as config:
+                yaml.dump(configs, config, Dumper=Dumper)
+            await ctx.send(languagedict["misc"]["language_changed_successfully"])
+        else:
+            await ctx.send(languagedict["misc"]["invalid_language"])
 
 
 def setup(bot):

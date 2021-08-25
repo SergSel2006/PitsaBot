@@ -16,7 +16,6 @@ except ImportError:
 import yaml
 from discord.ext import commands
 
-
 intents = discord.Intents.default()
 intents.members = True
 con_logger = logging.getLogger("Bot")
@@ -79,7 +78,7 @@ async def check_configs(bot):
                                     dict_check(
                                         dict_for_check[key], template_dict[
                                             key]
-                                    )
+                                        )
                             except KeyError:
                                 dict_for_check[key] = template_dict[key]
                         

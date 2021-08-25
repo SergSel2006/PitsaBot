@@ -4,9 +4,9 @@ import pathlib
 from discord.ext import commands
 
 
-class GodPitsaCog(commands.Cog, name="Команды Питсы"):
-    """Этот модуль имеет всякие гаджеты для питсы, смотрите!
-    Тут даже есть встроенная фабрика питсы!"""
+class GodPitsaCog(commands.Cog):
+    """Этот модуль имеет всякие гаджеты для питсы, смотрите! Тут даже есть
+    встроенная фабрика питсы!"""
     
     def __init__(self, bot, cwd: pathlib.Path):
         self.bot = bot
