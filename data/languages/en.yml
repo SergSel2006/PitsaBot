@@ -15,11 +15,16 @@ cogs:
     name: Settings
     desc: Changes server settings.
 help:
+  chlang:
+    long: Only for administrators! Chages language to selected or to english by default.
+    short: меняет язык бота
+    usage: ru/en
+    returns: изменённый язык
   help_me:
-    long: Помоги PitsaBot выити из красной книги
-    short: Помоги PitsaBot выити из красной книги
+    long: Help pitsabot by making a donation
+    short: Help pitsabot by making a donation
     usage: ""
-    returns: информация как помочь
+    returns: information about donation
   help:
     long: You can use this command to find usage about a command or find all commands
     short: help about commands!
@@ -44,3 +49,5 @@ misc:
   modlog_deactivated: Modlog deactivated!
   language_changed_successfully: language changed successfully!
   invalid_language: invalid language!
+  deleted_message: "Message of user $USER was deleted. Message was: $MESSAGE"
+  changed_message: "$USER Changed message\nMessage was: $OLD_MESSAGE\nMessage after changing:$NEW_MESSAGE"
