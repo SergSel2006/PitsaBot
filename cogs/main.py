@@ -79,6 +79,7 @@ class MainCog(commands.Cog):
                 help = lang["help"][command.name]
                 cog = lang["cogs"][command.cog_name]["name"]
                 descs = (cog, help["short"], help["long"], help["usage"],
+                         help["optional"],
                          help["returns"])
                 return descs
             elif isinstance(command, str):
@@ -92,8 +93,10 @@ class MainCog(commands.Cog):
             if command:
                 if not command.hidden:
                     descriptions = help_parser_3000(command)
-                    builder = f"{descriptions[0]} - {command}\n{command} <" \
-                              f"{descriptions[3]}> -> {descriptions[4]}. " \
+                    builder = f"{descriptions[0]} - {command}\n{command} " \
+                              f"{'<' + descriptions[3] + '>' if descriptions[3] else ''} " \
+                              f"{'{' + descriptions[4] + '}' if descriptions[4] else ''} ->" \
+                              f" {descriptions[5]}. " \
                               f"{descriptions[2]}"
                     await ctx.send(builder)
                 else:
@@ -114,8 +117,10 @@ class MainCog(commands.Cog):
                 for command in cogs[cog].get_commands():
                     if not command.hidden:
                         descriptions = help_parser_3000(command)
-                        cbuilder = f"{command.name} <{descriptions[3]}> -> " \
-                                   f"{descriptions[4]}. {descriptions[1]}"
+                        cbuilder = f"{command.name} " \
+                                   f"{'<' + descriptions[3] + '>' if descriptions[3] else ''} " \
+                                   f"{'{' + descriptions[4] + '}' if descriptions[4] else ''} -> " \
+                                   f"{descriptions[5]}. {descriptions[1]}"
                         builders.append(cbuilder)
             await ctx.send(lang["misc"]["help_msg"] + owner.name)
             await ctx.send("\n".join(builders))

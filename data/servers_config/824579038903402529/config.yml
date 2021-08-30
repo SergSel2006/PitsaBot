@@ -3,4 +3,6 @@ language: ru
 modlog:
   channel: ''
   enabled: false
+modroles:
+- null
 prefix: p

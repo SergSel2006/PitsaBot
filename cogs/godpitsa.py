@@ -11,7 +11,7 @@ class GodPitsaCog(commands.Cog):
     def __init__(self, bot, cwd: pathlib.Path):
         self.bot = bot
         self.cwd = cwd
-    
+
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author.id != 869082304033751120:

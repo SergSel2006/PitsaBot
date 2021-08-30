@@ -1,6 +1,8 @@
 import os
 import pathlib
 
+import discord
+
 try:
     from yaml import CLoader as Loader
 except ImportError:
@@ -40,10 +42,23 @@ def find_server_config(message):
         return config
 
 
-def can_manage_channels():
+def is_moderator():
     async def predicate(ctx):
+        config = find_server_config(ctx.message)
+        roles = ctx.author.roles
+        modroles = config["modroles"]
+        for role in roles:
+            if role.id in modroles:
+                return True
         perms = ctx.author.top_role.permissions
-        return perms.manage_channels or perms.administrator
+        if perms.administrator:
+            return True
+        else:
+            await ctx.send(
+                load_server_language(ctx.message)["misc"][
+                    "not_enough_permissions"]
+                )
+            return False
     
     return commands.check(predicate)
 
@@ -53,6 +68,33 @@ class ModCog(commands.Cog):
         self.bot = bot
         self.cwd = cwd
     
+    @commands.Command
+    @is_moderator()
+    async def ban(self, ctx, man: discord.Member, *, reason):
+        language = load_server_language(ctx.message)
+        if not reason:
+            await ctx.send(language["misc"]["ban_no_reason"])
+        else:
+            await man.ban(reason=reason)
+            await ctx.send(
+                language["misc"]["ban_success"].replace(
+                    "$USER",
+                    man.name
+                    )
+                )
+
+    @commands.Command
+    @is_moderator()
+    async def unban(self, ctx, man: discord.Member):
+        language = load_server_language(ctx.message)
+        await man.unban()
+        await ctx.send(
+            language["misc"]["unban_success"].replace(
+                "$USER",
+                man.name
+                )
+            )
+
     @commands.Cog.listener()
     async def on_message_delete(self, msg):
         lang = load_server_language(msg)
@@ -61,7 +103,8 @@ class ModCog(commands.Cog):
             ch = self.bot.get_channel(config["modlog"]["channel"])
             await ch.send(
                 lang["misc"]["deleted_message"].replace(
-                    "$USER", msg.author.nick).replace("$MESSAGE", msg.content)
+                    "$USER", msg.author.nick
+                    ).replace("$MESSAGE", msg.content)
                 )
     
     @commands.Cog.listener()
@@ -72,9 +115,13 @@ class ModCog(commands.Cog):
             ch = self.bot.get_channel(config["modlog"]["channel"])
             await ch.send(
                 lang["misc"]["changed_message"].replace(
-                    "$USER", msg.author.nick).replace(
-                    "$OLD_MESSAGE", msg_before.content).replace("$NEW_MESSAGE",
-                                                                msg.content)
+                    "$USER", msg.author.nick
+                    ).replace(
+                    "$OLD_MESSAGE", msg_before.content
+                    ).replace(
+                    "$NEW_MESSAGE",
+                    msg.content
+                    )
                 )
 
 

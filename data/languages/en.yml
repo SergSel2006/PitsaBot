@@ -15,30 +15,41 @@ cogs:
     name: Settings
     desc: Changes server settings.
 help:
+  ban:
+    long: Only for moderators! bans person (forever)
+    short: BAN!!!
+    usage: preson and reason
+    optional:
+    returns: BAN
   chlang:
     long: Only for administrators! Chages language to selected or to english by default.
     short: меняет язык бота
     usage: ru/en
+    optional:
     returns: изменённый язык
   help_me:
     long: Help pitsabot by making a donation
     short: Help pitsabot by making a donation
     usage: ""
+    optional:
     returns: information about donation
   help:
     long: You can use this command to find usage about a command or find all commands
     short: help about commands!
-    usage: command/nothing
+    usage:
+    optional: command
     returns: help about command/all command
   prefix:
-    long: Only for administrators! Changes prefix to selected. not recomended to put command name as a prefix.
+    long: Only for administrators! Changes prefix to selected. not recomended to put command name as a prefix. Also says current prefix if prefix not given
     short: changes prefix.
-    usage: prefix
+    usage:
+    optional: prefix
     returns: prefix changing
   change_modlog_channel:
     long: Only for administrators! Enables modlog on a selected channel or disables it by typing disable
     short: (de)Activates modlog on selected channel.
     usage: channel/disable
+    optional:
     returns: enables/disables modlog
 misc:
   command_not_found: Command not found!
@@ -51,3 +62,11 @@ misc:
   invalid_language: invalid language!
   deleted_message: "Message of user $USER was deleted. Message was: $MESSAGE"
   changed_message: "$USER Changed message\nMessage was: $OLD_MESSAGE\nMessage after changing:$NEW_MESSAGE"
+  ban_no_reason: Cannot ban without reason
+  ban_success: $USER banned
+  not_enough_permissions: You don't have enough permissions for executing this command.
+  roles_added: Roles added to Moderators.
+  roles_removed: Roles removed from Moderators.
+  role_not_in_list: Role $ROLE isn't Moderator.
+  role_in_list: Role $ROLE is Moderator.
+  unban_success: $USER unbanned
