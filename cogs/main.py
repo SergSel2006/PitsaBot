@@ -22,7 +22,10 @@ def load_server_language(message):
 
 
 def load_language(lang):
-    with open(pathlib.Path("data", "languages", f"{lang}.yml"), "r", encoding="utf8") as \
+    with open(
+            pathlib.Path("data", "languages", f"{lang}.yml"), "r",
+            encoding="utf8"
+            ) as \
             lang:
         lang = yaml.load(lang, Loader=Loader)
         return lang
@@ -31,9 +34,9 @@ def load_language(lang):
 def find_server_config(message):
     with open(
             pathlib.Path(
-                    "data", "servers_config", str(message.guild.id),
-                    "config.yml"
-                    ), "r", encoding="utf8"
+                "data", "servers_config", str(message.guild.id),
+                "config.yml"
+                ), "r", encoding="utf8"
             ) as config:
         config = yaml.load(config, Loader=Loader)
         return config
@@ -46,7 +49,7 @@ class MainCog(commands.Cog):
     def __init__(self, bot, cwd: pathlib.Path):
         self.bot = bot
         self.cwd = cwd
-
+    
     @commands.command()
     async def help_me(self, ctx):
         """||descstart||
@@ -60,7 +63,7 @@ class MainCog(commands.Cog):
             "вот один из вариантов: "
             "https://www.donationalerts.com/r/serg_sel"
             )
-
+    
     @commands.command()
     async def help(self, ctx, command=None):
         """||descstart||
@@ -72,7 +75,6 @@ class MainCog(commands.Cog):
         ||descend||"""
         
         lang = load_server_language(ctx.message)
-        
         
         def help_parser_3000(command):
             if isinstance(command, commands.Command):
@@ -86,13 +88,16 @@ class MainCog(commands.Cog):
                 name = lang["cogs"][command]["name"]
                 desc = lang["cogs"][command]["desc"]
                 return name, desc
-            return '', '', '', '', ''
+            return 'N/A', 'N/A', 'N/A', 'N/A', 'N/A'
         
         if command:
             command = self.bot.get_command(command)
             if command:
                 if not command.hidden:
-                    descriptions = help_parser_3000(command)
+                    try:
+                        descriptions = help_parser_3000(command)
+                    except KeyError:
+                        descriptions = ('N/A', 'N/A', 'N/A', 'N/A', 'N/A')
                     builder = f"{descriptions[0]} - {command}\n{command} " \
                               f"{'<' + descriptions[3] + '>' if descriptions[3] else ''} " \
                               f"{'{' + descriptions[4] + '}' if descriptions[4] else ''} ->" \
@@ -100,10 +105,10 @@ class MainCog(commands.Cog):
                               f"{descriptions[2]}"
                     await ctx.send(builder)
                 else:
-                    await ctx.send(lang["misc"]["command_not_found"])
+                    await ctx.send(lang["misc"]["command_not_found_help"])
             else:
-                await ctx.send(lang["misc"]["command_not_found"])
-
+                await ctx.send(lang["misc"]["command_not_found_help"])
+        
         else:
             builders = []
             owner_id = 457222828811485209
@@ -111,12 +116,18 @@ class MainCog(commands.Cog):
             
             cogs = self.bot.cogs
             for cog in cogs:
-                cog_desc = help_parser_3000(cog)
+                try:
+                    cog_desc = help_parser_3000(cog)
+                except KeyError:
+                    cog_desc = ('N/A', 'N/A', 'N/A', 'N/A', 'N/A')
                 builder = f"\n{cog_desc[0]} - {cog_desc[1]}"
                 builders.append(builder)
                 for command in cogs[cog].get_commands():
                     if not command.hidden:
-                        descriptions = help_parser_3000(command)
+                        try:
+                            descriptions = help_parser_3000(command)
+                        except KeyError:
+                            descriptions = ('N/A', 'N/A', 'N/A', 'N/A', 'N/A')
                         cbuilder = f"{command.name} " \
                                    f"{'<' + descriptions[3] + '>' if descriptions[3] else ''} " \
                                    f"{'{' + descriptions[4] + '}' if descriptions[4] else ''} -> " \

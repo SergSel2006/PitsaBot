@@ -39,6 +39,33 @@ handler.setFormatter(
 logger.addHandler(handler)
 
 
+def load_server_language(message):
+    config = find_server_config(message)
+    language = load_language(config["language"])
+    return language
+
+
+def load_language(lang):
+    with open(
+            pathlib.Path("data", "languages", f"{lang}.yml"), "r",
+            encoding="utf8"
+            ) as \
+            lang:
+        lang = yaml.load(lang, Loader=Loader)
+        return lang
+
+
+def find_server_config(message):
+    with open(
+            pathlib.Path(
+                "data", "servers_config", str(message.guild.id),
+                "config.yml"
+                ), "r", encoding="utf8"
+            ) as config:
+        config = yaml.load(config, Loader=Loader)
+        return config
+
+
 async def check_configs(bot):
     for guild in bot.guilds:
         guild_folder = pathlib.Path("data", "servers_config", str(guild.id))
@@ -91,18 +118,19 @@ async def check_configs(bot):
                             except KeyError:
                                 del dict_for_check[key]
                             
-                            for key in tuple(template_dict):
+                            for key1 in tuple(template_dict):
                                 try:
                                     if type(
-                                            dict_for_check[key]
+                                            dict_for_check[key1]
                                             ) == dict:
                                         dict_check(
-                                            dict_for_check[key], template_dict[
-                                                key]
+                                            dict_for_check[key1],
+                                            template_dict[
+                                                key1]
                                             )
                                 except KeyError:
-                                    dict_for_check[key] = \
-                                        template_dict[key]
+                                    dict_for_check[key1] = \
+                                        template_dict[key1]
                     
                     dict_check(config, template)
                     
@@ -349,6 +377,46 @@ def cog_check():
                 f" an unexpected behaviour"
                 )
 
+
+def command_finder(command):
+    probable_commands = []
+    for command_real in bot.all_commands:
+        counter = 0
+        if len(command_real) > len(command) + 1:
+            continue
+        for i in range(0, min(len(command), len(command_real))):
+            if len(command) == len(command_real):
+                if command[i] == command_real[i]:
+                    counter += 1
+            else:
+                if command[i] == command_real[min(
+                        i + 1, len(command_real) -
+                               1
+                        )]:
+                    counter += 1
+        if counter > abs((len(command_real) - len(command)) - 1):
+            probable_commands.append(command_real)
+    return probable_commands
+
+
+async def on_error(ctx, error):
+    lang = load_server_language(ctx)
+    if isinstance(error, commands.errors.CheckFailure):
+        await ctx.send(lang["misc"]["not_enough_permissions"])
+    elif isinstance(error, commands.errors.MissingRequiredArgument):
+        await ctx.send(lang["misc"]["not_enough_arguments"])
+    elif isinstance(error, commands.errors.CommandNotFound):
+        command = ctx.message.content.split()[0][1:]
+        probable_commands = command_finder(command)
+        builder = lang["misc"]["command_not_found"] + '\n'.join(
+            probable_commands
+            )
+        await ctx.send(builder)
+    else:
+        sys.stderr.write(error.message)
+
+
+bot.on_command_error = on_error
 
 recursive_cog_search("cogs")
 cog_check()

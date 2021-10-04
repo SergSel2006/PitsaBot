@@ -10,9 +10,9 @@ try:
 except ImportError:
     from yaml import Dumper as Dumper
 
-import discord
 import yaml
 from discord.ext import commands
+
 
 def load_server_language(message):
     config = find_server_config(message)
@@ -21,7 +21,10 @@ def load_server_language(message):
 
 
 def load_language(lang):
-    with open(pathlib.Path("data", "languages", f"{lang}.yml"), "r", encoding="utf8") as \
+    with open(
+            pathlib.Path("data", "languages", f"{lang}.yml"), "r",
+            encoding="utf8"
+            ) as \
             lang:
         lang = yaml.load(lang, Loader=Loader)
         return lang
@@ -30,9 +33,9 @@ def load_language(lang):
 def find_server_config(message):
     with open(
             pathlib.Path(
-                    "data", "servers_config", str(message.guild.id),
-                    "config.yml"
-                    ), "r", encoding="utf8"
+                "data", "servers_config", str(message.guild.id),
+                "config.yml"
+                ), "r", encoding="utf8"
             ) as config:
         config = yaml.load(config, Loader=Loader)
         return config
@@ -45,6 +48,7 @@ class OtherCog(commands.Cog):
     def __init__(self, bot, cwd: pathlib.Path):
         self.bot = bot
         self.cwd = cwd
+
 
 def setup(bot):
     bot.add_cog(OtherCog(bot, pathlib.Path(os.getcwd())))

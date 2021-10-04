@@ -16,11 +16,17 @@ cogs:
     desc: Changes server settings.
 help:
   ban:
-    long: Only for moderators! bans person (forever)
+    long: Only for moderators! bans person
     short: BAN!!!
     usage: preson and reason
     optional:
     returns: BAN
+  unban:
+    long: Only for moderators! unbans person
+    short: unban
+    usage: preson
+    optional:
+    returns: unban
   chlang:
     long: Only for administrators! Chages language to selected or to english by default.
     short: меняет язык бота
@@ -52,12 +58,14 @@ help:
     optional:
     returns: enables/disables modlog
 misc:
-  command_not_found: Command not found!
+  command_not_found_help: Command not found!
   help_msg: PitsaBot 0.1A Pre-Release. Now actively supported by
   prefix_changed_successfully: prefix changed successfully!
   current_prefix: "Current prefix:"
   modlog_activated: Modlog activated!
   modlog_deactivated: Modlog deactivated!
+  modlog_channel_set: modlog channel was set.
+  need_modlog_channel: fore activating modlog, you need to specify a channel first.
   language_changed_successfully: language changed successfully!
   invalid_language: invalid language!
   deleted_message: "Message of user $USER was deleted. Message was: $MESSAGE"
@@ -70,3 +78,5 @@ misc:
   role_not_in_list: Role $ROLE isn't Moderator.
   role_in_list: Role $ROLE is Moderator.
   unban_success: $USER unbanned
+  not_enough_arguments: Comand hasn't enough arguments. Use command help
+  command_not_found: "Command not found. Use help command or probably you mean:\n"

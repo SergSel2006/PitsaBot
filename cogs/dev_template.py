@@ -7,6 +7,18 @@ P.S: его не надо загружать, и удалять приставк
 import os
 import pathlib
 
+import discord
+
+try:
+    from yaml import CLoader as Loader
+except ImportError:
+    from yaml import Loader as Loader
+try:
+    from yaml import CDumper as Dumper
+except ImportError:
+    from yaml import Dumper as Dumper
+
+import yaml
 from discord.ext import commands
 
 
@@ -19,12 +31,6 @@ class TemplateCog(commands.Cog):
     
     @commands.Command
     async def template_command(self, ctx, arg):
-        """||descstart||
-        ||shortstart||эта команда ничего не делает, она просто для
-        ознакомления||shortend||
-        ||longstart||||longend||
-        ||usage||||end||
-        ||descend||"""
         pass
     
     @commands.Cog.listener()

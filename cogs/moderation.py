@@ -82,7 +82,7 @@ class ModCog(commands.Cog):
                     man.name
                     )
                 )
-
+    
     @commands.Command
     @is_moderator()
     async def unban(self, ctx, man: discord.Member):
@@ -94,7 +94,7 @@ class ModCog(commands.Cog):
                 man.name
                 )
             )
-
+    
     @commands.Cog.listener()
     async def on_message_delete(self, msg):
         lang = load_server_language(msg)

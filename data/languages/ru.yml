@@ -19,39 +19,61 @@ help:
     long: Только для модераторов! Банит человека
     short: БАН!!
     usage: человек и причина
+    optional:
     returns: БАН
+  modrole:
+
+  unban:
+    long: Только для модераторов! Убирает бан с человека
+    short: разбан
+    usage: человек
+    optional:
+    returns: разбан
   chlang:
     long: Только для администраторов! Меняет язык бота на указанный или на английский по умолчанию
     short: меняет язык бота
+    optional:
     usage: ru/en
     returns: изменённый язык
   help_me:
     long: Помоги PitsaBot выити из красной книги
     short: Помоги PitsaBot выити из красной книги
+    optional:
     usage: ""
     returns: информация как помочь
   help:
     long: Можно воспользоваться этой коммандой для того, чтобы получить больше информации о командах или узнать все команды
     short: помощь по командам!
-    usage: команда
+    optional: команда
+    usage:
     returns: помощь о команде
   prefix:
     long: Только для администраторов! Меняет префикс на указанный. Не советую ставить название команды как префикс.
     short: Меняет префикс.
+    optional:
     usage: префикс
     returns: изменение префикса
   change_modlog_channel:
     long: Только для администраторов! Включает модлог на указанный канал или выключает его посредством disable
     short: (де)Активирует модлог на указанном канале.
+    optional:
     usage: канал/disable
     returns: включает/выключает модлог
+  config:
+    long: "Только для администраторов! Конфигурирует бота под нужды сервера. Доступные параметры для конфигурации:\n prefix <префикс>\n modrole <роли модераторов>\n modlog <enable / channel канал/this / disable>\n language <язык>"
+    short: конфиг бота
+    optional:
+    usage: какой-то конфиг
+    returns: изменение в конфигах бота для сервера
 misc:
-  command_not_found: Комманда не найдена!
+  command_not_found_help: Комманда не найдена!
   help_msg: PitsaBot 0.1A Pre-Release. Сейчас активно поддерживается
   prefix_changed_successfully: Префикс успешно установлен!
   current_prefix: "Текущий префикс:"
   modlog_activated: Модлог активирован!
   modlog_deactivated: Модлог деактивирован!
+  modlog_channel_set: канал модлога был установлен.
+  need_modlog_channel: Для активиации модлога сперва нужно указать канал.
   language_changed_successfully: язык успешно сменён!
   invalid_language: Неизвестный язык!
   deleted_message: "Сообщение $USER было удалено. содержание сообщения: $MESSAGE"
@@ -64,3 +86,5 @@ misc:
   role_not_in_list: Роль $ROLE и так не Модератор.
   role_in_list: Роль $ROLE и так Модератор.
   unban_success: $USER разбанен
+  not_enough_arguments: Команде не хватает аргументов. Воспользуитесь командой help
+  command_not_found: "Команда не найдена. Воспользуйтесь командой help или вы хотели написать:\n"

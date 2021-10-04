@@ -40,6 +40,15 @@ def find_server_config(message):
         config = yaml.load(config, Loader=Loader)
         return config
 
+def dump_server_config(message, config):
+    with open(
+            pathlib.Path(
+                "data", "servers_config", str(message.guild.id),
+                "config.yml"
+                ), "w", encoding="utf8"
+            ) as config_file:
+        yaml.dump(config, config_file, Dumper=Dumper)
+
 
 def can_manage_channels():
     async def predicate(ctx):
@@ -65,155 +74,73 @@ class SettingsCog(commands.Cog):
     
     @commands.Command
     @can_manage_channels()
-    async def prefix(self, ctx, prefix=None):
-        """||descstart||
-        ||shortstart||Меняет префикс.||shortend||
-        ||longstart||Только для администраторов! Меняет префикс на
-        указанный. Не советую ставить название команды как префикс.||longend||
-        ||usage||префикс||end||
-        ||descend||"""
+    async def config(self, ctx, mode, *options):
         language = load_server_language(ctx.message)
-        with open(
-                pathlib.Path(
-                    "data", "servers_config", str(ctx.guild.id),
-                    "config.yml"
-                    ),
-                "r"
-                ) as config:
-            config = yaml.load(config, Loader)
-            if prefix:
-                config["prefix"] = prefix
-                with open(
-                        pathlib.Path(
-                            "data", "servers_config", str(ctx.guild.id),
-                            "config.yml"
-                            ),
-                        "w"
-                        ) as config_raw:
-                    yaml.dump(config, config_raw, Dumper)
-                await ctx.send(
-                    language["misc"][
-                        "prefix_changed_successfully"]
-                    )
-            else:
-                await ctx.send(
-                    language["misc"]["current_prefix"] + config[
-                        "prefix"]
-                    )
-    
-    @commands.Command
-    @can_manage_channels()
-    async def modrole(self, ctx, mode):
         config = find_server_config(ctx.message)
-        lang = load_server_language(ctx.message)
-        roles = ctx.message.role_mentions
-        if mode.lower() == "add":
-            for role in roles:
-                if role.id not in config["modroles"]:
-                    config["modroles"].append(role.id)
-                else:
-                    await ctx.send(
-                        lang["misc"]["role_in_list"].replace(
-                            "$ROLE", role
+        if mode.lower() == "prefix":
+            config['prefix'] = options[0]
+            dump_server_config(ctx.message, config)
+            await ctx.send(
+                language["misc"][
+                    "prefix_changed_successfully"]
+                )
+        elif mode.lower() == "modrole":
+            roles = ctx.message.role_mentions
+            if options[0].lower() == "add":
+                for role in roles:
+                    if role.id not in config["modroles"]:
+                        config["modroles"].append(role.id)
+                    else:
+                        await ctx.send(
+                            language["misc"]["role_in_list"].replace(
+                                "$ROLE", role
+                                )
                             )
+                dump_server_config(ctx.message, config)
+                await ctx.send(language["misc"]["roles_added"])
+            elif options[0].lower() == "remove":
+                for role in roles:
+                    if role.id in config["modroles"]:
+                        config["modroles"].remove(role.id)
+                    else:
+                        await ctx.send
+                        (
+                            language["misc"]["role_not_in_list"].replace(
+                                "$ROLE", role
+                                )
                         )
-            await ctx.send(lang["misc"]["roles_added"])
-        elif mode.lower() == "remove":
-            for role in roles:
-                if role.id in config["modroles"]:
-                    config["modroles"].remove(role.id)
+                dump_server_config(ctx.message, config)
+                await ctx.send(language["misc"]["roles_removed"])
+        elif mode.lower() == "modlog":
+            if options[0].lower() == "enable":
+                if config["modlog"]["channel"]:
+                    config["modlog"]["enabled"] = True
+                    dump_server_config(ctx.message, config)
+                    await  ctx.send(language["misc"]["modlog_activated"])
                 else:
-                    await ctx.send
-                    (
-                        lang["misc"]["role_not_in_list"].replace(
-                            "$ROLE", role
-                            )
-                    )
-            await ctx.send(lang["misc"]["куьщмув"])
-    
-    @commands.Command
-    @can_manage_channels()
-    async def change_modlog_channel(self, ctx):
-        """||descstart||
-        ||shortstart||(де)Активирует modlog на указанном канале.||shortend||
-        ||longstart||Только для администраторов! Включает модлог на
-        указанный канал или выключает его посредством disable||longend||
-        ||usage||канал/disable||end||
-        ||descend||"""
-        language = load_server_language(ctx.message)
-        if "disable" not in ctx.message.content:
-            with open(
-                    pathlib.Path(
-                        "data", "servers_config", str(ctx.guild.id),
-                        "config.yml"
-                        ),
-                    "r"
-                    ) as config:
-                if "this" not in ctx.message.content:
+                    await ctx.send(language["misc"]["need_modlog_channel"])
+            elif options[0].lower() == "channel":
+                if options[1].lower() != "this":
                     channel = ctx.message.channel_mentions[0]
                 else:
                     channel = ctx.channel
-                config = yaml.load(config, Loader)
-                if not config["modlog"]["enabled"]:
-                    config["modlog"]["enabled"] = True
                 config["modlog"]["channel"] = channel.id
-                with open(
-                        pathlib.Path(
-                            "data", "servers_config",
-                            str(ctx.guild.id),
-                            "config.yml"
-                            ),
-                        "w"
-                        ) as config_raw:
-                    yaml.dump(config, config_raw, Dumper)
-                    await ctx.send(
-                        language["misc"]["modlog_activated"]
-                        )
-        
-        else:
-            with open(
-                    pathlib.Path(
-                        "data", "servers_config", str(ctx.guild.id),
-                        "config.yml"
-                        ),
-                    "r"
-                    ) as config:
-                config = yaml.load(config, Loader)
-                if config["modlog"]["enabled"]:
-                    config["modlog"]["enabled"] = False
-                with open(
-                        pathlib.Path(
-                            "data", "servers_config",
-                            str(ctx.guild.id),
-                            "config.yml"
-                            ),
-                        "w"
-                        ) as config_raw:
-                    yaml.dump(config, config_raw, Dumper)
-                    await ctx.send(
-                        language["misc"]["modlog_deactivated"]
-                        )
-    
-    @commands.Command
-    @can_manage_channels()
-    async def chlang(self, ctx, language='en'):
-        avaliable = ["ru", "en"]
-        languagedict = load_server_language(ctx.message)
-        configs = find_server_config(ctx.message)
-        if language in avaliable:
-            configs["language"] = language
-            with open(
-                    pathlib.Path(
-                        "data", "servers_config", str(ctx.guild.id),
-                        "config.yml"
-                        ), "w", encoding="utf8"
-                    ) as config:
-                yaml.dump(configs, config, Dumper=Dumper)
-            await ctx.send(
-                languagedict["misc"]["language_changed_successfully"]
-                )
-        else:
-            await ctx.send(languagedict["misc"]["invalid_language"])
+                dump_server_config(ctx.message, config)
+                await ctx.send(language["misc"]["modlog_channel_set"])
+            elif options[0].lower() == "disable":
+                config["modlog"]["enabled"] = False
+                dump_server_config(ctx.message, config)
+                await ctx.send(language["misc"]["modlog_deactivated"])
+        elif mode.lower() == "language":
+            avaliable = ["ru", "en"]
+            if options[0] in avaliable:
+                config["language"] = options[0]
+                dump_server_config(ctx.message, config)
+                await ctx.send(
+                    language["misc"]["language_changed_successfully"]
+                    )
+            else:
+                await ctx.send(language["misc"]["invalid_language"])
 
 
 def setup(bot):
