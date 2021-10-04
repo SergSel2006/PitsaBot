@@ -173,8 +173,8 @@ loaded_cogs = []
 def heartbeat_check(bot):
     if bot.latency > 5:
         con_logger.warning(
-            f"Can't keep up! Is the computer overloaded? "
-            f"Running {bot.latency} ms."
+            f"Can't keep up! Is the internet overloaded? "
+            f"Running {round(bot.latency * 1000) / 1000} s."
             )
 
 
@@ -381,21 +381,22 @@ def cog_check():
 def command_finder(command):
     probable_commands = []
     for command_real in bot.all_commands:
-        counter = 0
-        if len(command_real) > len(command) + 1:
-            continue
-        for i in range(0, min(len(command), len(command_real))):
-            if len(command) == len(command_real):
-                if command[i] == command_real[i]:
-                    counter += 1
-            else:
-                if command[i] == command_real[min(
-                        i + 1, len(command_real) -
-                               1
-                        )]:
-                    counter += 1
-        if counter > abs((len(command_real) - len(command)) - 1):
-            probable_commands.append(command_real)
+        if not command.hidden:
+            counter = 0
+            if len(command_real) > len(command) + 1:
+                continue
+            for i in range(0, min(len(command), len(command_real))):
+                if len(command) == len(command_real):
+                    if command[i] == command_real[i]:
+                        counter += 1
+                else:
+                    if command[i] == command_real[min(
+                            i + 1, len(command_real) -
+                                   1
+                            )]:
+                        counter += 1
+            if counter > abs((len(command_real) - len(command)) - 1):
+                probable_commands.append(command_real)
     return probable_commands
 
 
@@ -413,7 +414,7 @@ async def on_error(ctx, error):
             )
         await ctx.send(builder)
     else:
-        sys.stderr.write(error.message)
+        sys.stderr.write(error)
 
 
 bot.on_command_error = on_error

@@ -42,13 +42,18 @@ def find_server_config(message):
 
 
 class OtherCog(commands.Cog):
-    """Всякие комманды которые нельзя определить в какой-либо модуль
-    или их тема не соответствует ни одному из модулей"""
-    
     def __init__(self, bot, cwd: pathlib.Path):
         self.bot = bot
         self.cwd = cwd
 
+    @commands.Command
+    async def meme(self, ctx):
+        await ctx.send("мем: питса не делается в пиццерии")
+    
+    @commands.Command
+    async def ping(self, ctx):
+        builder = f"Pong! `{round(self.bot.latency  * 1000)} ms`"
+        await ctx.send(builder)
 
 def setup(bot):
     bot.add_cog(OtherCog(bot, pathlib.Path(os.getcwd())))

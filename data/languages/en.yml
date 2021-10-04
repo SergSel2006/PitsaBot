@@ -45,18 +45,12 @@ help:
     usage:
     optional: command
     returns: help about command/all command
-  prefix:
-    long: Only for administrators! Changes prefix to selected. not recomended to put command name as a prefix. Also says current prefix if prefix not given
-    short: changes prefix.
-    usage:
-    optional: prefix
-    returns: prefix changing
-  change_modlog_channel:
-    long: Only for administrators! Enables modlog on a selected channel or disables it by typing disable
-    short: (de)Activates modlog on selected channel.
-    usage: channel/disable
+  config:
+    long: "Admins Only! Changes bot's config. Avaliable configs:\n prefix <prefix>\n modrole <moderator's role>\n modlog <enable / channel channel/this / disable>\n language <language>"
+    short: Bot's config
     optional:
-    returns: enables/disables modlog
+    usage: config
+    returns: bot's config change
 misc:
   command_not_found_help: Command not found!
   help_msg: PitsaBot 0.1A Pre-Release. Now actively supported by
