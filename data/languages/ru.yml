@@ -14,15 +14,31 @@ cogs:
   SettingsCog:
     name: Настройки
     desc: Изменяет всяческие настроики сервера.
+  EconomyCog:
+    name: Экономика
+    desc: узнай свой баланс, займись работой и многое другое с этим модулем!
+  LevelingCog:
+    name: Уровни
+    desc: Прокачай свои умения переписки!
 help:
+  purge:
+    long: удаляет n-ное количество сообщений, если работает с задержкой, то вы удаляете сообщения старше, чем 2 недели
+    short: очистка чата
+    usage:
+    optional: количество сообщений, человек
+    returns: чистый чат
+  ping:
+    long: пинг
+    short: пинг
+    usage:
+    optional:
+    returns: пинг бота
   ban:
     long: Только для модераторов! Банит человека
     short: БАН!!
     usage: человек и причина
     optional:
     returns: БАН
-  modrole:
-
   unban:
     long: Только для модераторов! Убирает бан с человека
     short: разбан
@@ -48,14 +64,16 @@ help:
     usage:
     returns: помощь о команде
   config:
-    long: "Только для администраторов! Конфигурирует бота под нужды сервера. Доступные параметры для конфигурации:\n prefix <префикс>\n modrole <роли модераторов>\n modlog <enable / channel канал/this / disable>\n language <язык>"
+    long: "Только для администраторов! Конфигурирует бота под нужды сервера. Доступные параметры для конфигурации:\n prefix <префикс>\n modrole <add роли модераторов / remove роли модераторов>\n modlog <enable / channel канал/this / disable>\n language <язык>"
     short: конфиг бота
     optional:
     usage: какой-то конфиг
     returns: изменение в конфигах бота для сервера
 misc:
   command_not_found_help: Комманда не найдена!
-  help_msg: PitsaBot 0.1A Pre-Release. Сейчас активно поддерживается
+  balance_one: "Ваш баланс: 1 ПитсаКоин"
+  balance: "Ваш баланс: $BAL ПитсаКоинов"
+  help_msg: PitsaBot 0.1A Pre-Release
   prefix_changed_successfully: Префикс успешно установлен!
   current_prefix: "Текущий префикс:"
   modlog_activated: Модлог активирован!
@@ -64,8 +82,8 @@ misc:
   need_modlog_channel: Для активиации модлога сперва нужно указать канал.
   language_changed_successfully: язык успешно сменён!
   invalid_language: Неизвестный язык!
-  deleted_message: "Сообщение $USER было удалено. содержание сообщения: $MESSAGE"
-  changed_message: "$USER изменил сообщение\nСодержание сообщения до изменения: $OLD_MESSAGE\nСодержание сообщения после изменения:$NEW_MESSAGE"
+  deleted_message: "Сообщение $USER было удалено. содержание сообщения:\n$MESSAGE"
+  changed_message: "$USER изменил сообщение\nСодержание сообщения до изменения:\n$OLD_MESSAGE\nСодержание сообщения после изменения:\n$NEW_MESSAGE"
   ban_no_reason: Я не могу банить без причины
   ban_success: $USER забанен
   not_enough_permissions: У вас недостаточно полномочий для выполнения этой комманды.
@@ -74,5 +92,8 @@ misc:
   role_not_in_list: Роль $ROLE и так не Модератор.
   role_in_list: Роль $ROLE и так Модератор.
   unban_success: $USER разбанен
+  forbidden: Мне не хватает прав для выполнения команды, выдача роли бота с правами администратора решит все проблемы с правами
+  purged: Я удалил $COUNT Сообщений
   not_enough_arguments: Команде не хватает аргументов. Воспользуитесь командой help
   command_not_found: "Команда не найдена. Воспользуйтесь командой help или вы хотели написать:\n"
+  no_moderator: Нельзя мутить, кикать или банить модераторов

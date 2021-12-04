@@ -1,3 +1,17 @@
+#  Copyright (C) 2021  SergSel2006
+#
+#      This program is free software: you can redistribute it and/or modify
+#      it under the terms of the GNU General Public License as published by
+#      the Free Software Foundation, either version 3 of the License, or
+#      (at your option) any later version.
+#
+#      This program is distributed in the hope that it will be useful,
+#      but WITHOUT ANY WARRANTY; without even the implied warranty of
+#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#      GNU General Public License for more details.
+#
+#      You should have received a copy of the GNU General Public License
+#      along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import logging
 import os
 import pathlib
@@ -22,7 +36,7 @@ con_logger = logging.getLogger("Bot")
 sh = logging.StreamHandler(stream=sys.stdout)
 sh.setFormatter(
     logging.Formatter('%(asctime)s [%(levelname)s] [%(name)s]: %(message)s')
-    )
+)
 con_logger.addHandler(sh)
 con_logger.setLevel(logging.INFO)
 
@@ -34,9 +48,11 @@ handler.setFormatter(
     logging.Formatter(
         '%(asctime)s:%(levelname)s:%(name)s:'
         ' %(message)s'
-        )
     )
+)
 logger.addHandler(handler)
+
+hibernated = False
 
 
 def load_server_language(message):
@@ -49,8 +65,7 @@ def load_language(lang):
     with open(
             pathlib.Path("data", "languages", f"{lang}.yml"), "r",
             encoding="utf8"
-            ) as \
-            lang:
+    ) as lang:
         lang = yaml.load(lang, Loader=Loader)
         return lang
 
@@ -60,8 +75,8 @@ def find_server_config(message):
             pathlib.Path(
                 "data", "servers_config", str(message.guild.id),
                 "config.yml"
-                ), "r", encoding="utf8"
-            ) as config:
+            ), "r", encoding="utf8"
+    ) as config:
         config = yaml.load(config, Loader=Loader)
         return config
 
@@ -72,18 +87,18 @@ async def check_configs(bot):
         guild_config = pathlib.Path(
             "data", "servers_config", str(guild.id),
             "config.yml"
-            )
+        )
         if not guild_folder.exists():
             guild_folder.mkdir()
         if not guild_config.exists():
             con_logger.info(
                 f"adding config for {guild.name} with id "
                 f"{str(guild.id)}"
-                )
+            )
             with open(
                     pathlib.Path(f"data", "servers_config", "template.yml"),
                     "r"
-                    ) as template:
+            ) as template:
                 with open(guild_config, "w+") as config:
                     for i in template.readlines():
                         config.write(i)
@@ -92,12 +107,12 @@ async def check_configs(bot):
                 with open(
                         pathlib.Path(
                             f"data", "servers_config", "template.yml"
-                            ),
+                        ),
                         "r"
-                        ) as template:
+                ) as template:
                     config = yaml.load(config_raw, Loader)
                     template = yaml.load(template, Loader)
-                    
+
                     def dict_check(dict_for_check, template_dict):
                         for key in tuple(template_dict):
                             try:
@@ -105,35 +120,35 @@ async def check_configs(bot):
                                     dict_check(
                                         dict_for_check[key], template_dict[
                                             key]
-                                        )
+                                    )
                             except KeyError:
                                 dict_for_check[key] = template_dict[key]
-                        
+
                         for key in tuple(dict_for_check):
                             try:
                                 if type(dict_for_check[key]) == dict:
                                     dict_check(
                                         dict_for_check[key], template_dict[key]
-                                        )
+                                    )
                             except KeyError:
                                 del dict_for_check[key]
-                            
+
                             for key1 in tuple(template_dict):
                                 try:
                                     if type(
                                             dict_for_check[key1]
-                                            ) == dict:
+                                    ) == dict:
                                         dict_check(
                                             dict_for_check[key1],
                                             template_dict[
                                                 key1]
-                                            )
+                                        )
                                 except KeyError:
                                     dict_for_check[key1] = \
                                         template_dict[key1]
-                    
+
                     dict_check(config, template)
-                    
+
                     with open(guild_config, "w") as config_change:
                         yaml.dump(config, config_change, Dumper)
 
@@ -144,9 +159,9 @@ def server_prefix(bot, message):
                 pathlib.Path(
                     "data", "servers_config",
                     str(message.guild.id), "config.yml"
-                    ),
+                ),
                 "r"
-                ) as config:
+        ) as config:
             try:
                 config = yaml.load(config, Loader)
                 prefix = config["prefix"]
@@ -154,7 +169,7 @@ def server_prefix(bot, message):
             except ValueError:
                 return bot.user.mention
     else:
-        return "p"
+        return bot.user.mention
 
 
 with open('config.yml', 'r') as o:
@@ -171,11 +186,11 @@ loaded_cogs = []
 
 
 def heartbeat_check(bot):
-    if bot.latency > 5:
+    if bot.latency > 2:
         con_logger.warning(
             f"Can't keep up! Is the internet overloaded? "
             f"Running {round(bot.latency * 1000) / 1000} s."
-            )
+        )
 
 
 @bot.command(hidden=True)
@@ -184,7 +199,7 @@ async def load_cog(ctx, cog):
     if ctx.message.author.id not in devs:
         await ctx.send(
             "Только Разработчики бота могут пользоваться этой командой"
-            )
+        )
     else:
         if pathlib.Path(cog) in all_cogs:
             if pathlib.Path(cog) not in loaded_cogs:
@@ -193,18 +208,18 @@ async def load_cog(ctx, cog):
                         "Коги, которые всё ещё в разработке"
                         " нестабильны! Бот может отключится"
                         " при загрузке такого кога!"
-                        )
+                    )
                 try:
                     loading_cog = str(pathlib.Path(cog)).replace(
                         "\\" if os.name == "nt" else "/", "."
-                        )
+                    )
                     bot.load_extension(loading_cog)
                     loaded_cogs.append(pathlib.Path(cog))
                     await ctx.send("Ког " + cog + " успешно загружен!")
                 except Exception as e:
                     await ctx.send(
                         "Ког " + cog + " Не был загружен!" + "\n" + str(e)
-                        )
+                    )
             else:
                 await ctx.send('Ког уже загружен!')
         else:
@@ -217,7 +232,7 @@ async def unload_cog(ctx, cog):
     if ctx.message.author.id not in devs:
         await ctx.send(
             "Только Разработчики бота могут пользоваться этой командой"
-            )
+        )
     else:
         if pathlib.Path(cog) in all_cogs:
             if pathlib.Path(cog) in loaded_cogs:
@@ -228,14 +243,14 @@ async def unload_cog(ctx, cog):
                         == "nt"
                         else "/",
                         "."
-                        )
+                    )
                     bot.unload_extension(unloading_cog)
                     await ctx.send("Ког " + cog + " успешно выгружен!")
                     loaded_cogs.remove(pathlib.Path(cog))
                 except Exception as e:
                     await ctx.send(
                         "Ког " + cog + " не был выгружен!" + "\n" + str(e)
-                        )
+                    )
             else:
                 await ctx.send("Ког и так уже разгружен")
         else:
@@ -248,21 +263,21 @@ async def reload_cog(ctx, cog):
     if ctx.message.author.id not in devs:
         await ctx.send(
             "Только Разработчики бота могут пользоваться этой командой"
-            )
+        )
     else:
         if pathlib.Path(cog) in all_cogs:
             if pathlib.Path(cog) in loaded_cogs:
                 try:
                     reloading_cog = str(pathlib.Path(cog)).replace(
                         "\\" if os.name == "nt" else "/", "."
-                        )
+                    )
                     bot.unload_extension(reloading_cog)
                     bot.load_extension(reloading_cog)
                     await ctx.send("Ког " + cog + " успешно перезагружен!")
                 except Exception as e:
                     await ctx.send(
                         "Ког " + cog + " не был перезагружен!" + "\n" + str(e)
-                        )
+                    )
                     loaded_cogs.remove(pathlib.Path(cog))
             else:
                 await ctx.send("сперва загрузите этот ког!")
@@ -276,7 +291,7 @@ async def list_cogs(ctx):
     if ctx.message.author.id not in devs:
         await ctx.send(
             "Только Разработчики бота могут пользоваться этой командой"
-            )
+        )
     else:
         await ctx.send("Активные коги:")
         for cog in loaded_cogs:
@@ -289,42 +304,58 @@ async def list_cogs(ctx):
 
 @bot.command(hidden=True)
 async def shutdown(ctx):
-    """**ТОЛЬКО ДЛЯ РАЗРАБОТЧИКОВ**даёт информацию о когах"""
+    """**ТОЛЬКО ДЛЯ РАЗРАБОТЧИКОВ**Вырубает бота"""
     if ctx.message.author.id not in devs:
         await ctx.send(
             "Только Разработчики бота могут пользоваться этой командой"
-            )
+        )
     else:
+        await ctx.send("Shutting Down...")
         await bot.close()
+        sys.exit(0)
+
+
+@bot.command(hidden=True)
+async def hibernate(ctx):
+    global hibernated
+    hibernated = True
 
 
 @bot.event
-async def on_message(message):
-    await check_configs(bot=bot)
-    await bot.process_commands(message, )
-    
-    def recursive_cog_search_repeat(folder):
-        global all_cogs
-        if type(folder) != pathlib.Path:
-            folder = pathlib.Path(folder)
-        for cog in os.listdir(folder):
-            if cog != "__pycache__":
-                if cog.endswith(".py") and not pathlib.Path(
-                        folder, cog[
-                                :-3]
-                        ) in all_cogs:
-                    con_logger.info(f"Found cog {cog}")
-                    all_cogs.append(pathlib.Path(folder, cog[:-3]))
-                elif pathlib.Path(folder, cog.removesuffix(".py")).exists():
-                    if not cog.startswith("unused_"):
-                        recursive_cog_search_repeat(pathlib.Path(folder, cog))
-    
-    recursive_cog_search_repeat('cogs')
-    author = message.author
-    if message.mention_everyone:
-        await message.channel.send("я триггернулся от " + author.mention)
-        await author.edit(nick='Триггернул PitsaBot', reason="ТРИГГЕРНУЛ МЕНЯ")
-    heartbeat_check(bot=bot)
+async def on_message(message: discord.Message):
+    global hibernated
+    if hibernated:
+        prefix = await bot.get_prefix(message)
+        message = await message.channel.history(limit=1).flatten()
+        message = message[0]
+        await bot.change_presence(status=discord.Status.idle)
+        if message.content == prefix + "wakeup":
+            hibernated = False
+            await bot.change_presence(status=discord.Status.online)
+    else:
+        await check_configs(bot=bot)
+        await bot.process_commands(message)
+
+        def recursive_cog_search_repeat(folder):
+            global all_cogs
+            if type(folder) != pathlib.Path:
+                folder = pathlib.Path(folder)
+            for cog in os.listdir(folder):
+                if cog != "__pycache__":
+                    if cog.endswith(".py") and not pathlib.Path(
+                            folder, cog[:-3]
+                    ) in all_cogs:
+                        con_logger.info(f"Found cog {cog}")
+                        all_cogs.append(pathlib.Path(folder, cog[:-3]))
+                    elif pathlib.Path(folder, cog).is_dir():
+                        if not cog.startswith("unused_"):
+                            recursive_cog_search_repeat(
+                                pathlib.Path(folder, cog)
+                            )
+
+        recursive_cog_search_repeat('cogs')
+        author = message.author
+        heartbeat_check(bot=bot)
 
 
 @bot.event
@@ -346,21 +377,21 @@ def recursive_cog_search(folder):
                 if not i.startswith("dev_"):
                     loading_cog = str(pathlib.Path(folder, i[:-3])).replace(
                         "\\" if os.name == "nt" else "/", "."
-                        )
+                    )
                     bot.load_extension(loading_cog)
                     loaded_cogs.append(pathlib.Path(folder, i[:-3]))
                     con_logger.info("Loaded cog " + i)
-            elif pathlib.Path(folder, i).exists():
+            elif pathlib.Path(folder, i).is_dir():
                 if not i.startswith("unused_"):
                     con_logger.info(
                         f"{i} is a directory, searching"
                         f" cogs here now..."
-                        )
+                    )
                     recursive_cog_search(pathlib.Path(folder, i))
                     con_logger.info(
                         f"Ended searching cogs in {i},"
                         f" continuing in {folder}"
-                        )
+                    )
     con_logger.info(f"Done recursive cogs search in {folder}")
 
 
@@ -375,7 +406,7 @@ def cog_check():
             con_logger.warning(
                 f"Cog {cog} was found {cog_repeats} Times! This may create"
                 f" an unexpected behaviour"
-                )
+            )
 
 
 def command_finder(command):
@@ -393,7 +424,7 @@ def command_finder(command):
                     if command[i] == command_real[min(
                             i + 1, len(command_real) -
                                    1
-                            )]:
+                    )]:
                         counter += 1
             if counter > abs((len(command_real) - len(command)) - 1):
                 probable_commands.append(command_real)
@@ -411,13 +442,15 @@ async def on_error(ctx, error):
         probable_commands = command_finder(command)
         builder = lang["misc"]["command_not_found"] + '\n'.join(
             probable_commands
-            )
+        )
         await ctx.send(builder)
+    elif isinstance(error, SystemExit):
+        pass
     else:
-        sys.stderr.write(error)
+        sys.stderr.write(str(error) + "\n")
 
 
-bot.on_command_error = on_error
+# bot.on_command_error = on_error
 
 recursive_cog_search("cogs")
 cog_check()

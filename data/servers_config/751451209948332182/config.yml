@@ -4,5 +4,6 @@ modlog:
   channel: 751469620149616740
   enabled: false
 modroles:
-- null
+- 751457800571453490
+- 751457711320727572
 prefix: p

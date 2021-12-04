@@ -13,10 +13,6 @@
 #      You should have received a copy of the GNU General Public License
 #      along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# A cog that does nothing, mustn't be loaded.
-import os
-import pathlib
-
 try:
     from yaml import CLoader as Loader
 except ImportError:
@@ -32,18 +28,9 @@ from discord.ext import commands
 class TemplateCog(commands.Cog):
     """ЭТОТ МОДУЛЬ НЕ ДОЛЖЕН БЫТЬ ЗАГРУЖЕН!"""
 
-    def __init__(self, bot, cwd: pathlib.Path):
+    def __init__(self, bot):
         self.bot = bot
-        self.cwd = cwd
-
-    @commands.Command
-    async def template_command(self, ctx, arg):
-        pass
-
-    @commands.Cog.listener()
-    async def template_event(self):
-        pass
 
 
 def setup(bot):
-    bot.add_cog(TemplateCog(bot, pathlib.Path(os.getcwd())))
+    bot.add_cog(TemplateCog(bot))

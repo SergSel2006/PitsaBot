@@ -116,6 +116,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# bot config.yml
-config.yml.bak
+# essential things on local machine.
 /config.yml
+/.stignore
+/.stfolder/

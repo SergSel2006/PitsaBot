@@ -14,7 +14,25 @@ cogs:
   SettingsCog:
     name: Settings
     desc: Changes server settings.
+  EconomyCog:
+    name: Economy
+    desc: Find your balance, work and a lot more with this module!
+  LevelingCog:
+    name: Leveling
+    desc: Level up your chatting skills!
 help:
+  purge:
+    long: deletes n count of messages. If messages deleting is slow, then you delete messages older than 2 weeks
+    short: chat purge
+    usage:
+    optional: messages count, person
+    returns: clean chat
+  ping:
+    long: ping
+    short: ping
+    usage:
+    optional:
+    returns: bot's ping
   ban:
     long: Only for moderators! bans person
     short: BAN!!!
@@ -46,24 +64,26 @@ help:
     optional: command
     returns: help about command/all command
   config:
-    long: "Admins Only! Changes bot's config. Avaliable configs:\n prefix <prefix>\n modrole <moderator's role>\n modlog <enable / channel channel/this / disable>\n language <language>"
+    long: "Admins Only! Changes bot's config. Avaliable configs:\n prefix <prefix>\n modrole <add moderator's roles / remove moderator's roles>\n modlog <enable / channel channel/this / disable>\n language <language>"
     short: Bot's config
     optional:
     usage: config
     returns: bot's config change
 misc:
   command_not_found_help: Command not found!
-  help_msg: PitsaBot 0.1A Pre-Release. Now actively supported by
+  help_msg: PitsaBot 0.1A Pre-Release
+  balance_one: "Your balance: 1 PitsaCoin"
+  balance: "Your balance: $BAL PitsaCoins"
   prefix_changed_successfully: prefix changed successfully!
   current_prefix: "Current prefix:"
   modlog_activated: Modlog activated!
   modlog_deactivated: Modlog deactivated!
   modlog_channel_set: modlog channel was set.
-  need_modlog_channel: fore activating modlog, you need to specify a channel first.
+  need_modlog_channel: for activating modlog, you need to specify a channel first.
   language_changed_successfully: language changed successfully!
   invalid_language: invalid language!
-  deleted_message: "Message of user $USER was deleted. Message was: $MESSAGE"
-  changed_message: "$USER Changed message\nMessage was: $OLD_MESSAGE\nMessage after changing:$NEW_MESSAGE"
+  deleted_message: "Message of user $USER was deleted. Message was:\n$MESSAGE"
+  changed_message: "$USER Changed message\nMessage was:\n$OLD_MESSAGE\nMessage after changing:\n$NEW_MESSAGE"
   ban_no_reason: Cannot ban without reason
   ban_success: $USER banned
   not_enough_permissions: You don't have enough permissions for executing this command.
@@ -71,6 +91,9 @@ misc:
   roles_removed: Roles removed from Moderators.
   role_not_in_list: Role $ROLE isn't Moderator.
   role_in_list: Role $ROLE is Moderator.
+  forbidden: I don't have enough permissions to do this. Giving bot role with Administator permission will solve all problems with permissions
+  purged: I purged $COUNT messages
   unban_success: $USER unbanned
-  not_enough_arguments: Comand hasn't enough arguments. Use command help
+  not_enough_arguments: Comand has not enough arguments. Use command help
   command_not_found: "Command not found. Use help command or probably you mean:\n"
+  no_moderator: cannot mute, kick or ban moderators

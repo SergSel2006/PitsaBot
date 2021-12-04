@@ -12,9 +12,9 @@
 #
 #      You should have received a copy of the GNU General Public License
 #      along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-import os
 import pathlib
+
+import yaml
 
 try:
     from yaml import CLoader as Loader
@@ -25,7 +25,6 @@ try:
 except ImportError:
     from yaml import Dumper as Dumper
 
-import yaml
 from discord.ext import commands
 
 
@@ -55,16 +54,10 @@ def find_server_config(message):
         return config
 
 
-class OtherCog(commands.Cog):
-    def __init__(self, bot, cwd: pathlib.Path):
+class LevelingCog(commands.Cog):
+    def __init__(self, bot):
         self.bot = bot
-        self.cwd = cwd
-
-    @commands.Command
-    async def ping(self, ctx):
-        builder = f"Pong! `{round(self.bot.latency * 1000)} ms`"
-        await ctx.send(builder)
 
 
 def setup(bot):
-    bot.add_cog(OtherCog(bot, pathlib.Path(os.getcwd())))
+    bot.add_cog(LevelingCog(bot))

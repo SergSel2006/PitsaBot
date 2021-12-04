@@ -1,3 +1,18 @@
+#  Copyright (C) 2021  SergSel2006
+#
+#      This program is free software: you can redistribute it and/or modify
+#      it under the terms of the GNU General Public License as published by
+#      the Free Software Foundation, either version 3 of the License, or
+#      (at your option) any later version.
+#
+#      This program is distributed in the hope that it will be useful,
+#      but WITHOUT ANY WARRANTY; without even the implied warranty of
+#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#      GNU General Public License for more details.
+#
+#      You should have received a copy of the GNU General Public License
+#      along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import os
 import pathlib
 
@@ -26,7 +41,7 @@ def load_language(lang):
     with open(
             pathlib.Path("data", "languages", f"{lang}.yml"), "r",
             encoding="utf8"
-            ) as lang:
+    ) as lang:
         lang = yaml.load(lang, Loader=Loader)
         return lang
 
@@ -36,55 +51,75 @@ def find_server_config(message):
             pathlib.Path(
                 "data", "servers_config", str(message.guild.id),
                 "config.yml"
-                ), "r", encoding="utf8"
-            ) as config:
+            ), "r", encoding="utf8"
+    ) as config:
         config = yaml.load(config, Loader=Loader)
         return config
 
 
-def is_moderator():
-    async def predicate(ctx):
-        config = find_server_config(ctx.message)
-        roles = ctx.author.roles
-        modroles = config["modroles"]
-        for role in roles:
-            if role.id in modroles:
-                return True
-        perms = ctx.author.top_role.permissions
-        if perms.administrator:
+async def is_moderator(ctx, man=None):
+    config = find_server_config(ctx.message)
+    roles = ctx.author.roles if man is None else man.roles
+    modroles = config["modroles"]
+    for role in roles:
+        if role.id in modroles:
             return True
-        else:
-            await ctx.send(
-                load_server_language(ctx.message)["misc"][
-                    "not_enough_permissions"]
-                )
-            return False
-    
-    return commands.check(predicate)
+    perms: discord.Permissions = ctx.author.top_role.permissions
+    if perms.administrator or perms.ban_members or perms.kick_members or \
+            ctx.author.id == ctx.guild.owner_id:
+        return True
+    else:
+        await ctx.send(
+            load_server_language(ctx.message)["misc"][
+                "not_enough_permissions"]
+        )
+        return False
 
 
 class ModCog(commands.Cog):
     def __init__(self, bot, cwd: pathlib.Path):
         self.bot = bot
         self.cwd = cwd
-    
+
     @commands.Command
-    @is_moderator()
-    async def ban(self, ctx, man: discord.Member, *, reason):
+    @commands.check(is_moderator)
+    async def ban(self, ctx, man: discord.Member, *, reason=None):
         language = load_server_language(ctx.message)
         if not reason:
             await ctx.send(language["misc"]["ban_no_reason"])
         else:
-            await man.ban(reason=reason)
-            await ctx.send(
-                language["misc"]["ban_success"].replace(
-                    "$USER",
-                    man.name
+            if not await is_moderator(ctx, man) or man.id != self.bot.user.id:
+                await man.ban(reason=reason)
+                await ctx.send(
+                    language["misc"]["ban_success"].replace(
+                        "$USER",
+                        man.name
                     )
                 )
-    
+            else:
+                await ctx.send(language["misc"]["no_moderator"])
+
     @commands.Command
-    @is_moderator()
+    @commands.check(is_moderator)
+    async def purge(self, ctx, count=1, man: discord.User = None):
+        language = load_server_language(ctx.message)
+
+        def is_user(user):
+            if man is not None:
+                return user.id == man.id
+            else:
+                return True
+
+        count = await ctx.channel.purge(limit=count + 1, check=is_user,
+                                        bulk=True)
+        msg = await ctx.send(language["misc"]["purged"].replace("$COUNT",
+                                                                str(len(
+                                                                    count) -
+                                                                    1)))
+        await msg.delete(delay=5)
+
+    @commands.Command
+    @commands.check(is_moderator)
     async def unban(self, ctx, man: discord.Member):
         language = load_server_language(ctx.message)
         await man.unban()
@@ -92,21 +127,22 @@ class ModCog(commands.Cog):
             language["misc"]["unban_success"].replace(
                 "$USER",
                 man.name
-                )
             )
-    
+        )
+
     @commands.Cog.listener()
-    async def on_message_delete(self, msg):
+    async def on_message_delete(self, msg: discord.Message):
         lang = load_server_language(msg)
         config = find_server_config(msg)
         if config["modlog"]["enabled"]:
-            ch = self.bot.get_channel(config["modlog"]["channel"])
-            await ch.send(
-                lang["misc"]["deleted_message"].replace(
-                    "$USER", msg.author.nick
+            if not msg.author.id == self.bot.user.id:
+                ch = self.bot.get_channel(config["modlog"]["channel"])
+                await ch.send(
+                    lang["misc"]["deleted_message"].replace(
+                        "$USER", msg.author.name
                     ).replace("$MESSAGE", msg.content)
                 )
-    
+
     @commands.Cog.listener()
     async def on_message_edit(self, msg_before, msg):
         lang = load_server_language(msg)
@@ -115,14 +151,14 @@ class ModCog(commands.Cog):
             ch = self.bot.get_channel(config["modlog"]["channel"])
             await ch.send(
                 lang["misc"]["changed_message"].replace(
-                    "$USER", msg.author.nick
-                    ).replace(
+                    "$USER", msg.author.name
+                ).replace(
                     "$OLD_MESSAGE", msg_before.content
-                    ).replace(
+                ).replace(
                     "$NEW_MESSAGE",
                     msg.content
-                    )
                 )
+            )
 
 
 def setup(bot):

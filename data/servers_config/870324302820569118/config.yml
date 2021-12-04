@@ -1,8 +1,8 @@
 disabled_commands: null
 language: ru
 modlog:
-  channel: ''
-  enabled: false
+  channel: 903854535649419265
+  enabled: true
 modroles:
 - null
 prefix: p

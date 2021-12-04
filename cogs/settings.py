@@ -1,3 +1,18 @@
+#  Copyright (C) 2021  SergSel2006
+#
+#      This program is free software: you can redistribute it and/or modify
+#      it under the terms of the GNU General Public License as published by
+#      the Free Software Foundation, either version 3 of the License, or
+#      (at your option) any later version.
+#
+#      This program is distributed in the hope that it will be useful,
+#      but WITHOUT ANY WARRANTY; without even the implied warranty of
+#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#      GNU General Public License for more details.
+#
+#      You should have received a copy of the GNU General Public License
+#      along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import os
 import pathlib
 
@@ -24,8 +39,7 @@ def load_language(lang):
     with open(
             pathlib.Path("data", "languages", f"{lang}.yml"), "r",
             encoding="utf8"
-            ) as \
-            lang:
+    ) as lang:
         lang = yaml.load(lang, Loader=Loader)
         return lang
 
@@ -35,43 +49,45 @@ def find_server_config(message):
             pathlib.Path(
                 "data", "servers_config", str(message.guild.id),
                 "config.yml"
-                ), "r", encoding="utf8"
-            ) as config:
+            ), "r", encoding="utf8"
+    ) as config:
         config = yaml.load(config, Loader=Loader)
         return config
+
 
 def dump_server_config(message, config):
     with open(
             pathlib.Path(
                 "data", "servers_config", str(message.guild.id),
                 "config.yml"
-                ), "w", encoding="utf8"
-            ) as config_file:
+            ), "w", encoding="utf8"
+    ) as config_file:
         yaml.dump(config, config_file, Dumper=Dumper)
 
 
 def can_manage_channels():
     async def predicate(ctx):
         perms = ctx.author.top_role.permissions
-        if perms.manage_channels or perms.administrator:
+        if perms.manage_channels or perms.administrator or ctx.author.id == \
+                ctx.guild.owner_id:
             return True
         else:
             await ctx.send(
                 load_server_language(ctx.message)["misc"][
                     "not_enough_permissions"]
-                )
+            )
             return False
-    
+
     return commands.check(predicate)
 
 
 class SettingsCog(commands.Cog):
     """Изменяет всяческие настроики сервера."""
-    
+
     def __init__(self, bot, cwd: pathlib.Path):
         self.bot = bot
         self.cwd = cwd
-    
+
     @commands.Command
     @can_manage_channels()
     async def config(self, ctx, mode, *options):
@@ -83,34 +99,38 @@ class SettingsCog(commands.Cog):
             await ctx.send(
                 language["misc"][
                     "prefix_changed_successfully"]
-                )
+            )
         elif mode.lower() == "modrole":
             roles = ctx.message.role_mentions
-            if options[0].lower() == "add":
-                for role in roles:
-                    if role.id not in config["modroles"]:
-                        config["modroles"].append(role.id)
-                    else:
-                        await ctx.send(
-                            language["misc"]["role_in_list"].replace(
-                                "$ROLE", role
+            if options:
+                if options[0].lower() == "add":
+                    for role in roles:
+                        if role.id not in config["modroles"]:
+                            config["modroles"].append(role.id)
+                        else:
+                            await ctx.send(
+                                language["misc"]["role_in_list"].replace(
+                                    "$ROLE", role.mention
                                 )
                             )
-                dump_server_config(ctx.message, config)
-                await ctx.send(language["misc"]["roles_added"])
-            elif options[0].lower() == "remove":
-                for role in roles:
-                    if role.id in config["modroles"]:
-                        config["modroles"].remove(role.id)
-                    else:
-                        await ctx.send
-                        (
-                            language["misc"]["role_not_in_list"].replace(
-                                "$ROLE", role
+                    dump_server_config(ctx.message, config)
+                    await ctx.send(language["misc"]["roles_added"])
+                elif options[0].lower() == "remove":
+                    for role in roles:
+                        if role.id in config["modroles"]:
+                            config["modroles"].remove(role.id)
+                        else:
+                            await ctx.send
+                            (
+                                language["misc"]["role_not_in_list"].replace(
+                                    "$ROLE", role.mention
                                 )
-                        )
-                dump_server_config(ctx.message, config)
-                await ctx.send(language["misc"]["roles_removed"])
+                            )
+                    dump_server_config(ctx.message, config)
+                    await ctx.send(language["misc"]["roles_removed"])
+            else:
+                await ctx.send(" ".join([ctx.guild.get_role(i).mention for i
+                                         in config["modroles"]]))
         elif mode.lower() == "modlog":
             if options[0].lower() == "enable":
                 if config["modlog"]["channel"]:
@@ -132,13 +152,15 @@ class SettingsCog(commands.Cog):
                 dump_server_config(ctx.message, config)
                 await ctx.send(language["misc"]["modlog_deactivated"])
         elif mode.lower() == "language":
-            avaliable = ["ru", "en"]
-            if options[0] in avaliable:
+            available = []
+            for i in pathlib.Path("data", "languages").iterdir():
+                available.append(i.stem)
+            if options[0] in available:
                 config["language"] = options[0]
                 dump_server_config(ctx.message, config)
                 await ctx.send(
                     language["misc"]["language_changed_successfully"]
-                    )
+                )
             else:
                 await ctx.send(language["misc"]["invalid_language"])
 
