@@ -1,37 +1,14 @@
-## Welcome to GitHub Pages
+# Woah Oh, Who is there!
+Hello, fellow user fo PitsaBot! Trying to find some help over here? Here I, SergSel2006, Presonally will answer some of your questions
 
-You can use the [editor on GitHub](https://github.com/SergSel2006/pitsaBot/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+## Overview
+Bot now don't have much commands, just see help for all 8 commands that I implemented nowadays. It is moderation commands only.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### What? So why it should be recommended for me?
+OK, stay with us, this is an open-souce bot what will replace functionality of 2 or 3 bots, OK? You CAN help us to reach this idea. Now bot even cannot do much that normal bots can, but with some help over here, it will grow up!
 
-### Markdown
+## What about me?
+Are you asking? I am learned Python from scratch using only its documentation and learned discord.py same way! What else you should know? Oh, Check out my GitHub page if you want to.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/SergSel2006/pitsaBot/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+## What about bot?
+A PisaBot is in very early development and good help is required. You can invite my bot by clicking [here](). I'll be glad to see another server to have this bot and this will give me power to work with it.
