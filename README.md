@@ -8,7 +8,7 @@ At least in my dreams this is a multi-functual bot with many original features a
 Now, we have very small features, like ban and purge commands. And that's all... Also I am working on warn command, but first should do kick fast before continue my work on warn... I even don't have normal host for bot, so, I don't think that it will find small community now...
 
 # Where community lives?
-OK, here is (undone) Discord server, but I want to understand how Markdown works here, so, as for now, there won't be any link to it.
+OK, here is (undone) [Discord server](https://discord.gg/PjRsZXN48Y)
 
 # I'm Interested! How can I help you?
 That's good! If you know Python and discord.py, you can help with my work (you know... fork, make changes, open pull request and wait). Also if you can advise good and free bot hosting, I will listen to you. Since I hadn't set up help button yet, you cannot help with money, just if you wanted to give me some.
