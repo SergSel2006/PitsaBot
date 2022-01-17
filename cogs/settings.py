@@ -72,17 +72,12 @@ def can_manage_channels():
                 ctx.guild.owner_id:
             return True
         else:
-            await ctx.send(
-                load_server_language(ctx.message)["misc"][
-                    "not_enough_permissions"]
-            )
             return False
 
     return commands.check(predicate)
 
 
 class SettingsCog(commands.Cog):
-    """Изменяет всяческие настроики сервера."""
 
     def __init__(self, bot, cwd: pathlib.Path):
         self.bot = bot
@@ -163,6 +158,13 @@ class SettingsCog(commands.Cog):
                 )
             else:
                 await ctx.send(language["misc"]["invalid_language"])
+        elif mode.lower() == "trigger":
+            if options[0] == "enable":
+                config["everyonetrigger"] = True
+                dump_server_config(ctx.message, config)
+            else:
+                config["everyonetrigger"] = False
+                dump_server_config(ctx.message, config)
 
 
 def setup(bot):

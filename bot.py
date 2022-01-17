@@ -434,16 +434,12 @@ def command_finder(command):
 async def on_error(ctx, error):
     lang = load_server_language(ctx)
     if isinstance(error, commands.errors.CheckFailure):
-        await ctx.send(lang["misc"]["not_enough_permissions"])
+        await ctx.guild.owner.dm_channel.send(lang["misc"][
+                                             "not_enough_permissions"])
     elif isinstance(error, commands.errors.MissingRequiredArgument):
         await ctx.send(lang["misc"]["not_enough_arguments"])
     elif isinstance(error, commands.errors.CommandNotFound):
-        command = ctx.message.content.split()[0][1:]
-        probable_commands = command_finder(command)
-        builder = lang["misc"]["command_not_found"] + '\n'.join(
-            probable_commands
-        )
-        await ctx.send(builder)
+        await ctx.send(lang["misc"]["command_not_found"])
     elif isinstance(error, SystemExit):
         pass
     else:

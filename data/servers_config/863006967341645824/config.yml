@@ -1,4 +1,6 @@
 disabled_commands: null
+everyonetrigger: false
+global_db: true
 language: ru
 modlog:
   channel: ''

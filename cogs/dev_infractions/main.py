@@ -12,12 +12,11 @@
 #
 #      You should have received a copy of the GNU General Public License
 #      along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-import os
 import pathlib
-import random
+from datetime import datetime
 import sqlite3
-import sys
+
+import discord
 
 try:
     from yaml import CLoader as Loader
@@ -58,15 +57,27 @@ def find_server_config(message):
         return config
 
 
-def connect():
+def connect(ctx):
+    """High-level function to connect to config-specific database"""
+    config = find_server_config(ctx.message)
+    global_db = config["global_db"]
     try:
-        connection = sqlite3.connect(pathlib.Path("data", "MainDB.sqlite3"))
-        return connection
+        if global_db:
+            connection = sqlite3.connect(pathlib.Path("data",
+                                                      "MainMainDB.sqlite3"))
+            return connection
+        else:
+            server_db_path = pathlib.Path("data", ctx.server.id,
+                                          "MainDB.sqlite3")
+            connection = sqlite3.connect(server_db_path)
+            return connection
     except sqlite3.Error as e:
         return e
 
 
-def execute(conn: sqlite3.Connection, command, args: tuple):
+def execute(conn: sqlite3.Connection, command: str, args: tuple = ()):
+    """high-level function to execute sqlite commands and return cursor
+    object for further work"""
     try:
         cursor = conn.cursor()
         cursor.execute(command, args)
@@ -76,50 +87,30 @@ def execute(conn: sqlite3.Connection, command, args: tuple):
         return e
 
 
-class Job:
-    def __init__(self, name, min_salary, max_salary):
-        self.name = name
-        self.min_salary = int(min_salary)
-        self.max_salary = int(max_salary)
+class InfractionsCog(commands.Cog):
 
-    def work(self):
-        return random.randint(self.min_salary, self.max_salary)
-
-    def __str__(self):
-        return self.name
-
-
-class EconomyCog(commands.Cog):
-    def __init__(self, bot, cwd: pathlib.Path):
+    def __init__(self, bot):
         self.bot = bot
-        self.cwd = cwd
-        self.connection = connect()
 
-    @commands.Command
-    async def check_balance(self, ctx):
-        language = load_server_language(ctx.message)
-        conn = self.connection
-        id = ctx.message.author.id
-        command = """SELECT * FROM balance WHERE uid=?"""
-        async with ctx.channel.typing():
-            cur = execute(conn, command, (id,))
-            if isinstance(cur, sqlite3.Error):
-                raise cur
-            bal = cur.fetchone()
-            if not bal:
-                command = """INSERT INTO balance VALUES (?, 0)"""
-                execute(conn, command, (id,))
-                bal = [id, 0]
-            await ctx.send(
-                language["misc"]["balance"].replace(
-                    "$BAL",
-                    str(bal[1])
-                )
-            )
+    @commands.command()
+    async def warn(self, ctx, user: discord.User, reason=None):
+        lang = load_server_language(ctx.message)
+        conn = connect(ctx)
+        if reason:
+            execute(conn, "INSERT INTO infractions VALUES (?, ?, ?)",
+                    (user.id, reason, datetime.now()))
 
-    async def work(self, ctx):
-        pass
+            await ctx.send(lang["misc"]["warned"].format(user.name))
+
+    @commands.command()
+    async def check(self, ctx):
+        lang = load_server_language(ctx.message)
+        config = find_server_config(ctx.message)
+        conn = connect(ctx)
+        data = execute(conn, "SELECT * FROM infractions WHERE uid = "
+                             "?").fetchall()
+        local_or_global = config["global_db"]
 
 
 def setup(bot):
-    bot.add_cog(EconomyCog(bot, pathlib.Path(os.getcwd())))
+    bot.add_cog(InfractionsCog(bot))

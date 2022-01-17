@@ -101,21 +101,21 @@ class ModCog(commands.Cog):
 
     @commands.Command
     @commands.check(is_moderator)
-    async def purge(self, ctx, count=1, man: discord.User = None):
+    async def purge(self, ctx, count=1, man: discord.Member = None):
         language = load_server_language(ctx.message)
 
-        def is_user(user):
+        def is_user(message):
             if man is not None:
-                return user.id == man.id
+                return message.author == man
             else:
                 return True
 
-        count = await ctx.channel.purge(limit=count + 1, check=is_user,
+        await ctx.message.delete()
+        count = await ctx.channel.purge(limit=count, check=is_user,
                                         bulk=True)
         msg = await ctx.send(language["misc"]["purged"].replace("$COUNT",
                                                                 str(len(
-                                                                    count) -
-                                                                    1)))
+                                                                    count))))
         await msg.delete(delay=5)
 
     @commands.Command
@@ -159,6 +159,13 @@ class ModCog(commands.Cog):
                     msg.content
                 )
             )
+
+    @commands.Cog.listener()
+    async def on_message(self, msg):
+        if isinstance(msg.channel, discord.abc.GuildChannel):
+            config = find_server_config(msg)
+            if msg.mention_everyone and config["everyonetrigger"]:
+                await msg.channel.send("TRIGGERED")
 
 
 def setup(bot):

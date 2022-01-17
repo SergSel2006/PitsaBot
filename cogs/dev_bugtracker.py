@@ -13,6 +13,13 @@
 #      You should have received a copy of the GNU General Public License
 #      along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import os
+import pathlib
+import random
+import sqlite3
+import sys
+import github
+
 try:
     from yaml import CLoader as Loader
 except ImportError:
@@ -22,15 +29,33 @@ try:
 except ImportError:
     from yaml import Dumper as Dumper
 
+import yaml
 from discord.ext import commands
 
 
-class TemplateCog(commands.Cog):
-    """ЭТОТ МОДУЛЬ НЕ ДОЛЖЕН БЫТЬ ЗАГРУЖЕН!"""
+def load_server_language(message):
+    config = find_server_config(message)
+    language = load_language(config["language"])
+    return language
 
-    def __init__(self, bot):
-        self.bot = bot
+
+def load_language(lang):
+    with open(
+            pathlib.Path("data", "languages", f"{lang}.yml"), "r",
+            encoding="utf8"
+    ) as lang:
+        lang = yaml.load(lang, Loader=Loader)
+        return lang
 
 
-def setup(bot):
-    bot.add_cog(TemplateCog(bot))
+def find_server_config(message):
+    with open(
+            pathlib.Path(
+                "data", "servers_config", str(message.guild.id),
+                "config.yml"
+            ), "r", encoding="utf8"
+    ) as config:
+        config = yaml.load(config, Loader=Loader)
+        return config
+
+def startup(bot):

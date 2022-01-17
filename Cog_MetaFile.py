@@ -22,10 +22,13 @@ from discord.ext import commands
 
 
 class Cog_File_Meta:
-    def __init__(self, bot: commands.Bot, cog_path: pathlib.Path):
+    def __init__(self, bot: commands.Bot, cog_path: pathlib.Path, name=None):
         self.bot = bot
         self.path = cog_path
-        self.name = cog_path.stem
+        if not name:
+            self.name = cog_path.stem
+        else:
+            self.name = name
         self.active = False
 
     def __str__(self):

@@ -6,3 +6,5 @@ modlog:
   enabled: false
 modroles:
   - null
+everyonetrigger: false
+global_db: true

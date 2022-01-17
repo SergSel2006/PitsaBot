@@ -1,99 +1,116 @@
 cogs:
-  GodPitsaCog:
-    name: Pitsa's commands (and hlep's)
-    desc: this module has vereything for pitsa and hlep
-  MainCog:
-    name: Main
-    desc: Start of all starts! this module has everything.
-  ModCog:
-    name: Moderation
-    desc: Commands for moderators. Also is a core for modlog
-  OtherCog:
-    name: Other
-    desc: commands that developers didn't put in any of modules
-  SettingsCog:
-    name: Settings
-    desc: Changes server settings.
   EconomyCog:
-    name: Economy
     desc: Find your balance, work and a lot more with this module!
+    name: Economy
+  GodPitsaCog:
+    desc: this module has vereything for pitsa and hlep
+    name: Pitsa's commands (and hlep's)
   LevelingCog:
-    name: Leveling
     desc: Level up your chatting skills!
+    name: Leveling
+  MainCog:
+    desc: Start of all starts! this module has everything.
+    name: Main
+  ModCog:
+    desc: Commands for moderators. Also is a core for modlog
+    name: Moderation
+  OtherCog:
+    desc: commands that developers didn't put in any of modules
+    name: Other
+  SettingsCog:
+    desc: Changes server settings.
+    name: Settings
 help:
-  purge:
-    long: deletes n count of messages. If messages deleting is slow, then you delete messages older than 2 weeks
-    short: chat purge
-    usage:
-    optional: messages count, person
-    returns: clean chat
-  ping:
-    long: ping
-    short: ping
-    usage:
-    optional:
-    returns: bot's ping
   ban:
     long: Only for moderators! bans person
+    optional: null
+    returns: BAN
     short: BAN!!!
     usage: preson and reason
-    optional:
-    returns: BAN
-  unban:
-    long: Only for moderators! unbans person
-    short: unban
-    usage: preson
-    optional:
-    returns: unban
   chlang:
     long: Only for administrators! Chages language to selected or to english by default.
+    optional: null
+    returns: изменённый язык
     short: меняет язык бота
     usage: ru/en
-    optional:
-    returns: изменённый язык
-  help_me:
-    long: Help pitsabot by making a donation
-    short: Help pitsabot by making a donation
-    usage: ""
-    optional:
-    returns: information about donation
+  config:
+    long: "Admins Only! Changes bot's config. Avaliable configs:\n prefix <prefix>\n
+      modrole <add moderator's roles / remove moderator's roles>\n modlog <enable
+      / channel channel/this / disable>\n language <language>"
+    optional: null
+    returns: bot's config change
+    short: Bot's config
+    usage: config
   help:
     long: You can use this command to find usage about a command or find all commands
-    short: help about commands!
-    usage:
     optional: command
     returns: help about command/all command
-  config:
-    long: "Admins Only! Changes bot's config. Avaliable configs:\n prefix <prefix>\n modrole <add moderator's roles / remove moderator's roles>\n modlog <enable / channel channel/this / disable>\n language <language>"
-    short: Bot's config
-    optional:
-    usage: config
-    returns: bot's config change
+    short: help about commands!
+    usage: null
+  help_me:
+    long: Help pitsabot by making a donation
+    optional: null
+    returns: information about donation
+    short: Help pitsabot by making a donation
+    usage: ''
+  ping:
+    long: ping
+    optional: null
+    returns: bot's ping
+    short: ping
+    usage: null
+  purge:
+    long: deletes n count of messages. If messages deleting is slow, then you delete
+      messages older than 2 weeks
+    optional: messages count, person
+    returns: clean chat
+    short: chat purge
+    usage: null
+  unban:
+    long: Only for moderators! unbans person
+    optional: null
+    returns: unban
+    short: unban
+    usage: preson
 misc:
-  command_not_found_help: Command not found!
-  help_msg: PitsaBot 0.1A Pre-Release
-  balance_one: "Your balance: 1 PitsaCoin"
-  balance: "Your balance: $BAL PitsaCoins"
-  prefix_changed_successfully: prefix changed successfully!
-  current_prefix: "Current prefix:"
-  modlog_activated: Modlog activated!
-  modlog_deactivated: Modlog deactivated!
-  modlog_channel_set: modlog channel was set.
-  need_modlog_channel: for activating modlog, you need to specify a channel first.
-  language_changed_successfully: language changed successfully!
-  invalid_language: invalid language!
-  deleted_message: "Message of user $USER was deleted. Message was:\n$MESSAGE"
-  changed_message: "$USER Changed message\nMessage was:\n$OLD_MESSAGE\nMessage after changing:\n$NEW_MESSAGE"
+  balance: 'Your balance: $BAL PitsaCoins'
+  balance_one: 'Your balance: 1 PitsaCoin'
   ban_no_reason: Cannot ban without reason
   ban_success: $USER banned
+  changed_message: '$USER Changed message
+
+    Message was:
+
+    $OLD_MESSAGE
+
+    Message after changing:
+
+    $NEW_MESSAGE'
+  command_not_found: 'Command not found. Use help command or probably you mean:
+
+    '
+  command_not_found_help: Command not found!
+  current_prefix: 'Current prefix:'
+  deleted_message: 'Message of user $USER was deleted. Message was:
+
+    $MESSAGE'
+  forbidden: I don't have enough permissions to do this. Giving bot role with Administator
+    permission will solve all problems with permissions
+  help_msg: PitsaBot 0.1A Pre-Release
+  invalid_language: invalid language!
+  language_changed_successfully: language changed successfully!
+  modlog_activated: Modlog activated!
+  modlog_channel_set: modlog channel was set.
+  modlog_deactivated: Modlog deactivated!
+  need_modlog_channel: for activating modlog, you need to specify a channel first.
+  no_moderator: cannot mute, kick or ban moderators
+  not_enough_arguments: Comand has not enough arguments. Use command help
   not_enough_permissions: You don't have enough permissions for executing this command.
+  prefix_changed_successfully: prefix changed successfully!
+  purged: I purged $COUNT messages
+  role_in_list: Role $ROLE is Moderator.
+  role_not_in_list: Role $ROLE isn't Moderator.
   roles_added: Roles added to Moderators.
   roles_removed: Roles removed from Moderators.
-  role_not_in_list: Role $ROLE isn't Moderator.
-  role_in_list: Role $ROLE is Moderator.
-  forbidden: I don't have enough permissions to do this. Giving bot role with Administator permission will solve all problems with permissions
-  purged: I purged $COUNT messages
   unban_success: $USER unbanned
-  not_enough_arguments: Comand has not enough arguments. Use command help
-  command_not_found: "Command not found. Use help command or probably you mean:\n"
-  no_moderator: cannot mute, kick or ban moderators
+  bad_argument: You used incorrect arguments(check help for command), please notice that bot cannot do any calculations inside arguments

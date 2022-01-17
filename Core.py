@@ -14,11 +14,14 @@
 #      along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-import asyncio
 # imports
+import asyncio
+import traceback
 import logging
 import pathlib
 import sys
+import datetime
+import pickle
 
 import discord
 import yaml
@@ -61,50 +64,64 @@ printe = con_logger.error
 
 
 # interesting functions
-# config checker
+
+# config checker for up-to-date keys with template
 def check_configs(bot: discord.ext.commands.Bot):
-    for guild in bot.guilds:
-        guild_dir = pathlib.Path("data", "servers_config", str(guild.id))
-        template_path = pathlib.Path("data", "servers_config", "template.yml")
-        config_path = guild_dir / "config.yml"
-        if not guild_dir.exists():
-            print(f"added config for server {guild.name} with id {guild.id}")
-            guild_dir.mkdir()
-            config_path.touch()
+    template_path = pathlib.Path("data", "servers_config", "template.yml")
 
-            with open(config_path, mode="w", encoding='utf8') as config:
-                with open(template_path, mode="r", encoding='utf8') as temp:
+    def diff(dict1: dict, dict2: dict):
+        same = True
+        if dict1 is None:
+            dict1 = dict2
+            return dict1, False
+        for i in tuple(dict1.keys()):
+            if i not in dict2:
+                del dict1[i]
+                same = False
+                continue
+            if type(dict2[i]) == dict:
+                dict1[i], _ = diff(dict1[i], dict2[i])
+                if not _:
+                    same = _
+        for i in dict2:
+            if i not in tuple(dict1.keys()):
+                dict1[i] = dict2[i]
+                same = False
+            if type(dict2[i]) == dict:
+                dict1[i], _ = diff(dict1[i], dict2[i])
+                if not _:
+                    same = _
+        return dict1, same
+
+    with open(template_path, mode="r", encoding='utf8') as temp:
+        for guild in bot.guilds:
+            guild_dir = pathlib.Path("data", "servers_config", str(guild.id))
+            config_path = guild_dir / "config.yml"
+            if not guild_dir.exists():
+                print(f"added config for server {guild.name} with id {guild.id}")
+                guild_dir.mkdir()
+                config_path.touch()
+                temp_dict = yaml.load(temp, Loader)
+                lang_dir = pathlib.Path("data", "languages")
+                langs = [i for i in lang_dir.iterdir() if i.suffix == ".yml"]
+                if guild.preferred_locale in langs:
+                    temp_dict["lang"] = guild.preferred_locale
+                with open(config_path, mode="w", encoding='utf8') as config:
+                    yaml.dump(temp_dict, config, Dumper)
+
+            elif not config_path.exists():
+                with open(config_path, mode="w", encoding='utf8') as config:
                     config.write(temp.read())
-
-        elif not config_path.exists():
-            with open(config_path, mode="w", encoding='utf8') as config:
-                with open(template_path, mode="r", encoding='utf8') as temp:
-                    config.write(temp.read())
-        else:
-            def diff(dict1: dict, dict2: dict):
-                if dict1 is None:
-                    dict1 = dict2
-                    return dict1
-                for i in tuple(dict1.keys()):
-                    if i not in dict2:
-                        del dict1[i]
-                        continue
-                    if type(dict2[i]) == dict:
-                        diff(dict1[i], dict2[i])
-                for i in dict2:
-                    if i not in dict1.keys():
-                        dict1[i] = dict2[i]
-                    if type(dict2[i]) == dict:
-                        diff(dict1[i], dict2[i])
-                return dict1
-
-            with open(config_path, mode="r", encoding='utf8') as config:
-                with open(template_path, mode="r", encoding='utf8') as temp:
+            else:
+                with open(config_path, mode="r", encoding='utf8') as config:
                     config = yaml.load(config, Loader)
-                    temp = yaml.load(temp, Loader)
-                    config = diff(config, temp)
-            with open(config_path, mode='w', encoding='utf8') as config_raw:
-                yaml.dump(config, config_raw, Dumper)
+                    temp_dict = yaml.load(temp, Loader)
+                    config, same = diff(config, temp_dict)
+                if not same:
+                    with open(config_path, mode='w', encoding='utf8')\
+                            as config_raw:
+                        yaml.dump(config, config_raw, Dumper)
+            temp.seek(0)
 
 
 # find language from message
@@ -177,9 +194,15 @@ def cog_finder(bot: commands.Bot, start_path: pathlib.Path):
     global Cogs
     # add meta for created cogs
     for child in start_path.iterdir():
-        if child.is_dir() and not child.stem.startswith("dev_") and \
-                child.stem != "__pycache__":
-            cog_finder(bot, child)
+        if child.is_dir() and child.stem != "__pycache__":
+            for i in child.iterdir():
+                if i.name == "main.py":
+                    meta = Cog_File_Meta(bot, i, name=child.name)
+                    if meta.name not in tuple(Cogs.keys()):
+                        printd(f"cog {child.name} founded")
+                        Cogs[f"{meta.name}"] = meta
+                        if not child.name.startswith("dev_"):
+                            printd(meta.load())
         else:
             if child.suffix == ".py":
                 meta = Cog_File_Meta(bot, child)
@@ -286,13 +309,25 @@ async def reload_cog(ctx: commands.Context, cog):
 @Bot.command(hidden=True)
 @commands.check(owner_check)
 async def list_cogs(ctx: commands.Context):
-    async with ctx.channel.typing():
-        all_cogs = '\n'.join([i.name for i in list(Cogs.values())])
-        loaded_cogs = '\n'.join([i.name for i in list(Cogs.values()) if
-                                 i.active])
-        builder = f"All cogs:\n{all_cogs}\nActive cogs:\n" \
-                  f"{loaded_cogs}"
-        await ctx.send(builder)
+    all_cogs = '\n'.join([i.name for i in list(Cogs.values())])
+    loaded_cogs = '\n'.join([i.name for i in list(Cogs.values()) if
+                             i.active])
+    builder = f"All cogs:\n{all_cogs}\nActive cogs:\n" \
+              f"{loaded_cogs}"
+    await ctx.send(builder)
+
+
+# eval function (bad idea but with owner check it looks normal)
+@Bot.command(hidden=True)
+@commands.check(owner_check)
+async def evaluate(ctx):
+    try:
+        command = " ".join(ctx.message.content.split(" ")[1:])
+        result = eval(command)
+        if result is not None:
+            await ctx.send(result)
+    except Exception as e:
+        await ctx.send(''.join(traceback.format_exception(e)))
 
 
 # help command
@@ -334,11 +369,12 @@ async def on_tick(tick: int = 5):
         await asyncio.sleep(tick)
         try:
             if ping(Bot) > 2:
-                await to_thread(printw(f"High ping! {ping(Bot)} s"))
+                to_thread(printw(f"High ping! {ping(Bot)} s"))
             check_configs(Bot)
             cog_finder(Bot, pathlib.Path("cogs"))
         except Exception as e:
-            printe("Exception was caught!", exc_info=e)
+            exc_info = ''.join(traceback.format_exception(e))
+            printe(f"error occured, ignoring!\n{exc_info}")
 
 
 @Bot.event
@@ -346,5 +382,30 @@ async def on_ready():
     print(f"bot is ready, ping is {ping(Bot)} seconds")
     asyncio.ensure_future(on_tick())
 
+
+# error handler for (almost) pretty error handling ;-)
+async def on_error(ctx, error):
+    lang = load_server_language(ctx)
+    exc_info = ''.join(traceback.format_exception(error))
+    if isinstance(error, commands.errors.CheckFailure):
+        await ctx.send(lang["misc"]["not_enough_permissions"])
+    elif "discord.errors.Forbidden" in exc_info:
+        try:
+            await ctx.guild.owner.dm_channel.send(lang["misc"]["forbidden"])
+        except AttributeError:
+            await ctx.guild.owner.create_dm()
+            await ctx.guild.owner.dm_channel.send(lang["misc"]["forbidden"])
+    elif isinstance(error, commands.errors.MissingRequiredArgument):
+        await ctx.send(lang["misc"]["not_enough_arguments"])
+    elif isinstance(error, commands.errors.CommandNotFound):
+        await ctx.send(lang["misc"]["command_not_found"])
+    elif isinstance(error, SystemExit):
+        print("shutting down, goodbye!")
+    elif isinstance(error, commands.errors.BadArgument):
+        await ctx.send(lang["misc"]["bad_argument"])
+    else:
+        printe(f"error occured, ignoring!\n{exc_info}")
+
+Bot.on_command_error = on_error
 
 Bot.run(settings["token"])
