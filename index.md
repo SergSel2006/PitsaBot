@@ -11,4 +11,4 @@ OK, stay with us, this is an open-souce bot what will replace functionality of 2
 Are you asking? I am learned Python from scratch using only its documentation and learned discord.py same way! What else you should know? Oh, Check out my GitHub page if you want to.
 
 ## What about bot?
-A PisaBot is in very early development and good help is required. You can invite my bot by clicking [here](). I'll be glad to see another server to have this bot and this will give me power to work with it.
+A PisaBot is in very early development and good help is required. You can invite my bot by clicking [here](https://discord.com/api/oauth2/authorize?client_id=869082304033751120&permissions=8&redirect_uri=https%3A%2F%2Fsergsel2006.github.io%2FpitsaBot%2F&response_type=code&scope=bot%20guilds.members.read%20messages.read). I'll be glad to see another server to have this bot and this will give me power to work with it.
