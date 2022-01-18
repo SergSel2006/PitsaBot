@@ -12,6 +12,7 @@ OK, here is (undone) [Discord server](https://discord.gg/PjRsZXN48Y)
 
 # I'm Interested! How can I help you?
 That's good! If you know Python and discord.py, you can help with my work (you know... fork, make changes, open pull request and wait). Also if you can advise good and free bot hosting, I will listen to you. Since I hadn't set up help button yet, you cannot help with money, just if you wanted to give me some.
+P.S: To contribute, you should create your own bot, get your own token, make config.yml file in root folder of bod, and make `token: [your token]` in it and bot will start
 
 # Your Project is disaster! How you can do it in this way!
 Yes, I know that my project is trash now, and idea is somehow fantastic, but hey, why don't YOU just make some help over here, I will accept even small code refactoring if it refactored by PEP 8.
