@@ -27,8 +27,8 @@ jobs:
     
     - name: Run the bot.
       env:
-        Token: secrets.TOKEN
-        Developers: secrets.DEVELOPERS_ID
+        Token: ${{ secrets.TOKEN }}
+        Developers: ${{ secrets.DEVELOPERS_ID }}
       run: |
-        "python Core.py --config {'token': '$Token', 'developers': [$Developers]}"
+        python Core.py --config {'token': '$Token', 'developers': [$Developers]}
 
