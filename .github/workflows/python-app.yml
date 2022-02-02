@@ -36,4 +36,5 @@ jobs:
       env:
         Token: secrets.TOKEN
         Developers: secrets.DEVELOPERS_ID
-      run: "python Core.py --config '{\"token\": \"$Token\", \"developers\": [$Developers]}'
+      run: "python Core.py --config "{'token': '$Token', 'developers': [$Developers]}"
+
