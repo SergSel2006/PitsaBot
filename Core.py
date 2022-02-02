@@ -262,7 +262,7 @@ if '--config' != sys.argv[1]:
     if not settings:
         raise ValueError("No Settings")
 else:
-    settings = eval(sys.argv[2])
+    settings = eval(" ".join(sys.argv[2:]))
 
 # bot  itself
 Bot = commands.Bot(command_prefix=server_prefix, intents=intents,
