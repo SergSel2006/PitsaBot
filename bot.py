@@ -172,10 +172,14 @@ def server_prefix(bot, message):
         return bot.user.mention
 
 
-with open('config.yml', 'r') as o:
-    settings = yaml.load(o, Loader)
-if not settings:
-    raise ValueError("No Settings")
+if '--config' != sys.argv[1]:
+    with open('config.yml', 'r') as o:
+        settings = yaml.load(o, Loader)
+    if not settings:
+        raise ValueError("No Settings")
+else:
+    settings = eval(sys.argv[2])
+
 
 bot = commands.Bot(command_prefix=server_prefix, intents=intents)
 bot.remove_command("help")
