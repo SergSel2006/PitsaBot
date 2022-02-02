@@ -134,8 +134,7 @@ class ModCog(commands.Cog):
     async def on_message_delete(self, msg: discord.Message):
         lang = load_server_language(msg)
         config = find_server_config(msg)
-        if config["modlog"]["enabled"]:
-            if not msg.author.id == self.bot.user.id:
+        if config["modlog"]["enabled"] and msg.author != self.bot.user:
                 ch = self.bot.get_channel(config["modlog"]["channel"])
                 await ch.send(
                     lang["misc"]["deleted_message"].replace(
@@ -147,7 +146,7 @@ class ModCog(commands.Cog):
     async def on_message_edit(self, msg_before, msg):
         lang = load_server_language(msg)
         config = find_server_config(msg)
-        if config["modlog"]["enabled"]:
+        if config["modlog"]["enabled"] and msg.author != self.bot.user:
             ch = self.bot.get_channel(config["modlog"]["channel"])
             await ch.send(
                 lang["misc"]["changed_message"].replace(

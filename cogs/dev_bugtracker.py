@@ -59,3 +59,4 @@ def find_server_config(message):
         return config
 
 def startup(bot):
+    pass
