@@ -24,9 +24,11 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    
     - name: Run the bot.
       env:
         Token: secrets.TOKEN
         Developers: secrets.DEVELOPERS_ID
-      run: 'python Core.py --config \'{"token": "$Token", "developers": [$Developers]}\''
+      run: |
+        'python Core.py --config {\"token\": \"$Token\", \"developers\": [$Developers]}'
 
