@@ -256,10 +256,13 @@ intents = discord.Intents.default()
 intents.members = True
 
 # bot settings
-with open('config.yml', 'r') as o:
-    settings = yaml.load(o, Loader)
-if not settings:
-    raise ValueError("No Settings")
+if '--config' != sys.argv[1]:
+    with open('config.yml', 'r') as o:
+        settings = yaml.load(o, Loader)
+    if not settings:
+        raise ValueError("No Settings")
+else:
+    settings = eval(sys.argv[2])
 
 # bot  itself
 Bot = commands.Bot(command_prefix=server_prefix, intents=intents,
