@@ -114,3 +114,4 @@ misc:
   roles_removed: Roles removed from Moderators.
   unban_success: $USER unbanned
   bad_argument: You used incorrect arguments(check help for command), please notice that bot cannot do any calculations inside arguments
+  kick_sucess: User has been kicked from the server

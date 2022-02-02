@@ -130,6 +130,24 @@ class ModCog(commands.Cog):
             )
         )
 
+    @commands.Command
+    @commands.check(is_moderator)
+    async def kick(self, ctx, man: discord.Member, *, reason=None):
+        language = load_server_language(ctx.message)
+        if not reason:
+            await ctx.send(language["misc"]["ban_no_reason"])
+        else:
+            if not await is_moderator(ctx, man) or man.id != self.bot.user.id:
+                await man.kick(reason=reason)
+                await ctx.send(
+                    language["misc"]["kick_success"].replace(
+                        "$USER",
+                        man.name
+                    )
+                )
+            else:
+                await ctx.send(language["misc"]["no_moderator"])
+
     @commands.Cog.listener()
     async def on_message_delete(self, msg: discord.Message):
         lang = load_server_language(msg)
