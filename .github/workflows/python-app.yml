@@ -2,7 +2,7 @@
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
 name: Python application
-
+ 
 on:
   push:
     branches: [ main ]
@@ -13,7 +13,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    environment: Bot host
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.10
@@ -32,5 +32,7 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Run the bot.
-      run: |
-        python Core.py
+      env:
+        Token: secrets.TOKEN
+        Developers: secrets.DEVELOPERS_ID
+      run: "python Core.py --config {\"token\": \"$Token\", \"developers\": \"$Developers\"}"
