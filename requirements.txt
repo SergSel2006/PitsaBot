@@ -2,3 +2,4 @@ discord
 pyyaml
 pynacl
 PyGithub
+boto3

@@ -120,3 +120,5 @@ dmypy.json
 /config.yml
 /.stignore
 /.stfolder/
+/data/servers_config/
+!/data/servers_config/template.yml

@@ -256,13 +256,19 @@ intents = discord.Intents.default()
 intents.members = True
 
 # bot settings
-if '--config' != sys.argv[1]:
+if len(sys.argv) > 2:
+    if '--config' != sys.argv[1]:
+        with open('config.yml', 'r') as o:
+            settings = yaml.load(o, Loader)
+        if not settings:
+            raise ValueError("No Settings")
+    else:
+        settings = eval(" ".join(sys.argv[2:]))
+else:
     with open('config.yml', 'r') as o:
         settings = yaml.load(o, Loader)
     if not settings:
         raise ValueError("No Settings")
-else:
-    settings = eval(" ".join(sys.argv[2:]))
 
 # bot  itself
 Bot = commands.Bot(command_prefix=server_prefix, intents=intents,
@@ -373,7 +379,8 @@ async def on_tick(tick: int = 5):
         try:
             if ping(Bot) > 2:
                 to_thread(printw(f"High ping! {ping(Bot)} s"))
-            check_configs(Bot)
+            check_configs(Bot) # should be before check_configs as after
+            # start we should synchronise our config files with cloud.
             cog_finder(Bot, pathlib.Path("cogs"))
         except Exception as e:
             exc_info = ''.join(traceback.format_exception(e))
@@ -410,5 +417,5 @@ async def on_error(ctx, error):
         printe(f"error occured, ignoring!\n{exc_info}")
 
 Bot.on_command_error = on_error
-
+Bot.settings = settings
 Bot.run(settings["token"])
