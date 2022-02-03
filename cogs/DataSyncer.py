@@ -95,13 +95,13 @@ def setup(bot):
     global s3
     bot.add_cog(DataSyncerCog(bot))
     atexit.register(file_uploader, pathlib.Path("data", "servers_config"))
-    file_downloader()
     session = boto3.session.Session()
     s3 = session.client(
         service_name='s3',
         aws_access_key_id=bot.settings["Aws_tokens"][0],
         aws_secret_access_key=bot.settings["Aws_tokens"][1]
     )  # giving access to server configurations is unsafe, live with it :-)
+    file_downloader()
 
 
 def teardown(bot):
