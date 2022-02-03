@@ -3,7 +3,7 @@
 
 ## What I should prepare before starting contributing?
 Before you start writing code, do your usual steps to create new project(create one in your IDE, create virtual enviroment, etc.) and then you should install all packages by `pip install -r requirements.txt`
-and then you can write your code, very easy. 
+and then you can write your code, very easy. Don't foreget to use development branch!  
 
 ## How I should write my code?
 PEP 8 is one requirement to code.
