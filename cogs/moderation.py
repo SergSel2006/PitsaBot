@@ -57,7 +57,7 @@ def find_server_config(message):
         return config
 
 
-async def is_moderator(ctx, man=None):
+def is_moderator(ctx, man=None):
     config = find_server_config(ctx.message)
     roles = ctx.author.roles if man is None else man.roles
     modroles = config["modroles"]
@@ -69,10 +69,6 @@ async def is_moderator(ctx, man=None):
             ctx.author.id == ctx.guild.owner_id:
         return True
     else:
-        await ctx.send(
-            load_server_language(ctx.message)["misc"][
-                "not_enough_permissions"]
-        )
         return False
 
 
@@ -88,7 +84,7 @@ class ModCog(commands.Cog):
         if not reason:
             await ctx.send(language["misc"]["ban_no_reason"])
         else:
-            if not await is_moderator(ctx, man) or man.id != self.bot.user.id:
+            if not is_moderator(ctx, man) and man.id != self.bot.user.id:
                 await man.ban(reason=reason)
                 await ctx.send(
                     language["misc"]["ban_success"].replace(
@@ -135,9 +131,9 @@ class ModCog(commands.Cog):
     async def kick(self, ctx, man: discord.Member, *, reason=None):
         language = load_server_language(ctx.message)
         if not reason:
-            await ctx.send(language["misc"]["ban_no_reason"])
+            await ctx.send(language["misc"]["kick_no_reason"])
         else:
-            if not await is_moderator(ctx, man) or man.id != self.bot.user.id:
+            if not is_moderator(ctx, man) and man.id != self.bot.user.id:
                 await man.kick(reason=reason)
                 await ctx.send(
                     language["misc"]["kick_success"].replace(
@@ -153,12 +149,12 @@ class ModCog(commands.Cog):
         lang = load_server_language(msg)
         config = find_server_config(msg)
         if config["modlog"]["enabled"] and msg.author != self.bot.user:
-                ch = self.bot.get_channel(config["modlog"]["channel"])
-                await ch.send(
-                    lang["misc"]["deleted_message"].replace(
-                        "$USER", msg.author.name
-                    ).replace("$MESSAGE", msg.content)
-                )
+            ch = self.bot.get_channel(config["modlog"]["channel"])
+            await ch.send(
+                lang["misc"]["deleted_message"].replace(
+                    "$USER", msg.author.name
+                ).replace("$MESSAGE", msg.content)
+            )
 
     @commands.Cog.listener()
     async def on_message_edit(self, msg_before, msg):
