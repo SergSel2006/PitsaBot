@@ -13,18 +13,15 @@
 #      You should have received a copy of the GNU General Public License
 #      along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-
 # imports
 import asyncio
 import traceback
 import logging
 import pathlib
 import sys
-import datetime
-import pickle
-
 import discord
 import yaml
+import io
 from discord.ext import commands
 
 from Cog_MetaFile import Cog_File_Meta
@@ -44,17 +41,14 @@ intents.members = True
 con_logger = logging.getLogger("Bot")
 sh = logging.StreamHandler(stream=sys.stdout)
 sh.setFormatter(
-    logging.Formatter('%(asctime)s [%(levelname)s] [%(name)s]: %(message)s')
-)
+    logging.Formatter('%(asctime)s [%(levelname)s] [%(name)s]: %(message)s'))
 con_logger.addHandler(sh)
 con_logger.setLevel(logging.INFO if "-d" not in sys.argv else logging.DEBUG)
 logger = logging.getLogger('discord')
 logger.setLevel(logging.INFO if "-d" not in sys.argv else logging.DEBUG)
 handler = logging.FileHandler(filename='Pitsa.log', encoding='utf-8', mode='w')
-handler.setFormatter(logging.Formatter(
-    '%(asctime)s:%(levelname)s:%(name)s: %(message)s'
-)
-)
+handler.setFormatter(
+    logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
 printd = con_logger.debug
@@ -62,8 +56,8 @@ print = con_logger.info
 printw = con_logger.warning
 printe = con_logger.error
 
-
 # interesting functions
+
 
 # config checker for up-to-date keys with template
 def check_configs(bot: discord.ext.commands.Bot):
@@ -98,7 +92,8 @@ def check_configs(bot: discord.ext.commands.Bot):
             guild_dir = pathlib.Path("data", "servers_config", str(guild.id))
             config_path = guild_dir / "config.yml"
             if not guild_dir.exists():
-                print(f"added config for server {guild.name} with id {guild.id}")
+                print(
+                    f"added config for server {guild.name} with id {guild.id}")
                 guild_dir.mkdir()
                 config_path.touch()
                 temp_dict = yaml.load(temp, Loader)
@@ -133,19 +128,19 @@ def load_server_language(message):
 
 # load some language
 def load_language(lang):
-    with open(
-            pathlib.Path("data", "languages", f"{lang}.yml"), "r",
-            encoding="utf8") as lang:
+    with open(pathlib.Path("data", "languages", f"{lang}.yml"),
+              "r",
+              encoding="utf8") as lang:
         lang = yaml.load(lang, Loader=Loader)
         return lang
 
 
 # find server config by message
 def find_server_config(message):
-    with open(
-            pathlib.Path(
-                "data", "servers_config", str(message.guild.id),
-                "config.yml"), "r", encoding="utf8") as config:
+    with open(pathlib.Path("data", "servers_config", str(message.guild.id),
+                           "config.yml"),
+              "r",
+              encoding="utf8") as config:
         config = yaml.load(config, Loader=Loader)
         return config
 
@@ -157,13 +152,12 @@ def help_parser_3000(command, language):
             Help = language["help"][command.name]
             cog = language["cogs"][command.cog_name]["name"]
             descs = (cog, Help["short"], Help["long"], Help["usage"],
-                     Help["optional"],
-                     Help["returns"])
+                     Help["optional"], Help["returns"])
             return descs
         elif isinstance(command, str):
             name = language["cogs"][command]["name"]
             desc = language["cogs"][command]["desc"]
-            return name, desc, 'N/A', 'N/A', 'N/A', 'N/A'
+            return name, desc, '', '', '', ''
         return 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A'
     except KeyError:
         return 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A'
@@ -173,12 +167,8 @@ def help_parser_3000(command, language):
 def server_prefix(bot: commands.Bot, message):
     if isinstance(message.channel, discord.TextChannel):
         with open(
-                pathlib.Path(
-                    "data", "servers_config",
-                    str(message.guild.id), "config.yml"
-                ),
-                "r"
-        ) as config:
+                pathlib.Path("data", "servers_config", str(message.guild.id),
+                             "config.yml"), "r") as config:
             try:
                 config = yaml.load(config, Loader)
                 prefix = config["prefix"]
@@ -240,6 +230,7 @@ def owner_check(ctx: commands.Context):
 
 # to_thread decorator
 def to_thread(func):
+
     async def wrapper(*args, **kwargs):
         return await asyncio.to_thread(func, *args, **kwargs)
 
@@ -271,12 +262,13 @@ else:
         raise ValueError("No Settings")
 
 # bot  itself
-Bot = commands.Bot(command_prefix=server_prefix, intents=intents,
+Bot = commands.Bot(command_prefix=server_prefix,
+                   intents=intents,
                    owner_ids=settings["developers"])
 Bot.remove_command("help")
 
-
 # bot commands
+
 
 # load_cog command
 @Bot.command(hidden=True)
@@ -319,8 +311,7 @@ async def reload_cog(ctx: commands.Context, cog):
 @commands.check(owner_check)
 async def list_cogs(ctx: commands.Context):
     all_cogs = '\n'.join([i.name for i in list(Cogs.values())])
-    loaded_cogs = '\n'.join([i.name for i in list(Cogs.values()) if
-                             i.active])
+    loaded_cogs = '\n'.join([i.name for i in list(Cogs.values()) if i.active])
     builder = f"All cogs:\n{all_cogs}\nActive cogs:\n" \
               f"{loaded_cogs}"
     await ctx.send(builder)
@@ -331,10 +322,19 @@ async def list_cogs(ctx: commands.Context):
 @commands.check(owner_check)
 async def evaluate(ctx):
     try:
-        command = " ".join(ctx.message.content.split(" ")[1:])
-        result = eval(command)
-        if result is not None:
-            await ctx.send(result)
+        if len(ctx.message.content.split("x")) > 1:
+            command = " ".join(ctx.message.content.split(" ")[1:])
+            result = exec(compile(command, 'in_code', mode="exec"))
+            if result is not None:
+                await ctx.send(result)
+        elif ctx.message.attachments:
+            attach = ctx.message.attachments[0]
+            if "text" in attach.content_type:
+                data = await attach.read()
+                data = data.decode("utf-8")
+                result = exec(compile(data, 'in_code', mode="exec"))
+                if result is not None:
+                    await ctx.send(result)
     except Exception as e:
         await ctx.send(''.join(traceback.format_exception(e)))
 
@@ -349,9 +349,8 @@ async def help(ctx: commands.Context, command=None):
             if not command.hidden:
                 descriptions = help_parser_3000(command, language)
                 builder = f"{descriptions[0]} - {command}\n{command} " \
-                          f"{'<' + descriptions[3] + '>' if descriptions[3] else ''} " \
-                          f"{'{' + descriptions[4] + '}' if descriptions[4] else ''} ->" \
-                          f" {descriptions[5]}. {descriptions[2]}"
+                    f"<{descriptions[3]}> [{descriptions[4]}] " \
+                    f"-> {descriptions[5]}. {descriptions[2]}"
                 await ctx.send(builder)
         except commands.errors.CommandNotFound:
             await ctx.send(language["misc"]["command_not_found_help"])
@@ -365,8 +364,7 @@ async def help(ctx: commands.Context, command=None):
                 if not command.hidden:
                     descriptions = help_parser_3000(command, language)
                     cbuilder = f"{command.name} " \
-                               f"{'<' + descriptions[3] + '>' if descriptions[3] else ''} " \
-                               f"{'{' + descriptions[4] + '}' if descriptions[4] else ''} -> " \
+                               f"<{descriptions[3]}> [{descriptions[4]}] -> " \
                                f"{descriptions[5]}. {descriptions[1]}"
                     builders.append(cbuilder)
         await ctx.send("\n".join(builders))
@@ -379,7 +377,7 @@ async def on_tick(tick: int = 5):
         try:
             if ping(Bot) > 2:
                 to_thread(printw(f"High ping! {ping(Bot)} s"))
-            check_configs(Bot) # should be before check_configs as after
+            check_configs(Bot)  # should be before check_configs as after
             # start we should synchronise our config files with cloud.
             cog_finder(Bot, pathlib.Path("cogs"))
         except Exception as e:
@@ -415,6 +413,7 @@ async def on_error(ctx, error):
         await ctx.send(lang["misc"]["bad_argument"])
     else:
         printe(f"error occured, ignoring!\n{exc_info}")
+
 
 Bot.on_command_error = on_error
 Bot.settings = settings
