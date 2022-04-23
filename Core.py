@@ -1,27 +1,28 @@
-#  Copyright (C) 2021  SergSel2006
-#
-#      This program is free software: you can redistribute it and/or modify
-#      it under the terms of the GNU General Public License as published by
-#      the Free Software Foundation, either version 3 of the License, or
-#      (at your option) any later version.
-#
-#      This program is distributed in the hope that it will be useful,
-#      but WITHOUT ANY WARRANTY; without even the implied warranty of
-#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#      GNU General Public License for more details.
-#
-#      You should have received a copy of the GNU General Public License
-#      along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# ##################################################################################################
+#  Copyright (c) 2022.                                                                             #
+#        This program is free software: you can redistribute it and/or modify                      #
+#        it under the terms of the GNU General Public License as published by                      #
+#        the Free Software Foundation, either version 3 of the License, or                         #
+#        (at your option) any later version.                                                       #
+#                                                                                                  #
+#        This program is distributed in the hope that it will be useful,                           #
+#        but WITHOUT ANY WARRANTY; without even the implied warranty of                            #
+#        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                             #
+#        GNU General Public License for more details.                                              #
+#                                                                                                  #
+#        You should have received a copy of the GNU General Public License                         #
+#        along with this program.  If not, see <https://www.gnu.org/licenses/>.                    #
+# ##################################################################################################
 
 # imports
 import asyncio
-import traceback
 import logging
 import pathlib
 import sys
+import traceback
+
 import discord
 import yaml
-import io
 from discord.ext import commands
 
 from Cog_MetaFile import Cog_File_Meta
@@ -50,11 +51,12 @@ handler = logging.FileHandler(filename='Pitsa.log', encoding='utf-8', mode='w')
 handler.setFormatter(
     logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
-
+con_logger.addHandler(handler)
 printd = con_logger.debug
 print = con_logger.info
 printw = con_logger.warning
 printe = con_logger.error
+
 
 # interesting functions
 
@@ -113,7 +115,7 @@ def check_configs(bot: discord.ext.commands.Bot):
                     temp_dict = yaml.load(temp, Loader)
                     config, same = diff(config, temp_dict)
                 if not same:
-                    with open(config_path, mode='w', encoding='utf8')\
+                    with open(config_path, mode='w', encoding='utf8') \
                             as config_raw:
                         yaml.dump(config, config_raw, Dumper)
             temp.seek(0)
@@ -230,7 +232,6 @@ def owner_check(ctx: commands.Context):
 
 # to_thread decorator
 def to_thread(func):
-
     async def wrapper(*args, **kwargs):
         return await asyncio.to_thread(func, *args, **kwargs)
 
@@ -266,6 +267,7 @@ Bot = commands.Bot(command_prefix=server_prefix,
                    intents=intents,
                    owner_ids=settings["developers"])
 Bot.remove_command("help")
+
 
 # bot commands
 
@@ -322,11 +324,20 @@ async def list_cogs(ctx: commands.Context):
 @commands.check(owner_check)
 async def evaluate(ctx):
     try:
-        if len(ctx.message.content.split("x")) > 1:
+        if len(ctx.message.content.split(" ")) > 1:
             command = " ".join(ctx.message.content.split(" ")[1:])
-            result = exec(compile(command, 'in_code', mode="exec"))
-            if result is not None:
-                await ctx.send(result)
+            compiled_code = compile(command, 'in_code', mode="exec")
+            locals_before = locals().copy()
+            exec(compiled_code)
+            locals_after = locals().copy()
+            #            if locals_before != locals_after:
+            locals_after.pop("locals_before")
+            if locals_after != locals_before:
+                diff = set(locals_after) - set(locals_before)
+                for i in diff:
+                    await ctx.send(i + " = " + str(locals_after[i]))
+
+                pass
         elif ctx.message.attachments:
             attach = ctx.message.attachments[0]
             if "text" in attach.content_type:
@@ -349,8 +360,8 @@ async def help(ctx: commands.Context, command=None):
             if not command.hidden:
                 descriptions = help_parser_3000(command, language)
                 builder = f"{descriptions[0]} - {command}\n{command} " \
-                    f"<{descriptions[3]}> [{descriptions[4]}] " \
-                    f"-> {descriptions[5]}. {descriptions[2]}"
+                          f"<{descriptions[3]}> [{descriptions[4]}] " \
+                          f"-> {descriptions[5]}. {descriptions[2]}"
                 await ctx.send(builder)
         except commands.errors.CommandNotFound:
             await ctx.send(language["misc"]["command_not_found_help"])
