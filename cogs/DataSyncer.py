@@ -49,21 +49,22 @@ def download_file(s3_client, object_name, bucket, file_name=None):
         s3_client.download_fileobj(bucket, object_name, file)
 
 
-def file_uploader(path):
+def file_uploader(path, s3):
     for file in pathlib.Path(path).iterdir():
         if file.is_dir():
-            file_uploader(path / file.name)
+            file_uploader(path / file.name, s3)
         else:
             upload_file(s3, str(file), "data-serversconfig", str(file))
 
 
-def list_s3_files():
+def list_s3_files(s3):
     return [i["Key"] for i in s3.list_objects(
         Bucket="data-serversconfig")["Contents"]]
 
 
-def file_downloader():
-    for file_obj in list_s3_files():
+def file_downloader(s3):
+    files = list_s3_files(s3)
+    for file_obj in files:
         file = pathlib.Path(file_obj)
         if not file.parent.exists():
             file.parent.mkdir()
@@ -75,8 +76,9 @@ def file_downloader():
 
 
 class DataSyncerCog(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot, s3):
         self.bot = bot
+        self.s3 = s3
 
     async def owner_check(self, ctx):
         return await self.bot.is_owner(ctx.author)
@@ -84,17 +86,17 @@ class DataSyncerCog(commands.Cog):
     @commands.command(hidden=True)
     async def upload_all(self, ctx):
         if await self.owner_check(ctx):
-            file_uploader(pathlib.Path("data", "servers_config"))
+            file_uploader(pathlib.Path("data", "servers_config"), self.s3)
 
     @commands.command(hidden=True)
     async def download_all(self, ctx):
         if await self.owner_check(ctx):
-            file_downloader()
+            file_downloader(self.s3)
 
 
 def setup(bot):
     global s3
-    bot.add_cog(DataSyncerCog(bot))
+    bot.add_cog(DataSyncerCog(bot, s3))
     atexit.register(file_uploader, pathlib.Path("data", "servers_config"))
     session = boto3.session.Session()
     s3 = session.client(
@@ -102,9 +104,10 @@ def setup(bot):
         aws_access_key_id=bot.settings["Aws_tokens"][0],
         aws_secret_access_key=bot.settings["Aws_tokens"][1]
     )  # giving access to server configurations is unsafe, live with it :-)
-    file_downloader()
+    file_downloader(s3)
 
 
 def teardown(bot):
+    global s3
     atexit.unregister(file_uploader)
-    file_uploader(pathlib.Path("data", "servers_config"))
+    file_uploader(pathlib.Path("data", "servers_config"), s3)

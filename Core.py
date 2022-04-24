@@ -89,7 +89,6 @@ printe = con_logger.error
 printc = con_logger.critical
 
 
-
 # interesting functions
 
 
@@ -435,9 +434,9 @@ async def on_tick(tick: int = 5):
         try:
             if ping(Bot) > 2:
                 to_thread(printw(f"High ping! {ping(Bot)} s"))
-            check_configs(Bot)  # should be before check_configs as after
+            cog_finder(Bot, pathlib.Path("cogs"))  # should be before check_configs as after
             # start we should synchronise our config files with cloud.
-            cog_finder(Bot, pathlib.Path("cogs"))
+            check_configs(Bot)
         except Exception as e:
             exc_info = ''.join(traceback.format_exception(e))
             printw(f"error occured, ignoring!\n{exc_info}")
