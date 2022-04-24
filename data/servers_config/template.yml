@@ -8,3 +8,4 @@ modroles:
   - null
 everyonetrigger: false
 global_db: true
+react_to_pizza: false

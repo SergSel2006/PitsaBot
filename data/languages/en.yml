@@ -73,6 +73,8 @@ help:
     short: unban
     usage: preson
 misc:
+  bad_argument: You used incorrect arguments(check help for command), please notice
+    that bot cannot do any calculations inside arguments
   balance: 'Your balance: $BAL PitsaCoins'
   balance_one: 'Your balance: 1 PitsaCoin'
   ban_no_reason: Cannot ban without reason
@@ -90,14 +92,18 @@ misc:
 
     '
   command_not_found_help: Command not found!
+  config_error: "Ooops! Something went wrong! If this happens too often, send basic
+    information about what you've done and this code: {} to issue tracker"
   current_prefix: 'Current prefix:'
   deleted_message: 'Message of user $USER was deleted. Message was:
 
     $MESSAGE'
+  eventlog: <MISSING TRANSLATION>
   forbidden: I don't have enough permissions to do this. Giving bot role with Administator
     permission will solve all problems with permissions
   help_msg: PitsaBot 0.1A Pre-Release
   invalid_language: invalid language!
+  kick_sucess: User has been kicked from the server
   language_changed_successfully: language changed successfully!
   modlog_activated: Modlog activated!
   modlog_channel_set: modlog channel was set.
@@ -113,5 +119,3 @@ misc:
   roles_added: Roles added to Moderators.
   roles_removed: Roles removed from Moderators.
   unban_success: $USER unbanned
-  bad_argument: You used incorrect arguments(check help for command), please notice that bot cannot do any calculations inside arguments
-  kick_sucess: User has been kicked from the server
