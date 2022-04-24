@@ -40,6 +40,8 @@ def find_server_config(message):
 
 
 class GodPitsaCog(commands.Cog):
+    """Этот модуль имеет всякие гаджеты для питсы, смотрите! Тут даже есть
+    встроенная фабрика питсы!"""
 
     def __init__(self, bot, cwd: pathlib.Path):
         self.bot = bot
@@ -53,14 +55,14 @@ class GodPitsaCog(commands.Cog):
                       "pitsa", "питс", "питсам", "питсами", "питсах"]
             flag = True
             for pitsa in pitsas:
-                if pitsa in message.content.lower() and flag:
+                if pitsa in message.content.lower() and flag and config['react_to_pizza']:
                     await message.channel.send(":pizza:")
                     flag = False
             hleps = ['хлеп', "хлепа", "хлепу", "хлепом", "хлепе", "hlep",
                      "хлепы", "хлепов", "хлепам", "хлепами", "хлепах"]
             flag = True
             for hlep in hleps:
-                if hlep in message.content.lower() and flag:
+                if hlep in message.content.lower() and flag and config['react_to_pizza']:
                     await message.channel.send(":bread:")
                     flag = False
 

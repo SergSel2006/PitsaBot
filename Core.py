@@ -36,13 +36,43 @@ try:
 except ImportError:
     from yaml import Dumper as Dumper
 
+
 # logger (replaces print)
+# Beautiful color formatting
+class CustomFormatter(logging.Formatter):
+    """Logging colored formatter, adapted from https://stackoverflow.com/a/56944256/3638629"""
+
+    grey = '\x1b[38;21m'
+    blue = '\x1b[38;5;39m'
+    yellow = '\x1b[38;5;226m'
+    red = '\x1b[38;5;196m'
+    bold_red = '\x1b[31;1m'
+    reset = '\x1b[0m'
+
+    def __init__(self, fmt):
+        super().__init__()
+        self.fmt = fmt
+        self.FORMATS = {
+            logging.DEBUG: self.grey + self.fmt + self.reset,
+            logging.INFO: self.blue + self.fmt + self.reset,
+            logging.WARNING: self.yellow + self.fmt + self.reset,
+            logging.ERROR: self.red + self.fmt + self.reset,
+            logging.CRITICAL: self.bold_red + self.fmt + self.reset
+        }
+
+    def format(self, record):
+        log_fmt = self.FORMATS.get(record.levelno)
+        formatter = logging.Formatter(log_fmt)
+        return formatter.format(record)
+
+
 intents = discord.Intents.default()
 intents.members = True
 con_logger = logging.getLogger("Bot")
 sh = logging.StreamHandler(stream=sys.stdout)
 sh.setFormatter(
-    logging.Formatter('%(asctime)s [%(levelname)s] [%(name)s]: %(message)s'))
+    CustomFormatter('%(asctime)s [%(levelname)s] [%(name)s]: %(message)s')
+)
 con_logger.addHandler(sh)
 con_logger.setLevel(logging.INFO if "-d" not in sys.argv else logging.DEBUG)
 logger = logging.getLogger('discord')
@@ -56,6 +86,8 @@ printd = con_logger.debug
 print = con_logger.info
 printw = con_logger.warning
 printe = con_logger.error
+printc = con_logger.critical
+
 
 
 # interesting functions
@@ -220,7 +252,7 @@ def ping(bot: commands.Bot):
     except ValueError:
         return 0
     except OverflowError:
-        printe("Your bot cannot connect to discord! your internet or "
+        printc("Your bot cannot connect to discord! your internet or "
                "code issue?")
         return 0
 
@@ -381,6 +413,21 @@ async def help(ctx: commands.Context, command=None):
         await ctx.send("\n".join(builders))
 
 
+@Bot.command()
+async def about(ctx):
+    builder = """
+    Nice bot for all your needs.
+    
+      This bot wants to be analogue to that 2 or 3 usual bots you have
+      on any server, with all their features in one monolithic bot. 
+      Also, any features except API expensive(like auto-translating messages) 
+      will be always free and not restricted (except when you restrict it by yourself)
+      Also I (Creator) want it to be as simple as possible. 
+      Licensed under GNU GPLv3, all source code available on GitHub: https://github.com/SergSel2006/PitsaBot
+    """
+    await ctx.send(builder)
+
+
 # bot launching
 async def on_tick(tick: int = 5):
     while True:
@@ -393,7 +440,7 @@ async def on_tick(tick: int = 5):
             cog_finder(Bot, pathlib.Path("cogs"))
         except Exception as e:
             exc_info = ''.join(traceback.format_exception(e))
-            printe(f"error occured, ignoring!\n{exc_info}")
+            printw(f"error occured, ignoring!\n{exc_info}")
 
 
 @Bot.event
@@ -414,16 +461,19 @@ async def on_error(ctx, error):
         except AttributeError:
             await ctx.guild.owner.create_dm()
             await ctx.guild.owner.dm_channel.send(lang["misc"]["forbidden"])
+
     elif isinstance(error, commands.errors.MissingRequiredArgument):
         await ctx.send(lang["misc"]["not_enough_arguments"])
+
     elif isinstance(error, commands.errors.CommandNotFound):
         await ctx.send(lang["misc"]["command_not_found"])
+        print("{} issued wrong command".format(ctx.guild.id))
     elif isinstance(error, SystemExit):
-        print("shutting down, goodbye!")
+        printc("shutting down, goodbye!")
     elif isinstance(error, commands.errors.BadArgument):
         await ctx.send(lang["misc"]["bad_argument"])
     else:
-        printe(f"error occured, ignoring!\n{exc_info}")
+        printw("error occured, ignoring!\n" + exc_info)
 
 
 Bot.on_command_error = on_error
