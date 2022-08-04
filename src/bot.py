@@ -65,7 +65,7 @@ def load_server_language(message):
 
 def load_language(lang):
     with open(
-            pathlib.Path("data", "languages", f"{lang}.yml"), "r",
+            pathlib.Path("locales", f"{lang}.yml"), "r",
             encoding="utf8"
     ) as lang:
         lang = yaml.load(lang, Loader=Loader)
@@ -75,7 +75,7 @@ def load_language(lang):
 def find_server_config(message):
     with open(
             pathlib.Path(
-                "data", "servers_config", str(message.guild.id),
+                "..", "data", "servers_config", str(message.guild.id),
                 "config.yml"
             ), "r", encoding="utf8"
     ) as config:
@@ -85,9 +85,9 @@ def find_server_config(message):
 
 async def check_configs(bot):
     for guild in bot.guilds:
-        guild_folder = pathlib.Path("data", "servers_config", str(guild.id))
+        guild_folder = pathlib.Path("..", "data", "servers_config", str(guild.id))
         guild_config = pathlib.Path(
-            "data", "servers_config", str(guild.id),
+            "..", "data", "servers_config", str(guild.id),
             "config.yml"
         )
         if not guild_folder.exists():
@@ -98,7 +98,7 @@ async def check_configs(bot):
                 f"{str(guild.id)}"
             )
             with open(
-                    pathlib.Path(f"data", "servers_config", "template.yml"),
+                    pathlib.Path(f"..", "data", "servers_config", "template.yml"),
                     "r"
             ) as template:
                 with open(guild_config, "w+") as config:
@@ -108,7 +108,7 @@ async def check_configs(bot):
             with open(guild_config, "r") as config_raw:
                 with open(
                         pathlib.Path(
-                            f"data", "servers_config", "template.yml"
+                            f"..", "data", "servers_config", "template.yml"
                         ),
                         "r"
                 ) as template:
@@ -159,7 +159,7 @@ def server_prefix(bot, message):
     if isinstance(message.channel, discord.TextChannel):
         with open(
                 pathlib.Path(
-                    "data", "servers_config",
+                    "..", "data", "servers_config",
                     str(message.guild.id), "config.yml"
                 ),
                 "r"

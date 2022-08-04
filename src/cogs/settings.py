@@ -14,9 +14,13 @@
 #        along with this program.  If not, see <https://www.gnu.org/licenses/>.                    #
 # ##################################################################################################
 
+# Only for l10n marking puporses.
+import gettext
 import logging
 import pathlib
 import traceback
+
+_ = gettext.gettext
 
 import yaml
 from discord.ext import commands
@@ -45,7 +49,7 @@ def load_server_language(message):
 
 def load_language(lang):
     with open(
-            pathlib.Path("data", "languages", f"{lang}.yml"), "r",
+            pathlib.Path("locales", f"{lang}.yml"), "r",
             encoding="utf8"
     ) as lang:
         lang = yaml.load(lang, Loader=Loader)
@@ -55,7 +59,7 @@ def load_language(lang):
 def find_server_config(message):
     with open(
             pathlib.Path(
-                "data", "servers_config", str(message.guild.id),
+                "..", "data", "servers_config", str(message.guild.id),
                 "config.yml"
             ), "r", encoding="utf8"
     ) as config:
@@ -66,7 +70,7 @@ def find_server_config(message):
 def dump_server_config(message, config):
     with open(
             pathlib.Path(
-                "data", "servers_config", str(message.guild.id),
+                "..", "data", "servers_config", str(message.guild.id),
                 "config.yml"
             ), "w", encoding="utf8"
     ) as config_file:
@@ -100,10 +104,7 @@ class SettingsCog(commands.Cog):
             if mode == "prefix":
                 config['prefix'] = options[0]
                 dump_server_config(ctx.message, config)
-                await ctx.send(
-                    language["misc"][
-                        "prefix_changed_successfully"]
-                )
+                await ctx.send(_("Prefix changed successfully."))
             elif mode == "modrole":
                 roles = ctx.message.role_mentions
                 if options:
@@ -112,26 +113,17 @@ class SettingsCog(commands.Cog):
                             if role.id not in config["modroles"]:
                                 config["modroles"].append(role.id)
                             else:
-                                await ctx.send(
-                                    language["misc"]["role_in_list"].replace(
-                                        "$ROLE", role.mention
-                                    )
-                                )
+                                await ctx.send(_("{0} already in list").format(role.mention))
                         dump_server_config(ctx.message, config)
-                        await ctx.send(language["misc"]["roles_added"])
+                        await ctx.send(_("Roles added to moderators"))
                     elif options[0].lower() == "remove":
                         for role in roles:
                             if role.id in config["modroles"]:
                                 config["modroles"].remove(role.id)
                             else:
-                                await ctx.send
-                                (
-                                    language["misc"]["role_not_in_list"].replace(
-                                        "$ROLE", role.mention
-                                    )
-                                )
+                                await ctx.send(_("{0} is not a moderator").format(role.mention))
                         dump_server_config(ctx.message, config)
-                        await ctx.send(language["misc"]["roles_removed"])
+                        await ctx.send(_("Roles was removed from moderators"))
                 else:
                     await ctx.send(" ".join([ctx.guild.get_role(i).mention for i
                                              in config["modroles"]]))
@@ -140,9 +132,9 @@ class SettingsCog(commands.Cog):
                     if config["modlog"]["channel"]:
                         config["modlog"]["enabled"] = True
                         dump_server_config(ctx.message, config)
-                        await ctx.send(language["misc"]["modlog_activated"])
+                        await ctx.send(_("Moderation log enabled"))
                     else:
-                        await ctx.send(language["misc"]["need_modlog_channel"])
+                        await ctx.send(_("for activating moderation log, you need to specify a channel first."))
                 elif options[0].lower() == "channel":
                     if options[1].lower() != "this":
                         channel = ctx.message.channel_mentions[0]
@@ -150,23 +142,19 @@ class SettingsCog(commands.Cog):
                         channel = ctx.channel
                     config["modlog"]["channel"] = channel.id
                     dump_server_config(ctx.message, config)
-                    await ctx.send(language["misc"]["modlog_channel_set"])
+                    await ctx.send(_("Moderation log channel set"))
                 elif options[0].lower() == "disable":
                     config["modlog"]["enabled"] = False
                     dump_server_config(ctx.message, config)
-                    await ctx.send(language["misc"]["modlog_deactivated"])
+                    await ctx.send(_("Moderation log disabled"))
             elif mode == "language":
-                available = []
-                for i in pathlib.Path("data", "languages").iterdir():
-                    available.append(i.stem)
+                available = [i for i in pathlib.Path("locales").iterdir() if i.is_dir()]
                 if options[0] in available:
                     config["language"] = options[0]
                     dump_server_config(ctx.message, config)
-                    await ctx.send(
-                        language["misc"]["language_changed_successfully"]
-                    )
+                    await ctx.send(_("Language changed successfully"))
                 else:
-                    await ctx.send(language["misc"]["invalid_language"])
+                    await ctx.send(_("Invalid language"))
             elif mode == "trigger":
                 if options[0].lower() == "enable":
                     config["everyonetrigger"] = True
@@ -182,11 +170,12 @@ class SettingsCog(commands.Cog):
                     config["react_to_pizza"] = False
                     dump_server_config(ctx.message, config)
             else:
-                raise NotImplementedError("Configuration mode {} Not Implemented".format(mode))
+                raise NotImplementedError("Configuration mode {0} Not Implemented".format(mode))
         except Exception as e:
-            await ctx.send(language["misc"]["config_error"].format(ctx.guild.id))
+            await ctx.send(_("Ooops! Something went wrong! If this happens too often, send basic information about"
+                             " what you've done and this code: {0} to issue tracker").format(ctx.guild.id))
             exc_info = ''.join(traceback.format_exception(e))
-            printe("While configuring {}, error occured and ignored.\n{}".format(ctx.guild.id, exc_info))
+            printe("While configuring {0}, error occured and ignored.\n{1}".format(ctx.guild.id, exc_info))
 
 
 def setup(bot):

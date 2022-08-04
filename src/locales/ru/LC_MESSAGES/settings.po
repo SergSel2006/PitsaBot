@@ -1,0 +1,72 @@
+# PitsaBot Locale files
+# Copyright (C) 2022 SergSel2006
+#
+# Sergey Selivanov <seregasel44@gmail.com>, 2022.
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.1A\n"
+"POT-Creation-Date: 2022-06-18 14:11+0700\n"
+"PO-Revision-Date: 2022-06-18 14:50+0700\n"
+"Last-Translator: Sergey Selivanov <seregasel44@gmail.com>\n"
+"Language-Team: Russian <>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<"
+"=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 22.04.2\n"
+
+#: src/cogs/settings.py:107
+msgid "Prefix changed successfully."
+msgstr "Префикс изменён успешно"
+
+#: src/cogs/settings.py:116
+msgid "{0} already in list"
+msgstr "{0} Уже в списке"
+
+#: src/cogs/settings.py:118
+msgid "Roles added to moderators"
+msgstr "Роли добавлены в модераторов"
+
+#: src/cogs/settings.py:124
+msgid "{0} is not a moderator"
+msgstr "{0} Не модератор"
+
+#: src/cogs/settings.py:126
+msgid "Roles was removed from moderators"
+msgstr "Роли были удалены из модераторов"
+
+#: src/cogs/settings.py:135
+msgid "Moderation log enabled"
+msgstr "Лог модерации включён"
+
+#: src/cogs/settings.py:137
+msgid "for activating moderation log, you need to specify a channel first."
+msgstr "Для активации лога модерации, сперва укажите канал."
+
+#: src/cogs/settings.py:145
+msgid "Moderation log channel set"
+msgstr "Канал лога модерации установлен"
+
+#: src/cogs/settings.py:149
+msgid "Moderation log disabled"
+msgstr "Лог модерации отключён"
+
+#: src/cogs/settings.py:155
+msgid "Language changed successfully"
+msgstr "Язык изменён успешно"
+
+#: src/cogs/settings.py:157
+msgid "Invalid language"
+msgstr "Неправильный язык"
+
+#: src/cogs/settings.py:175
+msgid ""
+"Ooops! Something went wrong! If this happens too often, send basic"
+" information about what you've done and this code: {0} to issue tracker"
+msgstr ""
+"Ой! Что-то пошло не так! Если это случается часто, то отправьте базовую"
+" информацию о том, что вы делали и этот код: {0} в багтрекер"
+

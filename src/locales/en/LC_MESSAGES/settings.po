@@ -1,0 +1,71 @@
+# PitsaBot Locale files
+# Copyright (C) 2022 SergSel2006
+#
+# Sergey Selivanov <seregasel44@gmail.com>, 2022.
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.1A\n"
+"POT-Creation-Date: 2022-06-18 14:11+0700\n"
+"PO-Revision-Date: 2022-08-04 14:27+0700\n"
+"Last-Translator: Sergey Selivanov <seregasel44@gmail.com>\n"
+"Language-Team: English <>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 22.04.3\n"
+
+#: src/cogs/settings.py:107
+msgid "Prefix changed successfully."
+msgstr "Prefix changed successfully. "
+
+#: src/cogs/settings.py:116
+msgid "{0} already in list"
+msgstr "{0} already in list"
+
+#: src/cogs/settings.py:118
+msgid "Roles added to moderators"
+msgstr "{0} already in list"
+
+#: src/cogs/settings.py:124
+msgid "{0} is not a moderator"
+msgstr "{0} is not a moderator"
+
+#: src/cogs/settings.py:126
+msgid "Roles was removed from moderators"
+msgstr "Roles was removed from moderators"
+
+#: src/cogs/settings.py:135
+msgid "Moderation log enabled"
+msgstr "Moderation log enabled"
+
+#: src/cogs/settings.py:137
+msgid "for activating moderation log, you need to specify a channel first."
+msgstr "for activating moderation log, you need to specify a channel first."
+
+#: src/cogs/settings.py:145
+msgid "Moderation log channel set"
+msgstr "Moderation log channel set"
+
+#: src/cogs/settings.py:149
+msgid "Moderation log disabled"
+msgstr "Moderation log disabled"
+
+#: src/cogs/settings.py:155
+msgid "Language changed successfully"
+msgstr "Language changed successfully"
+
+#: src/cogs/settings.py:157
+msgid "Invalid language"
+msgstr "Invalid language"
+
+#: src/cogs/settings.py:175
+msgid ""
+"Ooops! Something went wrong! If this happens too often, send basic"
+" information about what you've done and this code: {0} to issue tracker"
+msgstr ""
+"Ooops! Something went wrong! If this happens too often, send basic"
+" information about what you've done and this code: {0} to issue tracker"
+

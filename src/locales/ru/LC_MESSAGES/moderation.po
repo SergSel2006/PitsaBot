@@ -1,0 +1,64 @@
+# PitsaBot Locale files
+# Copyright (C) 2022 SergSel2006
+#
+# Sergey Selivanov <seregasel44@gmail.com>, 2022.
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.1A\n"
+"POT-Creation-Date: 2022-06-18 14:11+0700\n"
+"PO-Revision-Date: 2022-06-18 14:45+0700\n"
+"Last-Translator: Sergey Selivanov <seregasel44@gmail.com>\n"
+"Language-Team: Russian <>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<"
+"=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 22.04.2\n"
+
+#: src/cogs/moderation.py:90
+msgid "Cannot ban without reason"
+msgstr "Нельзя банить без причины"
+
+#: src/cogs/moderation.py:94
+msgid "{0} has been banned from the server"
+msgstr "{0} Был забанен с сервера"
+
+#: src/cogs/moderation.py:96 src/cogs/moderation.py:127
+msgid "cannot mute, kick or ban moderators"
+msgstr "Нельзя мутить, кикать или банить модераторов"
+
+#: src/cogs/moderation.py:112
+msgid "{0} messages was purged"
+msgstr "{0} сообщений удалено"
+
+#: src/cogs/moderation.py:120
+msgid "Cannot kick without reason"
+msgstr "Нельзя кикать без причины"
+
+#: src/cogs/moderation.py:125
+msgid "{0} has been kicked from the server."
+msgstr "{0} Бал кикнут с сервера"
+
+#: src/cogs/moderation.py:136
+msgid ""
+"{0} Deleted a message. Content was:\n"
+">>{1}"
+msgstr ""
+"{0} удалил сообщение. Содержимым было:\n\n"
+">>{1}"
+
+#: src/cogs/moderation.py:145
+msgid ""
+"{0} Changed message. Content was:\n"
+">>{1}\n"
+"Content now:\n"
+">>{2}"
+msgstr ""
+"{0} Изменил сообщение. Содержимым было:\n"
+">>{1}\n"
+"Содержимое сейчас:\n"
+">>{2}"
+

@@ -14,8 +14,12 @@
 #        along with this program.  If not, see <https://www.gnu.org/licenses/>.                    #
 # ##################################################################################################
 
+# Only for l10n marking puporses.
+import gettext
 import os
 import pathlib
+
+_ = gettext.gettext
 
 import discord
 
@@ -40,7 +44,7 @@ def load_server_language(message):
 
 def load_language(lang):
     with open(
-            pathlib.Path("data", "languages", f"{lang}.yml"), "r",
+            pathlib.Path("locales", f"{lang}.yml"), "r",
             encoding="utf8"
     ) as lang:
         lang = yaml.load(lang, Loader=Loader)
@@ -50,7 +54,7 @@ def load_language(lang):
 def find_server_config(message):
     with open(
             pathlib.Path(
-                "data", "servers_config", str(message.guild.id),
+                "..", "data", "servers_config", str(message.guild.id),
                 "config.yml"
             ), "r", encoding="utf8"
     ) as config:
@@ -83,18 +87,13 @@ class ModCog(commands.Cog):
     async def ban(self, ctx, man: discord.Member, *, reason=None):
         language = load_server_language(ctx.message)
         if not reason:
-            await ctx.send(language["misc"]["ban_no_reason"])
+            await ctx.send(_("Cannot ban without reason"))
         else:
             if not is_moderator(ctx, man) and man.id != self.bot.user.id:
                 await man.ban(reason=reason)
-                await ctx.send(
-                    language["misc"]["ban_success"].replace(
-                        "$USER",
-                        man.name
-                    )
-                )
+                await ctx.send(_("{0} has been banned from the server").format(man.name))
             else:
-                await ctx.send(language["misc"]["no_moderator"])
+                await ctx.send(_("cannot mute, kick or ban moderators"))
 
     @commands.Command
     @commands.check(is_moderator)
@@ -110,40 +109,22 @@ class ModCog(commands.Cog):
         await ctx.message.delete()
         count = await ctx.channel.purge(limit=count, check=is_user,
                                         bulk=True)
-        msg = await ctx.send(language["misc"]["purged"].replace("$COUNT",
-                                                                str(len(
-                                                                    count))))
+        msg = await ctx.send(_("{0} messages was purged").format(str(len(count))))
         await msg.delete(delay=5)
-
-    @commands.Command
-    @commands.check(is_moderator)
-    async def unban(self, ctx, man: discord.Member):
-        language = load_server_language(ctx.message)
-        await man.unban()
-        await ctx.send(
-            language["misc"]["unban_success"].replace(
-                "$USER",
-                man.name
-            )
-        )
 
     @commands.Command
     @commands.check(is_moderator)
     async def kick(self, ctx, man: discord.Member, *, reason=None):
         language = load_server_language(ctx.message)
         if not reason:
-            await ctx.send(language["misc"]["kick_no_reason"])
+            await ctx.send(_("Cannot kick without reason"))
         else:
             if not is_moderator(ctx, man) and man.id != self.bot.user.id:
                 await man.kick(reason=reason)
                 await ctx.send(
-                    language["misc"]["kick_success"].replace(
-                        "$USER",
-                        man.name
-                    )
-                )
+                    _("{0} has been kicked from the server.").format(man.name))
             else:
-                await ctx.send(language["misc"]["no_moderator"])
+                await ctx.send(_("cannot mute, kick or ban moderators"))
 
     @commands.Cog.listener()
     async def on_message_delete(self, msg: discord.Message):
@@ -152,10 +133,7 @@ class ModCog(commands.Cog):
         if config["modlog"]["enabled"] and msg.author != self.bot.user:
             ch = self.bot.get_channel(config["modlog"]["channel"])
             await ch.send(
-                lang["misc"]["deleted_message"].replace(
-                    "$USER", msg.author.name
-                ).replace("$MESSAGE", msg.content)
-            )
+                _("{0} Deleted a message. Content was:\n>>{1}").format(msg.author.name, msg.content))
 
     @commands.Cog.listener()
     async def on_message_edit(self, msg_before, msg):
@@ -164,15 +142,9 @@ class ModCog(commands.Cog):
         if config["modlog"]["enabled"] and msg.author != self.bot.user:
             ch = self.bot.get_channel(config["modlog"]["channel"])
             await ch.send(
-                lang["misc"]["changed_message"].replace(
-                    "$USER", msg.author.name
-                ).replace(
-                    "$OLD_MESSAGE", msg_before.content
-                ).replace(
-                    "$NEW_MESSAGE",
-                    msg.content
-                )
-            )
+                _("{0} Changed message. Content was:\n>>{1}\nContent now:\n>>{2}").format(msg.author.name,
+                                                                                          msg_before.content,
+                                                                                          msg.content))
 
     @commands.Cog.listener()
     async def on_message(self, msg):

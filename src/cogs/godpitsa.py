@@ -31,7 +31,7 @@ from discord.ext import commands
 
 
 def find_server_config(message):
-    with open(pathlib.Path("data", "servers_config", str(message.guild.id),
+    with open(pathlib.Path("..", "data", "servers_config", str(message.guild.id),
                            "config.yml"),
               "r",
               encoding="utf8") as config:

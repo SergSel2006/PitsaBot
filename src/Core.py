@@ -16,10 +16,17 @@
 
 # imports
 import asyncio
+import gettext
 import logging
 import pathlib
 import sys
 import traceback
+
+gettext.bindtextdomain("base", "locales")
+gettext.bindtextdomain("moderation", "locales")
+gettext.bindtextdomain("settings", "locales")
+
+_ = gettext.gettext
 
 import discord
 import yaml
@@ -94,7 +101,7 @@ printc = con_logger.critical
 
 # config checker for up-to-date keys with template
 def check_configs(bot: discord.ext.commands.Bot):
-    template_path = pathlib.Path("data", "servers_config", "template.yml")
+    template_path = pathlib.Path("..", "data", "servers_config", "template.yml")
 
     def diff(dict1: dict, dict2: dict):
         same = True
@@ -107,22 +114,22 @@ def check_configs(bot: discord.ext.commands.Bot):
                 same = False
                 continue
             if type(dict2[i]) == dict:
-                dict1[i], _ = diff(dict1[i], dict2[i])
-                if not _:
-                    same = _
+                dict1[i], other_same = diff(dict1[i], dict2[i])
+                if not other_same:
+                    same = other_same
         for i in dict2:
             if i not in tuple(dict1.keys()):
                 dict1[i] = dict2[i]
                 same = False
             if type(dict2[i]) == dict:
-                dict1[i], _ = diff(dict1[i], dict2[i])
-                if not _:
-                    same = _
+                dict1[i], other_same = diff(dict1[i], dict2[i])
+                if not other_same:
+                    same = other_same
         return dict1, same
 
     with open(template_path, mode="r", encoding='utf8') as temp:
         for guild in bot.guilds:
-            guild_dir = pathlib.Path("data", "servers_config", str(guild.id))
+            guild_dir = pathlib.Path("..", "data", "servers_config", str(guild.id))
             config_path = guild_dir / "config.yml"
             if not guild_dir.exists():
                 print(
@@ -130,8 +137,8 @@ def check_configs(bot: discord.ext.commands.Bot):
                 guild_dir.mkdir()
                 config_path.touch()
                 temp_dict = yaml.load(temp, Loader)
-                lang_dir = pathlib.Path("data", "languages")
-                langs = [i for i in lang_dir.iterdir() if i.suffix == ".yml"]
+                lang_dir = pathlib.Path("locales")
+                langs = [i for i in lang_dir.iterdir() if i.is_dir()]
                 if guild.preferred_locale in langs:
                     temp_dict["lang"] = guild.preferred_locale
                 with open(config_path, mode="w", encoding='utf8') as config:
@@ -161,7 +168,7 @@ def load_server_language(message):
 
 # load some language
 def load_language(lang):
-    with open(pathlib.Path("data", "languages", f"{lang}.yml"),
+    with open(pathlib.Path("locales", f"{lang}.yml"),
               "r",
               encoding="utf8") as lang:
         lang = yaml.load(lang, Loader=Loader)
@@ -170,7 +177,7 @@ def load_language(lang):
 
 # find server config by message
 def find_server_config(message):
-    with open(pathlib.Path("data", "servers_config", str(message.guild.id),
+    with open(pathlib.Path("..", "data", "servers_config", str(message.guild.id),
                            "config.yml"),
               "r",
               encoding="utf8") as config:
@@ -200,7 +207,7 @@ def help_parser_3000(command, language):
 def server_prefix(bot: commands.Bot, message):
     if isinstance(message.channel, discord.TextChannel):
         with open(
-                pathlib.Path("data", "servers_config", str(message.guild.id),
+                pathlib.Path("..", "data", "servers_config", str(message.guild.id),
                              "config.yml"), "r") as config:
             try:
                 config = yaml.load(config, Loader)
@@ -374,9 +381,15 @@ async def evaluate(ctx):
             if "text" in attach.content_type:
                 data = await attach.read()
                 data = data.decode("utf-8")
-                result = exec(compile(data, 'in_code', mode="exec"))
-                if result is not None:
-                    await ctx.send(result)
+                locals_before = locals().copy()
+                exec(compile(data, 'in_code', mode="exec"))
+                locals_after = locals().copy()
+                locals_after.pop("locals_before")
+                if locals_after != locals_before:
+                    result = set(locals_before) - set(locals_after)
+                    if result is not None:
+                        for i in result:
+                            await ctx.send(i + " = " + str(locals_after[i]))
     except Exception as e:
         await ctx.send(''.join(traceback.format_exception(e)))
 
@@ -395,9 +408,9 @@ async def help(ctx: commands.Context, command=None):
                           f"-> {descriptions[5]}. {descriptions[2]}"
                 await ctx.send(builder)
         except commands.errors.CommandNotFound:
-            await ctx.send(language["misc"]["command_not_found_help"])
+            await ctx.send(_("Command Not Found"))
     else:
-        builders = [language["misc"]["help_msg"]]
+        builders = [_("PitsaBot 0.1A Pre-Release")]
         cogs = Bot.cogs
         for cog in cogs:
             cog_desc = help_parser_3000(cog, language)
@@ -414,7 +427,7 @@ async def help(ctx: commands.Context, command=None):
 
 @Bot.command()
 async def about(ctx):
-    builder = """
+    builder = _("""
     Nice bot for all your needs.
     
       This bot wants to be analogue to that 2 or 3 usual bots you have
@@ -423,7 +436,7 @@ async def about(ctx):
       will be always free and not restricted (except when you restrict it by yourself)
       Also I (Creator) want it to be as simple as possible. 
       Licensed under GNU GPLv3, all source code available on GitHub: https://github.com/SergSel2006/PitsaBot
-    """
+    """)
     await ctx.send(builder)
 
 
@@ -453,24 +466,27 @@ async def on_error(ctx, error):
     lang = load_server_language(ctx)
     exc_info = ''.join(traceback.format_exception(error))
     if isinstance(error, commands.errors.CheckFailure):
-        await ctx.send(lang["misc"]["not_enough_permissions"])
+        await ctx.send(_("You don't have enough permissions for executing this command."))
     elif "discord.errors.Forbidden" in exc_info:
         try:
-            await ctx.guild.owner.dm_channel.send(lang["misc"]["forbidden"])
+            await ctx.guild.owner.dm_channel.send(_(
+                "I don't have enough permissions to do this. Giving bot role with Administator permission will solve all problems with permissions"))
         except AttributeError:
             await ctx.guild.owner.create_dm()
-            await ctx.guild.owner.dm_channel.send(lang["misc"]["forbidden"])
+            await ctx.guild.owner.dm_channel.send(_(
+                "I don't have enough permissions to do this. Giving bot role with Administator permission will solve all problems with permissions"))
 
     elif isinstance(error, commands.errors.MissingRequiredArgument):
-        await ctx.send(lang["misc"]["not_enough_arguments"])
+        await ctx.send(_("Comand has not enough arguments. Use command help"))
 
     elif isinstance(error, commands.errors.CommandNotFound):
-        await ctx.send(lang["misc"]["command_not_found"])
+        await ctx.send(_("Command not found. Use help command."))
         print("{} issued wrong command".format(ctx.guild.id))
     elif isinstance(error, SystemExit):
         printc("shutting down, goodbye!")
     elif isinstance(error, commands.errors.BadArgument):
-        await ctx.send(lang["misc"]["bad_argument"])
+        await ctx.send(_(
+            "You used incorrect arguments(check help for command), please notice that bot cannot do any calculations inside arguments"))
     else:
         printw("error occured, ignoring!\n" + exc_info)
 

@@ -41,7 +41,7 @@ def load_server_language(message):
 
 def load_language(lang):
     with open(
-            pathlib.Path("data", "languages", f"{lang}.yml"), "r",
+            pathlib.Path("locales", f"{lang}.yml"), "r",
             encoding="utf8"
     ) as lang:
         lang = yaml.load(lang, Loader=Loader)
@@ -51,7 +51,7 @@ def load_language(lang):
 def find_server_config(message):
     with open(
             pathlib.Path(
-                "data", "servers_config", str(message.guild.id),
+                "..", "data", "servers_config", str(message.guild.id),
                 "config.yml"
             ), "r", encoding="utf8"
     ) as config:

@@ -1,1 +1,87 @@
- 
+# PitsaBot Locale files
+# Copyright (C) 2022 SergSel2006
+#
+# Sergey Selivanov <seregasel44@gmail.com>, 2022.
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.1A\n"
+"POT-Creation-Date: 2022-06-18 14:11+0700\n"
+"PO-Revision-Date: 2022-06-18 14:41+0700\n"
+"Last-Translator: Sergey <seregasel44@gmail.com>\n"
+"Language-Team: Russian <>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<"
+"=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 22.04.2\n"
+
+#: src/Core.py:408
+msgid "Command Not Found"
+msgstr "Команда не найдена"
+
+#: src/Core.py:410
+msgid "PitsaBot 0.1A Pre-Release"
+msgstr "PitsaBot 0.1A Пре-релиз"
+
+#: src/Core.py:427
+msgid ""
+"\n"
+"    Nice bot for all your needs.\n"
+"    \n"
+"      This bot wants to be analogue to that 2 or 3 usual bots you have\n"
+"      on any server, with all their features in one monolithic bot. \n"
+"      Also, any features except API expensive(like auto-translating messages)"
+" \n"
+"      will be always free and not restricted (except when you restrict it by"
+" yourself)\n"
+"      Also I (Creator) want it to be as simple as possible. \n"
+"      Licensed under GNU GPLv3, all source code available on GitHub:"
+" https://github.com/SergSel2006/PitsaBot\n"
+"    "
+msgstr ""
+"\n"
+"  Отличный бот для всех ваших нужд.\n"
+"  \n"
+"    Этот бот должен заменять те 2 или 3 бота, которые вы имеете\n"
+"    на любом сервере, со всеми их возможностями в одном монолитном боте\n"
+"    Также, все возможности кроме нагружающих API (таких как автоматический"
+" перевод сообщений)\n"
+"    всегда будут бесплатными и без ограничений (кроме установленных вами"
+" ограничений)\n"
+"    Также я (Создатель) хочу создавать его настолько простым, насколько это"
+" возможно\n"
+"    Лицензирован под GNU GPLv3, весь исходный код доступен на GitHub:"
+" https://github.com/SergSel2006/PitsaBot\n"
+"  "
+
+#: src/Core.py:466
+msgid "You don't have enough permissions for executing this command."
+msgstr "У вас недостаточно прав для выполнения этой команды"
+
+#: src/Core.py:469 src/Core.py:473
+msgid ""
+"I don't have enough permissions to do this. Giving bot role with Administator"
+" permission will solve all problems with permissions"
+msgstr ""
+"У меня не хватает прав для выполнения этой команды. Если боту дать роль с"
+" правами администратора, то эта проблема исправится."
+
+#: src/Core.py:477
+msgid "Comand has not enough arguments. Use command help"
+msgstr "Команде не хватает аргументов. Используйте команду help"
+
+#: src/Core.py:480
+msgid "Command not found. Use help command."
+msgstr "Команда не найдена. Воспользуйтесь командой help"
+
+#: src/Core.py:485
+msgid ""
+"You used incorrect arguments(check help for command), please notice that bot"
+" cannot do any calculations inside arguments"
+msgstr ""
+"Вы ввели неправильные аргументы (Проверьте help для команды). Заметьте, что"
+" бот не может проводить вычисления внутри аргументов"
+

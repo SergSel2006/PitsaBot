@@ -86,7 +86,7 @@ class DataSyncerCog(commands.Cog):
     @commands.command(hidden=True)
     async def upload_all(self, ctx):
         if await self.owner_check(ctx):
-            file_uploader(pathlib.Path("data", "servers_config"), self.s3)
+            file_uploader(pathlib.Path("..", "data", "servers_config"), self.s3)
 
     @commands.command(hidden=True)
     async def download_all(self, ctx):
@@ -97,7 +97,7 @@ class DataSyncerCog(commands.Cog):
 def setup(bot):
     global s3
     bot.add_cog(DataSyncerCog(bot, s3))
-    atexit.register(file_uploader, pathlib.Path("data", "servers_config"))
+    atexit.register(file_uploader, pathlib.Path("..", "data", "servers_config"))
     session = boto3.session.Session()
     s3 = session.client(
         service_name='s3',
@@ -110,4 +110,4 @@ def setup(bot):
 def teardown(bot):
     global s3
     atexit.unregister(file_uploader)
-    file_uploader(pathlib.Path("data", "servers_config"), s3)
+    file_uploader(pathlib.Path("..", "data", "servers_config"), s3)
