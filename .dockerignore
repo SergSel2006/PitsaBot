@@ -119,8 +119,11 @@ dmypy.json
 .pyre/
 
 # essential things on local machine.
-/config.yml
 /.stignore
 /.stfolder/
-/data/servers_config/
-Tools/
+.Tools/
+README.md
+CONTRIBUTING.md
+.gitattributes
+CODE_OF_CONDUCT.md
+.gitignore
