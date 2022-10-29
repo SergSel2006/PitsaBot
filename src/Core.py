@@ -58,7 +58,6 @@ handler.setFormatter(
 )
 logger.addHandler(handler)
 
-
 # interesting functions
 # config checker for up-to-date keys with template
 def check_configs(bot: discord.ext.commands.Bot):
@@ -392,9 +391,13 @@ async def on_tick(tick: int = 5):
         try:
             if ping(Bot) > 2:
                 to_thread(printw(f"High ping! {ping(Bot)} s"))
+<<<<<<< HEAD:src/Core.py
             await cog_finder(
                 Bot, pathlib.Path("src", "cogs")
             )  # should be before check_configs as after
+=======
+            cog_finder(Bot, pathlib.Path("cogs"))  # should be before check_configs as after
+>>>>>>> main:Core.py
             # start we should synchronise our config files with cloud.
             check_configs(Bot)
         except Exception as e:
