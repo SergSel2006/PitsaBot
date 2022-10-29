@@ -1,18 +1,16 @@
-# ##################################################################################################
-#  Copyright (c) 2022.                                                                             #
-#        This program is free software: you can redistribute it and/or modify                      #
-#        it under the terms of the GNU General Public License as published by                      #
-#        the Free Software Foundation, either version 3 of the License, or                         #
-#        (at your option) any later version.                                                       #
-#                                                                                                  #
-#        This program is distributed in the hope that it will be useful,                           #
-#        but WITHOUT ANY WARRANTY; without even the implied warranty of                            #
-#        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                             #
-#        GNU General Public License for more details.                                              #
-#                                                                                                  #
-#        You should have received a copy of the GNU General Public License                         #
-#        along with this program.  If not, see <https://www.gnu.org/licenses/>.                    #
-# ##################################################################################################
+#  Copyright (c) 2022.
+#        This program is free software: you can redistribute it and/or modify
+#        it under the terms of the GNU General Public License as published by
+#        the Free Software Foundation, either version 3 of the License, or
+#        (at your option) any later version.
+#
+#        This program is distributed in the hope that it will be useful,
+#        but WITHOUT ANY WARRANTY; without even the implied warranty of
+#        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#        GNU General Public License for more details.
+#
+#        You should have received a copy of the GNU General Public License
+#        along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import logging
 import os
@@ -65,8 +63,8 @@ def load_server_language(message):
 
 def load_language(lang):
     with open(
-            pathlib.Path("locales", f"{lang}.yml"), "r",
-            encoding="utf8"
+        pathlib.Path("locales", f"{lang}.yml"), "r",
+        encoding="utf8"
     ) as lang:
         lang = yaml.load(lang, Loader=Loader)
         return lang
@@ -74,10 +72,10 @@ def load_language(lang):
 
 def find_server_config(message):
     with open(
-            pathlib.Path(
-                "..", "data", "servers_config", str(message.guild.id),
-                "config.yml"
-            ), "r", encoding="utf8"
+        pathlib.Path(
+            "..", "data", "servers_config", str(message.guild.id),
+            "config.yml"
+        ), "r", encoding="utf8"
     ) as config:
         config = yaml.load(config, Loader=Loader)
         return config
@@ -85,7 +83,9 @@ def find_server_config(message):
 
 async def check_configs(bot):
     for guild in bot.guilds:
-        guild_folder = pathlib.Path("..", "data", "servers_config", str(guild.id))
+        guild_folder = pathlib.Path(
+            "..", "data", "servers_config", str(guild.id)
+        )
         guild_config = pathlib.Path(
             "..", "data", "servers_config", str(guild.id),
             "config.yml"
@@ -98,8 +98,8 @@ async def check_configs(bot):
                 f"{str(guild.id)}"
             )
             with open(
-                    pathlib.Path(f"..", "data", "servers_config", "template.yml"),
-                    "r"
+                pathlib.Path(f"..", "data", "servers_config", "template.yml"),
+                "r"
             ) as template:
                 with open(guild_config, "w+") as config:
                     for i in template.readlines():
@@ -107,10 +107,10 @@ async def check_configs(bot):
         else:
             with open(guild_config, "r") as config_raw:
                 with open(
-                        pathlib.Path(
-                            f"..", "data", "servers_config", "template.yml"
-                        ),
-                        "r"
+                    pathlib.Path(
+                        f"..", "data", "servers_config", "template.yml"
+                    ),
+                    "r"
                 ) as template:
                     config = yaml.load(config_raw, Loader)
                     template = yaml.load(template, Loader)
@@ -138,7 +138,7 @@ async def check_configs(bot):
                             for key1 in tuple(template_dict):
                                 try:
                                     if type(
-                                            dict_for_check[key1]
+                                        dict_for_check[key1]
                                     ) == dict:
                                         dict_check(
                                             dict_for_check[key1],
@@ -158,11 +158,11 @@ async def check_configs(bot):
 def server_prefix(bot, message):
     if isinstance(message.channel, discord.TextChannel):
         with open(
-                pathlib.Path(
-                    "..", "data", "servers_config",
-                    str(message.guild.id), "config.yml"
-                ),
-                "r"
+            pathlib.Path(
+                "..", "data", "servers_config",
+                str(message.guild.id), "config.yml"
+            ),
+            "r"
         ) as config:
             try:
                 config = yaml.load(config, Loader)
@@ -348,7 +348,7 @@ async def on_message(message: discord.Message):
             for cog in os.listdir(folder):
                 if cog != "__pycache__":
                     if cog.endswith(".py") and not pathlib.Path(
-                            folder, cog[:-3]
+                        folder, cog[:-3]
                     ) in all_cogs:
                         con_logger.info(f"Found cog {cog}")
                         all_cogs.append(pathlib.Path(folder, cog[:-3]))
@@ -427,8 +427,8 @@ def command_finder(command):
                         counter += 1
                 else:
                     if command[i] == command_real[min(
-                            i + 1, len(command_real) -
-                                   1
+                        i + 1, len(command_real) -
+                               1
                     )]:
                         counter += 1
             if counter > abs((len(command_real) - len(command)) - 1):
@@ -439,8 +439,10 @@ def command_finder(command):
 async def on_error(ctx, error):
     lang = load_server_language(ctx)
     if isinstance(error, commands.errors.CheckFailure):
-        await ctx.guild.owner.dm_channel.send(lang["misc"][
-                                                  "not_enough_permissions"])
+        await ctx.guild.owner.dm_channel.send(
+            lang["misc"][
+                "not_enough_permissions"]
+        )
     elif isinstance(error, commands.errors.MissingRequiredArgument):
         await ctx.send(lang["misc"]["not_enough_arguments"])
     elif isinstance(error, commands.errors.CommandNotFound):

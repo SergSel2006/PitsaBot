@@ -33,3 +33,4 @@ folder of bot, and make `token: [your token]` in it and bot will start
 Yes, I know that my project is trash now, and idea is somehow fantastic, but hey, why don't YOU just make some help over
 here, I will accept even small code refactoring if it refactored by PEP 8.
 
+###

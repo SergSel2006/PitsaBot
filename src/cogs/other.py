@@ -1,18 +1,16 @@
-# ##################################################################################################
-#  Copyright (c) 2022.                                                                             #
-#        This program is free software: you can redistribute it and/or modify                      #
-#        it under the terms of the GNU General Public License as published by                      #
-#        the Free Software Foundation, either version 3 of the License, or                         #
-#        (at your option) any later version.                                                       #
-#                                                                                                  #
-#        This program is distributed in the hope that it will be useful,                           #
-#        but WITHOUT ANY WARRANTY; without even the implied warranty of                            #
-#        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                             #
-#        GNU General Public License for more details.                                              #
-#                                                                                                  #
-#        You should have received a copy of the GNU General Public License                         #
-#        along with this program.  If not, see <https://www.gnu.org/licenses/>.                    #
-# ##################################################################################################
+#  Copyright (c) 2022.
+#        This program is free software: you can redistribute it and/or modify
+#        it under the terms of the GNU General Public License as published by
+#        the Free Software Foundation, either version 3 of the License, or
+#        (at your option) any later version.
+#
+#        This program is distributed in the hope that it will be useful,
+#        but WITHOUT ANY WARRANTY; without even the implied warranty of
+#        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#        GNU General Public License for more details.
+#
+#        You should have received a copy of the GNU General Public License
+#        along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import os
 import pathlib
@@ -26,34 +24,7 @@ try:
 except ImportError:
     from yaml import Dumper as Dumper
 
-import yaml
 from discord.ext import commands
-
-
-def load_server_language(message):
-    config = find_server_config(message)
-    language = load_language(config["language"])
-    return language
-
-
-def load_language(lang):
-    with open(
-            pathlib.Path("locales", f"{lang}.yml"), "r",
-            encoding="utf8"
-    ) as lang:
-        lang = yaml.load(lang, Loader=Loader)
-        return lang
-
-
-def find_server_config(message):
-    with open(
-            pathlib.Path(
-                "..", "data", "servers_config", str(message.guild.id),
-                "config.yml"
-            ), "r", encoding="utf8"
-    ) as config:
-        config = yaml.load(config, Loader=Loader)
-        return config
 
 
 class OtherCog(commands.Cog):
@@ -61,11 +32,6 @@ class OtherCog(commands.Cog):
         self.bot = bot
         self.cwd = cwd
 
-    @commands.Command
-    async def ping(self, ctx):
-        builder = f"Pong! `{round(self.bot.latency * 1000)} ms`"
-        await ctx.send(builder)
 
-
-def setup(bot):
-    bot.add_cog(OtherCog(bot, pathlib.Path(os.getcwd())))
+async def setup(bot):
+    await bot.add_cog(OtherCog(bot, pathlib.Path(os.getcwd())))
