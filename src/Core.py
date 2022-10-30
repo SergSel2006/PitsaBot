@@ -20,10 +20,6 @@ import pathlib
 import sys
 import traceback
 
-gettext.bindtextdomain("base", "locales")
-gettext.bindtextdomain("moderation", "locales")
-gettext.bindtextdomain("settings", "locales")
-
 _ = gettext.gettext
 
 import discord
@@ -50,6 +46,7 @@ import shared
 
 intents = discord.Intents.default()
 intents.members = True
+intents.message_content = True
 logger = logging.getLogger('discord')
 logger.setLevel(logging.INFO if "-d" not in sys.argv else logging.DEBUG)
 handler = logging.FileHandler(filename='Pitsa.log', encoding='utf-8', mode='w')
@@ -391,13 +388,9 @@ async def on_tick(tick: int = 5):
         try:
             if ping(Bot) > 2:
                 to_thread(printw(f"High ping! {ping(Bot)} s"))
-<<<<<<< HEAD:src/Core.py
             await cog_finder(
                 Bot, pathlib.Path("src", "cogs")
             )  # should be before check_configs as after
-=======
-            cog_finder(Bot, pathlib.Path("cogs"))  # should be before check_configs as after
->>>>>>> main:Core.py
             # start we should synchronise our config files with cloud.
             check_configs(Bot)
         except Exception as e:

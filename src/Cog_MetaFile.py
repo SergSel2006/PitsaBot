@@ -40,7 +40,7 @@ class Cog_File_Meta:
         bot = self.bot
         try:
             await bot.load_extension(
-                ".".join(self.path.parts).removesuffix(".py")
+                ".".join(self.path.parts).removesuffix(".py").removeprefix("src.")
             )
             self.active = True
             return f"Success loading of {self.name} cog"
@@ -56,11 +56,7 @@ class Cog_File_Meta:
         bot = self.bot
         try:
             await bot.unload_extension(
-                str(self.path).removesuffix(".py").replace(
-                    "\\" if
-                    os.name ==
-                    "nt" else "/", "."
-                )
+                ".".join(self.path.parts).removesuffix(".py").removeprefix("src.")
             )
             self.active = False
             return f"Success unloading of {self.name} cog"
@@ -76,9 +72,7 @@ class Cog_File_Meta:
         bot = self.bot
         try:
             await bot.reload_extension(
-                str(self.path).removesuffix(".py").replace(
-                    "\\" if os.name == "nt" else "/", "."
-                )
+                ".".join(self.path.parts).removesuffix(".py").removeprefix("src.")
             )
             return f"Success reloading of {self.name} cog"
         except commands.errors.ExtensionNotLoaded:

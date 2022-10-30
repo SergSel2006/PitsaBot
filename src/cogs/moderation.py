@@ -17,7 +17,7 @@ import gettext
 import os
 import pathlib
 
-from src import shared
+import shared
 
 _ = gettext.gettext
 

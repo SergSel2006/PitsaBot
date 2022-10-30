@@ -18,7 +18,7 @@ import logging
 import pathlib
 import traceback
 
-from src import shared
+import shared
 
 _ = gettext.gettext
 
