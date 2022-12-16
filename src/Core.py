@@ -67,24 +67,18 @@ def check_configs(bot: discord.ext.commands.Bot):
         if dict1 is None:
             dict1 = dict2
             return dict1, False
-        for i in tuple(dict1.keys()):
-            if i not in dict2:
-                del dict1[i]
-                same = False
-                continue
-            if type(dict2[i]) == dict:
+        for i in set(dict2.keys()).difference(dict1.keys()):
+            if type(dict2[i]) == dict and type(dict1[i]) == dict:
                 dict1[i], other_same = diff(dict1[i], dict2[i])
                 if not other_same:
                     same = other_same
-        for i in dict2:
-            if i not in tuple(dict1.keys()):
+            else:
                 dict1[i] = dict2[i]
                 same = False
-            if type(dict2[i]) == dict:
-                dict1[i], other_same = diff(dict1[i], dict2[i])
-                if not other_same:
-                    same = other_same
-        return dict1, same
+            return dict1, same
+        for i in set(dict1.keys()).difference(dict2.keys()):
+            del dict1[i]
+            return dict1, False
 
     with open(template_path, mode="r", encoding='utf8') as temp:
         for guild in bot.guilds:
