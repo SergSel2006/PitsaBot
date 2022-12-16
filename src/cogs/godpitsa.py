@@ -52,8 +52,10 @@ class GodPitsaCog(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         config = find_server_config(message)
-        if (message.author.id != 869082304033751120
-            and config["react_to_pizza"]):
+        if (
+            message.author.id != 869082304033751120
+            and config["react_to_pizza"]
+        ):
             pitsas = ['питса', "питсы", "питсу", "питсой", "питсе",
                       "pitsa", "питс", "питсам", "питсами", "питсах"]
             for pitsa in pitsas:

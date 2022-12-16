@@ -20,8 +20,6 @@ import pathlib
 import sys
 import traceback
 
-_ = gettext.gettext
-
 import discord
 import yaml
 from discord.ext import commands
@@ -40,6 +38,8 @@ except ImportError:
 from shared import print, printd, printc, printw
 import shared
 
+_ = gettext.gettext
+
 # logger (replaces print)
 # Beautiful color formatting
 
@@ -54,6 +54,7 @@ handler.setFormatter(
     logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s')
 )
 logger.addHandler(handler)
+
 
 # interesting functions
 # config checker for up-to-date keys with template
@@ -106,10 +107,11 @@ def check_configs(bot: discord.ext.commands.Bot):
                 with open(config_path, mode="r", encoding='utf8') as config:
                     config = yaml.load(config, Loader)
                     temp_dict = yaml.load(temp, Loader)
-                    config, same = diff(config, temp_dict)
-                if not same:
-                    with open(config_path, mode='w', encoding='utf8') \
-                        as config_raw:
+                    config, correct = diff(config, temp_dict)
+                if not correct:
+                    with open(
+                        config_path, mode='w', encoding='utf8'
+                    ) as config_raw:
                         yaml.dump(config, config_raw, Dumper)
             temp.seek(0)
 
@@ -366,10 +368,12 @@ async def about(ctx):
             
               This bot wants to be analogue to that 2 or 3 usual bots you have
               on any server, with all their features in one monolithic bot. 
-              Also, any features except API expensive(like auto-translating messages) 
-              will be always free and not restricted (except when you restrict it by yourself)
+              Also, any features except API expensive
+              (like auto-translating messages) will be always free
+              and not restricted (except when you restrict it by yourself)
               Also I (Creator) want it to be as simple as possible. 
-              Licensed under GNU GPLv3, all source code available on GitHub: https://github.com/SergSel2006/PitsaBot
+              Licensed under GNU GPLv3, all source code available on GitHub: 
+              https://github.com/SergSel2006/PitsaBot
             """
     )
     await ctx.send(builder)
@@ -411,14 +415,18 @@ async def on_error(ctx, error):
         try:
             await ctx.guild.owner.dm_channel.send(
                 _(
-                    "I don't have enough permissions to do this. Giving bot role with Administator permission will solve all problems with permissions"
+                    "I don't have enough permissions to do this. "
+                    "Giving bot role with Administator permission will "
+                    "solve all problems with permissions"
                 )
             )
         except AttributeError:
             await ctx.guild.owner.create_dm()
             await ctx.guild.owner.dm_channel.send(
                 _(
-                    "I don't have enough permissions to do this. Giving bot role with Administator permission will solve all problems with permissions"
+                    "I don't have enough permissions to do this. "
+                    "Giving bot role with Administator permission will "
+                    "solve all problems with permissions"
                 )
             )
 
@@ -433,7 +441,9 @@ async def on_error(ctx, error):
     elif isinstance(error, commands.errors.BadArgument):
         await ctx.send(
             _(
-                "You used incorrect arguments(check help for command), please notice that bot cannot do any calculations inside arguments"
+                "You used incorrect arguments(check help for command), "
+                "please notice that bot cannot do any calculations inside "
+                "arguments"
             )
         )
     else:

@@ -14,16 +14,14 @@
 
 # Only for l10n marking puporses.
 import gettext
-import logging
 import pathlib
 import traceback
 
-import shared
-
-_ = gettext.gettext
-
 import yaml
 from discord.ext import commands
+
+import shared
+from shared import printe
 
 try:
     from yaml import CLoader as Loader
@@ -34,11 +32,7 @@ try:
 except ImportError:
     from yaml import Dumper as Dumper
 
-con_logger = logging.getLogger("Bot")
-printd = con_logger.debug
-print = con_logger.info
-printw = con_logger.warning
-printe = con_logger.error
+_ = gettext.gettext
 
 
 def load_language(lang):
@@ -74,8 +68,10 @@ def dump_server_config(message, config):
 def can_manage_channels():
     async def predicate(ctx):
         perms = ctx.author.top_role.permissions
-        if perms.manage_channels or perms.administrator or ctx.author.id == \
-            ctx.guild.owner_id:
+        if (
+            perms.manage_channels or perms.administrator
+            or ctx.author.id == ctx.guild.owner_id
+        ):
             return True
         else:
             return False
@@ -143,7 +139,8 @@ class SettingsCog(commands.Cog):
                     else:
                         await ctx.send(
                             _(
-                                "for activating moderation log, you need to specify a channel first."
+                                "for activating moderation log, "
+                                "you need to specify a channel first."
                             )
                         )
                 elif options[0].lower() == "channel":
@@ -188,15 +185,15 @@ class SettingsCog(commands.Cog):
         except Exception as e:
             await ctx.send(
                 _(
-                    "Ooops! Something went wrong! If this happens too often, send basic information about"
+                    "Ooops! Something went wrong! If this happens too often,"
+                    " send basic information about"
                     " what you've done and this code: {0} to issue tracker"
                 ).format(ctx.guild.id)
             )
             exc_info = ''.join(traceback.format_exception(e))
             printe(
-                "While configuring {0}, error occured and ignored.\n{1}".format(
-                    ctx.guild.id, exc_info
-                )
+                "While configuring {0}, error occured and ignored."
+                "\n{1}".format(ctx.guild.id, exc_info)
             )
 
 

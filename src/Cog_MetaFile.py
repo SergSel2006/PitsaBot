@@ -14,7 +14,6 @@
 
 # A simple cog file metaclass used for making loading, unloading and reloading
 # cogs easier. Also makes pretty names by adding __str__, __repr__ and name
-import os
 import pathlib
 
 from discord.ext import commands
@@ -40,7 +39,9 @@ class Cog_File_Meta:
         bot = self.bot
         try:
             await bot.load_extension(
-                ".".join(self.path.parts).removesuffix(".py").removeprefix("src.")
+                ".".join(self.path.parts).removesuffix(".py").removeprefix(
+                    "src."
+                )
             )
             self.active = True
             return f"Success loading of {self.name} cog"
@@ -56,7 +57,9 @@ class Cog_File_Meta:
         bot = self.bot
         try:
             await bot.unload_extension(
-                ".".join(self.path.parts).removesuffix(".py").removeprefix("src.")
+                ".".join(self.path.parts).removesuffix(".py").removeprefix(
+                    "src."
+                )
             )
             self.active = False
             return f"Success unloading of {self.name} cog"
@@ -72,7 +75,9 @@ class Cog_File_Meta:
         bot = self.bot
         try:
             await bot.reload_extension(
-                ".".join(self.path.parts).removesuffix(".py").removeprefix("src.")
+                ".".join(self.path.parts).removesuffix(".py").removeprefix(
+                    "src."
+                )
             )
             return f"Success reloading of {self.name} cog"
         except commands.errors.ExtensionNotLoaded:

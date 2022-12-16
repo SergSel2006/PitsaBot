@@ -17,11 +17,9 @@ import gettext
 import os
 import pathlib
 
-import shared
-
-_ = gettext.gettext
-
 import discord
+
+import shared
 
 try:
     from yaml import CLoader as Loader
@@ -34,6 +32,8 @@ except ImportError:
 
 from discord.ext import commands
 
+_ = gettext.gettext
+
 
 def is_moderator(ctx, man=None):
     config = shared.find_server_config(ctx.message)
@@ -43,8 +43,10 @@ def is_moderator(ctx, man=None):
         if role.id in modroles:
             return True
     perms: discord.Permissions = ctx.author.top_role.permissions
-    if perms.administrator or perms.ban_members or perms.kick_members or \
-        ctx.author.id == ctx.guild.owner_id:
+    if (
+        perms.administrator or perms.ban_members
+        or perms.kick_members or ctx.author.id == ctx.guild.owner_id
+    ):
         return True
     else:
         return False
@@ -131,7 +133,8 @@ class ModCog(commands.Cog):
             ch = self.bot.get_channel(config["modlog"]["channel"])
             await ch.send(
                 _(
-                    "{0} Changed message. Content was:\n>>{1}\nContent now:\n>>{2}"
+                    "{0} Changed message. Content was:\n>>{1}\n"
+                    "Content now:\n>>{2}"
                 ).format(
                     msg.author.name,
                     msg_before.content,

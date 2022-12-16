@@ -64,6 +64,7 @@ def find_server_config(message):
         config = yaml.load(config, Loader=Loader)
         return config
 
+
 class _ColourFormatter(logging.Formatter):
     """
     Formatter adapted from discord.py code to be familiar with its logging
