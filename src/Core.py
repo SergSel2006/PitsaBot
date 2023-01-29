@@ -1,19 +1,49 @@
-#  Copyright (c) 2022.
-#        This program is free software: you can redistribute it and/or modify
-#        it under the terms of the GNU General Public License as published by
-#        the Free Software Foundation, either version 3 of the License, or
-#        (at your option) any later version.
+#  Copyright (c) 2022-2023 SergSel2006 (Sergey Selivanov).
 #
-#        This program is distributed in the hope that it will be useful,
-#        but WITHOUT ANY WARRANTY; without even the implied warranty of
-#        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#        GNU General Public License for more details.
 #
-#        You should have received a copy of the GNU General Public License
-#        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#      This program is free software: you can redistribute it and/or modify
+#      it under the terms of the GNU General Public License as published by
+#      the Free Software Foundation, either version 3 of the License, or
+#      (at your option) any later version.
+#
+#      This program is distributed in the hope that it will be useful,
+#      but WITHOUT ANY WARRANTY; without even the implied warranty of
+#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#      GNU General Public License for more details.
+#
+#      You should have received a copy of the GNU General Public License
+#      along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+#
+#      This program is free software: you can redistribute it and/or modify
+#      it under the terms of the GNU General Public License as published by
+#      the Free Software Foundation, either version 3 of the License, or
+#      (at your option) any later version.
+#
+#      This program is distributed in the hope that it will be useful,
+#      but WITHOUT ANY WARRANTY; without even the implied warranty of
+#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#      GNU General Public License for more details.
+#
+#      You should have received a copy of the GNU General Public License
+#      along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+#      This program is free software: you can redistribute it and/or modify
+#      it under the terms of the GNU General Public License as published by
+#      the Free Software Foundation, either version 3 of the License, or
+#      (at your option) any later version.
+#
+#      This program is distributed in the hope that it will be useful,
+#      but WITHOUT ANY WARRANTY; without even the implied warranty of
+#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#      GNU General Public License for more details.
+#
+#      You should have received a copy of the GNU General Public License
+#      along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # imports
 import asyncio
+import datetime
 import gettext
 import logging
 import pathlib
@@ -52,7 +82,7 @@ logger.setLevel(logging.INFO if "-d" not in sys.argv else logging.DEBUG)
 handler = logging.FileHandler(filename='Pitsa.log', encoding='utf-8', mode='w')
 handler.setFormatter(
     logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s')
-)
+    )
 logger.addHandler(handler)
 
 
@@ -61,7 +91,7 @@ logger.addHandler(handler)
 def check_configs(bot: discord.ext.commands.Bot):
     template_path = pathlib.Path(
         "data", "servers_config", "template.yml"
-    )
+        )
 
     def diff(dict1: dict, dict2: dict):
         same = True
@@ -76,21 +106,21 @@ def check_configs(bot: discord.ext.commands.Bot):
             else:
                 dict1[i] = dict2[i]
                 same = False
-            return dict1, same
         for i in set(dict1.keys()).difference(dict2.keys()):
             del dict1[i]
-            return dict1, False
+            same = False
+        return dict1, same
 
     with open(template_path, mode="r", encoding='utf8') as temp:
         for guild in bot.guilds:
             guild_dir = pathlib.Path(
                 "data", "servers_config", str(guild.id)
-            )
+                )
             config_path = guild_dir / "config.yml"
             if not guild_dir.exists():
                 print(
                     f"added config for server {guild.name} with id {guild.id}"
-                )
+                    )
                 guild_dir.mkdir()
                 config_path.touch()
                 temp_dict = yaml.load(temp, Loader)
@@ -110,29 +140,21 @@ def check_configs(bot: discord.ext.commands.Bot):
                     config, correct = diff(config, temp_dict)
                 if not correct:
                     with open(
-                        config_path, mode='w', encoding='utf8'
-                    ) as config_raw:
+                            config_path, mode='w', encoding='utf8'
+                            ) as config_raw:
                         yaml.dump(config, config_raw, Dumper)
             temp.seek(0)
-
-
-# helper function for help
-def help_parser_3000(command):
-    try:
-        pass
-    except KeyError:
-        return 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A'
 
 
 # server prefix finder, if no prefix, return mention of a bot
 def server_prefix(bot: commands.Bot, message):
     if isinstance(message.channel, discord.TextChannel):
         with open(
-            pathlib.Path(
-                "data", "servers_config", str(message.guild.id),
-                "config.yml"
-            ), "r"
-        ) as config:
+                pathlib.Path(
+                    "data", "servers_config", str(message.guild.id),
+                    "config.yml"
+                    ), "r"
+                ) as config:
             try:
                 config = yaml.load(config, Loader)
                 prefix = config["prefix"]
@@ -174,7 +196,7 @@ async def cog_finder(bot: commands.Bot, start_path: pathlib.Path):
             printd(f"cog {cog.name} was deleted")
 
 
-# ping that returns s of latency
+# ping that returns seconds of latency
 def ping(bot: commands.Bot):
     latency = bot.latency
     try:
@@ -185,24 +207,15 @@ def ping(bot: commands.Bot):
         printc(
             "Your bot cannot connect to discord! your internet or "
             "code issue?"
-        )
+            )
         return 0
 
 
 # check for a developer
 def owner_check(ctx: commands.Context):
     return Bot.is_owner(ctx.author)
-
-
-# to_thread decorator
-def to_thread(func):
-    async def wrapper(*args, **kwargs):
-        return await asyncio.to_thread(func, *args, **kwargs)
-
-    return wrapper
-
-
 # bot init
+
 
 # cog list
 Cogs = dict()
@@ -227,7 +240,7 @@ if len(sys.argv) > 2:
     else:
         settings = eval(
             " ".join(sys.argv[2:find_until_next_arg(" ".join(sys.argv[2:]))])
-        )
+            )
 else:
     with open('config.yml', 'r') as o:
         settings = yaml.load(o, Loader)
@@ -239,8 +252,7 @@ Bot = commands.Bot(
     command_prefix=server_prefix,
     intents=intents,
     owner_ids=settings["developers"]
-)
-Bot.remove_command("help")
+    )
 
 
 # bot commands
@@ -330,38 +342,149 @@ async def evaluate(ctx):
 
 
 # help command
-@Bot.command()
-async def help(ctx: commands.Context, command=None):
-    _ = shared.load_server_language(ctx.message)
-    if command:
-        try:
-            command = Bot.get_command(command)
-            if not command.hidden:
-                descriptions = help_parser_3000(command)
-                builder = f"{descriptions[0]} - {command}\n{command} " \
-                          f"<{descriptions[3]}> [{descriptions[4]}] " \
-                          f"-> {descriptions[5]}. {descriptions[2]}"
-                await ctx.send(builder)
-        except commands.errors.CommandNotFound:
-            await ctx.send(_("Command Not Found"))
-    else:
-        builders = [_("PitsaBot 0.1A Pre-Release")]
-        cogs = Bot.cogs
-        for cog in cogs:
-            cog_desc = help_parser_3000(cog)
-            builders.append(f"\n{cog_desc[0]} - {cog_desc[1]}")
-            for command in cogs[cog].get_commands():
+# @Bot.command()
+# async def help(ctx: commands.Context, command=None):
+#     _ = shared.load_server_language(ctx.message)
+#     if command:
+#         try:
+#             command = Bot.get_command(command)
+#             if not command.hidden:
+#                 descriptions = help_parser_3000(command, _)
+#                 builder = f"{descriptions[0]} - {command}\n{command} " \
+#                           f"<{descriptions[3]}> [{descriptions[4]}] " \
+#                           f"-> {descriptions[5]}. {descriptions[2]}"
+#                 await ctx.send(builder)
+#         except commands.errors.CommandNotFound:
+#             await ctx.send(_("Command Not Found"))
+#     else:
+#         builders = [_("PitsaBot 0.1A Pre-Release")]
+#         cogs = Bot.cogs
+#         for cog in cogs:
+#             cog_desc = help_parser_3000(cog, _)
+#             builders.append(f"\n{cog_desc[0]} - {cog_desc[1]}")
+#             for command in cogs[cog].get_commands():
+#                 if not command.hidden:
+#                     descriptions = help_parser_3000(command, _)
+#                     cbuilder = f"{command.name} " \
+#                                f"<{descriptions[3]}> " \
+#                                f"[{descriptions[4]}] -> "
+#                                f"{descriptions[5]}. {descriptions[1]}"
+#                     builders.append(cbuilder)
+#         await ctx.send("\n".join(builders))
+
+
+class TranslatableHelp(commands.HelpCommand):
+    def __init__(self, **options):
+        super().__init__(**options)
+
+    async def send_bot_help(self, mapping):
+        translate = shared.load_server_language(self.context.message).gettext
+        destination = self.get_destination()
+        help_payload = "PitsaBot v0.2a\nMade by SergSel2006, idea by cool " \
+                       "people from Russian Rec Room\nAvailable commands" \
+                       " and modules:\n"
+        for cog in mapping.keys():
+            cog: commands.Cog
+            if cog is None:
+                help_payload += "Built-in" + ":\n"
+                for command in mapping[None]:
+                    if not command.hidden:
+                        help_payload += str(
+                            "  - "
+                            + (translate(command.name) if
+                               command.name else
+                               command.qualified_name)
+                            + " "
+                            + (translate(command.usage) if
+                               command.usage else "N/A")
+                            + ": "
+                            + (translate(command.brief)
+                               if command.brief else
+                               "N/A")
+                            + "\n"
+                            )
+            else:
+                help_payload += translate(cog.qualified_name)
+                if any(cog.get_commands()):
+                    help_payload += ":\n"
+                    for command in mapping[cog]:
+                        if not command.hidden:
+                            help_payload += str(
+                                "  - "
+                                + (translate(command.name) if
+                                   command.name else
+                                   command.qualified_name)
+                                + " "
+                                + (translate(command.usage) if
+                                   command.usage else "N/A")
+                                + ": "
+                                + (translate(command.brief)
+                                   if command.brief else
+                                   "N/A")
+                                + "\n"
+                                )
+                else:
+                    help_payload += translate(_(" - No commands\n"))
+        await destination.send(help_payload)
+
+    async def send_cog_help(self, cog):
+        translate = shared.load_server_language(self.get_destination()).gettext
+        destination = self.get_destination()
+        help_message = ''
+        help_message += translate(cog.qualified_name) + " - " \
+                        + translate(cog.description) + "\n"
+        if any(filter(lambda x: not x.hidden, cog.get_commands())):
+            help_message += translate(_("Available commands:\n"))
+            for command in cog.walk_commands():
                 if not command.hidden:
-                    descriptions = help_parser_3000(command)
-                    cbuilder = f"{command.name} " \
-                               f"<{descriptions[3]}> [{descriptions[4]}] -> " \
-                               f"{descriptions[5]}. {descriptions[1]}"
-                    builders.append(cbuilder)
-        await ctx.send("\n".join(builders))
+                    help_message += str(
+                        "  - "
+                        + (translate(command.name) if
+                           command.name else
+                           command.qualified_name)
+                        + " "
+                        + (translate(command.usage) if
+                           command.usage else "N/A")
+                        + ": "
+                        + (translate(command.brief)
+                           if command.brief else
+                           "N/A")
+                        + "\n"
+                        )
+
+        else:
+            help_message += translate(_("No commands available"))
+        await destination.send(help_message)
+
+    async def send_command_help(self, command):
+        translate = shared.load_server_language(self.get_destination()).gettext
+        destination = self.get_destination()
+        payload = ""
+        if not command.hidden:
+            payload += str(
+                (translate(command.name) if
+                 command.name else
+                 command.qualified_name)
+                + " "
+                + (translate(command.usage) if
+                   command.usage else "N/A")
+                + ":\n"
+                + (translate(command.description)
+                   if command.description else
+                   "N/A")
+                + "\n"
+                )
+            await destination.send(payload)
+        else:
+            await destination.send(
+                "This command is hidden and no help is "
+                "here"
+                )
 
 
-@Bot.command()
+@Bot.command(name=_("about"))
 async def about(ctx):
+    translate = shared.load_server_language(ctx.message).gettext
     builder = _(
         """
             Nice bot for all your needs.
@@ -375,8 +498,63 @@ async def about(ctx):
               Licensed under GNU GPLv3, all source code available on GitHub: 
               https://github.com/SergSel2006/PitsaBot
             """
-    )
-    await ctx.send(builder)
+        )
+    await ctx.send(translate(builder))
+
+
+@Bot.command(name=_("license"))
+async def license(ctx, mode=None):
+    translate = shared.load_server_language(ctx.message).gettext
+    if mode is None:
+        payload = _(
+            "PitsaBot  Copyright (C) {}  SergSel2006 (Sergey Selivanov)\n"
+            "This program comes with ABSOLUTELY NO WARRANTY; for details, "
+            "use 'licence w'.\n"
+            "This is free software, and you are welcome to redistribute it "
+            "under certain conditions; use `license c' for details."
+            )
+        await ctx.send(translate(payload).format(datetime.date.today().year))
+    elif mode == 'w':
+        payload = _(
+            '  15. Disclaimer of Warranty.\n'
+            '  THERE IS NO WARRANTY FOR THE PROGRAM, '
+            'TO THE EXTENT PERMITTED BY '
+            'APPLICABLE LAW.  EXCEPT WHEN OTHERWISE '
+            'STATED IN WRITING THE COPYRIGHT '
+            'HOLDERS AND/OR OTHER PARTIES PROVIDE '
+            'THE PROGRAM "AS IS" WITHOUT WARRANTY '
+            'OF ANY KIND, EITHER EXPRESSED OR IMPLIED, '
+            'INCLUDING, BUT NOT LIMITED TO, '
+            'THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS '
+            'FOR A PARTICULAR PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY '
+            'AND PERFORMANCE OF THE PROGRAM '
+            'IS WITH YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME '
+            'THE COST OF '
+            'ALL NECESSARY SERVICING, REPAIR OR CORRECTION.'
+            )
+        await ctx.send(translate(payload))
+    elif mode == 'c':
+        payload = _(
+            '  16. Limitation of Liability.\n'
+            '  IN NO EVENT UNLESS REQUIRED '
+            'BY APPLICABLE LAW OR AGREED TO IN WRITING '
+            'WILL ANY COPYRIGHT HOLDER, OR ANY OTHER '
+            'PARTY WHO MODIFIES AND/OR CONVEYS '
+            'THE PROGRAM AS PERMITTED ABOVE, BE '
+            'LIABLE TO YOU FOR DAMAGES, INCLUDING ANY '
+            'GENERAL, SPECIAL, INCIDENTAL OR '
+            'CONSEQUENTIAL DAMAGES ARISING OUT OF THE '
+            'USE OR INABILITY TO USE THE PROGRAM '
+            '(INCLUDING BUT NOT LIMITED TO LOSS OF '
+            'DATA OR DATA BEING RENDERED INACCURATE '
+            'OR LOSSES SUSTAINED BY YOU OR THIRD '
+            'PARTIES OR A FAILURE OF THE PROGRAM '
+            'TO OPERATE WITH ANY OTHER PROGRAMS), '
+            'EVEN IF SUCH HOLDER OR OTHER PARTY '
+            'HAS BEEN ADVISED OF THE POSSIBILITY OF '
+            'SUCH DAMAGES.'
+            )
+        await ctx.send(translate(payload))
 
 
 # bot launching
@@ -385,15 +563,15 @@ async def on_tick(tick: int = 5):
         await asyncio.sleep(tick)
         try:
             if ping(Bot) > 2:
-                to_thread(printw(f"High ping! {ping(Bot)} s"))
+                printw(f"High ping! {ping(Bot)} s")
             await cog_finder(
                 Bot, pathlib.Path("src", "cogs")
-            )  # should be before check_configs as after
+                )  # should be before check_configs as after
             # start we should synchronise our config files with cloud.
             check_configs(Bot)
         except Exception as e:
             exc_info = ''.join(traceback.format_exception(e))
-            printw(f"error occured, ignoring!\n{exc_info}")
+            printw(f"error occurred, ignoring!\n{exc_info}")
 
 
 @Bot.event
@@ -410,25 +588,25 @@ async def on_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
         await ctx.send(
             _("You don't have enough permissions for executing this command.")
-        )
+            )
     elif "discord.errors.Forbidden" in exc_info:
         try:
             await ctx.guild.owner.dm_channel.send(
                 _(
                     "I don't have enough permissions to do this. "
-                    "Giving bot role with Administator permission will "
+                    "Giving bot role with Administrator permission will "
                     "solve all problems with permissions"
+                    )
                 )
-            )
         except AttributeError:
             await ctx.guild.owner.create_dm()
             await ctx.guild.owner.dm_channel.send(
                 _(
                     "I don't have enough permissions to do this. "
-                    "Giving bot role with Administator permission will "
+                    "Giving bot role with Administrator permission will "
                     "solve all problems with permissions"
+                    )
                 )
-            )
 
     elif isinstance(error, commands.errors.MissingRequiredArgument):
         await ctx.send(_("Command has not enough arguments. Use command help"))
@@ -437,19 +615,26 @@ async def on_error(ctx, error):
         await ctx.send(_("Command not found. Use help command."))
         print("{} issued wrong command".format(ctx.guild.id))
     elif isinstance(error, SystemExit):
-        printc("shutting down, goodbye!")
+        print("shutting down, goodbye!")
     elif isinstance(error, commands.errors.BadArgument):
         await ctx.send(
             _(
                 "You used incorrect arguments(check help for command), "
                 "please notice that bot cannot do any calculations inside "
                 "arguments"
+                )
             )
-        )
     else:
         printw("error occured, ignoring!\n" + exc_info)
 
 
 Bot.on_command_error = on_error
 Bot.settings = settings
+help_attrs = {
+    "name": _("help"),
+    "brief": _("shows this message."),
+    "usage": _("[command or module]"),
+    "description": _("totally made for helping you!"),
+    }
+Bot.help_command = TranslatableHelp(command_attrs=help_attrs)
 Bot.run(settings["token"])

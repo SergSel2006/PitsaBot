@@ -1,27 +1,54 @@
-#  Copyright (c) 2022.
-#        This program is free software: you can redistribute it and/or modify
-#        it under the terms of the GNU General Public License as published by
-#        the Free Software Foundation, either version 3 of the License, or
-#        (at your option) any later version.
+#  Copyright (c) 2022-2023 SergSel2006 (Sergey Selivanov).
 #
-#        This program is distributed in the hope that it will be useful,
-#        but WITHOUT ANY WARRANTY; without even the implied warranty of
-#        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#        GNU General Public License for more details.
 #
-#        You should have received a copy of the GNU General Public License
-#        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#      This program is free software: you can redistribute it and/or modify
+#      it under the terms of the GNU General Public License as published by
+#      the Free Software Foundation, either version 3 of the License, or
+#      (at your option) any later version.
+#
+#      This program is distributed in the hope that it will be useful,
+#      but WITHOUT ANY WARRANTY; without even the implied warranty of
+#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#      GNU General Public License for more details.
+#
+#      You should have received a copy of the GNU General Public License
+#      along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+#
+#      This program is free software: you can redistribute it and/or modify
+#      it under the terms of the GNU General Public License as published by
+#      the Free Software Foundation, either version 3 of the License, or
+#      (at your option) any later version.
+#
+#      This program is distributed in the hope that it will be useful,
+#      but WITHOUT ANY WARRANTY; without even the implied warranty of
+#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#      GNU General Public License for more details.
+#
+#      You should have received a copy of the GNU General Public License
+#      along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+#      This program is free software: you can redistribute it and/or modify
+#      it under the terms of the GNU General Public License as published by
+#      the Free Software Foundation, either version 3 of the License, or
+#      (at your option) any later version.
+#
+#      This program is distributed in the hope that it will be useful,
+#      but WITHOUT ANY WARRANTY; without even the implied warranty of
+#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#      GNU General Public License for more details.
+#
+#      You should have received a copy of the GNU General Public License
+#      along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # Only for l10n marking puporses.
 import gettext
 import pathlib
 import traceback
 
+import shared
 import yaml
 from discord.ext import commands
-
-import shared
-from shared import printe
 
 try:
     from yaml import CLoader as Loader
@@ -37,31 +64,31 @@ _ = gettext.gettext
 
 def load_language(lang):
     with open(
-        pathlib.Path("locales", f"{lang}.yml"), "r",
-        encoding="utf8"
-    ) as lang:
+            pathlib.Path("locales", f"{lang}.yml"), "r",
+            encoding="utf8"
+            ) as lang:
         lang = yaml.load(lang, Loader=Loader)
         return lang
 
 
 def find_server_config(message):
     with open(
-        pathlib.Path(
-            "..", "data", "servers_config", str(message.guild.id),
-            "config.yml"
-        ), "r", encoding="utf8"
-    ) as config:
+            pathlib.Path(
+                "..", "data", "servers_config", str(message.guild.id),
+                "config.yml"
+                ), "r", encoding="utf8"
+            ) as config:
         config = yaml.load(config, Loader=Loader)
         return config
 
 
 def dump_server_config(message, config):
     with open(
-        pathlib.Path(
-            "data", "servers_config", str(message.guild.id),
-            "config.yml"
-        ), "w", encoding="utf8"
-    ) as config_file:
+            pathlib.Path(
+                "data", "servers_config", str(message.guild.id),
+                "config.yml"
+                ), "w", encoding="utf8"
+            ) as config_file:
         yaml.dump(config, config_file, Dumper=Dumper)
 
 
@@ -69,8 +96,8 @@ def can_manage_channels():
     async def predicate(ctx):
         perms = ctx.author.top_role.permissions
         if (
-            perms.manage_channels or perms.administrator
-            or ctx.author.id == ctx.guild.owner_id
+                perms.manage_channels or perms.administrator
+                or ctx.author.id == ctx.guild.owner_id
         ):
             return True
         else:
@@ -79,12 +106,26 @@ def can_manage_channels():
     return commands.check(predicate)
 
 
-class SettingsCog(commands.Cog):
+class Settings(commands.Cog):
+    description = _("Configurations for bot")
 
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.Command
+    settings_attrs = {
+        "name": _("config"),
+        "usage": _("<configuration of server>"),
+        "brief": _("changes settings. use `help config` for details"),
+        "description": _(
+            "Changes bot's config. Available configs:"
+            "\n prefix <prefix>"
+            "\n modrole <add/remove moderator's roles>"
+            "\n modlog <enable/channel/this/disable>"
+            "\n language <language>"
+            )
+        }
+
+    @commands.command(**settings_attrs)
     @can_manage_channels()
     async def config(self, ctx, mode, *options):
         lang = shared.load_server_language(ctx.message)
@@ -107,8 +148,8 @@ class SettingsCog(commands.Cog):
                                 await ctx.send(
                                     _("{0} already in list").format(
                                         role.mention
+                                        )
                                     )
-                                )
                         dump_server_config(ctx.message, config)
                         await ctx.send(_("Roles added to moderators"))
                     elif options[0].lower() == "remove":
@@ -119,8 +160,8 @@ class SettingsCog(commands.Cog):
                                 await ctx.send(
                                     _("{0} is not a moderator").format(
                                         role.mention
+                                        )
                                     )
-                                )
                         dump_server_config(ctx.message, config)
                         await ctx.send(_("Roles was removed from moderators"))
                 else:
@@ -128,8 +169,8 @@ class SettingsCog(commands.Cog):
                         " ".join(
                             [ctx.guild.get_role(i).mention for i
                              in config["modroles"]]
+                            )
                         )
-                    )
             elif mode == "modlog":
                 if options[0].lower() == "enable":
                     if config["modlog"]["channel"]:
@@ -141,8 +182,8 @@ class SettingsCog(commands.Cog):
                             _(
                                 "for activating moderation log, "
                                 "you need to specify a channel first."
+                                )
                             )
-                        )
                 elif options[0].lower() == "channel":
                     if options[1].lower() != "this":
                         channel = ctx.message.channel_mentions[0]
@@ -156,8 +197,7 @@ class SettingsCog(commands.Cog):
                     dump_server_config(ctx.message, config)
                     await ctx.send(_("Moderation log disabled"))
             elif mode == "language":
-                available = [i for i in pathlib.Path("locales").iterdir() if
-                             i.is_dir()]
+                available = shared.lang_table.keys()
                 if options[0] in available:
                     config["language"] = options[0]
                     dump_server_config(ctx.message, config)
@@ -181,21 +221,21 @@ class SettingsCog(commands.Cog):
             else:
                 raise NotImplementedError(
                     "Configuration mode {0} Not Implemented".format(mode)
-                )
+                    )
         except Exception as e:
             await ctx.send(
                 _(
-                    "Ooops! Something went wrong! If this happens too often,"
+                    "Oops! Something went wrong! If this happens too often,"
                     " send basic information about"
                     " what you've done and this code: {0} to issue tracker"
-                ).format(ctx.guild.id)
-            )
+                    ).format(ctx.guild.id)
+                )
             exc_info = ''.join(traceback.format_exception(e))
-            printe(
+            shared.printe(
                 "While configuring {0}, error occured and ignored."
                 "\n{1}".format(ctx.guild.id, exc_info)
-            )
+                )
 
 
 async def setup(bot):
-    await bot.add_cog(SettingsCog(bot))
+    await bot.add_cog(Settings(bot))
