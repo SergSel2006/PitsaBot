@@ -13,4 +13,4 @@ counting:
   number: 0
   channel: ""
   enabled: false
-  last-counted-person: ""
+  last-counted-person: 0
