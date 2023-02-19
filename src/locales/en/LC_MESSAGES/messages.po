@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-01-29 12:21+0700\n"
-"PO-Revision-Date: 2023-01-29 12:35+0700\n"
+"POT-Creation-Date: 2023-02-19 23:43+0700\n"
+"PO-Revision-Date: 2023-02-19 23:46+0700\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -13,23 +13,23 @@ msgstr ""
 "X-Generator: Poedit 3.2.2\n"
 "X-Poedit-Basepath: .\n"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:396
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:427
 msgid " - No commands\n"
 msgstr " - No commands\n"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:406
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:437
 msgid "Available commands:\n"
 msgstr "Available commands:\n"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:424
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:456
 msgid "No commands available"
 msgstr "No commands available"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:451
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:485
 msgid "about"
 msgstr "about"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:454
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:488
 msgid ""
 "\n"
 "            Nice bot for all your needs.\n"
@@ -63,11 +63,11 @@ msgstr ""
 "              https://github.com/SergSel2006/PitsaBot\n"
 "            "
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:471
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:505
 msgid "license"
 msgstr "license"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:475
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:509
 msgid ""
 "PitsaBot  Copyright (C) {}  SergSel2006 (Sergey Selivanov)\n"
 "This program comes with ABSOLUTELY NO WARRANTY; for details, use 'licence "
@@ -81,7 +81,7 @@ msgstr ""
 "This is free software, and you are welcome to redistribute it under certain "
 "conditions; use `license c' for details."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:484
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:518
 msgid ""
 "  15. Disclaimer of Warranty.\n"
 "  THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY "
@@ -103,7 +103,7 @@ msgstr ""
 "YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL "
 "NECESSARY SERVICING, REPAIR OR CORRECTION."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:503
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:537
 msgid ""
 "  16. Limitation of Liability.\n"
 "  IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL "
@@ -127,12 +127,12 @@ msgstr ""
 "EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF "
 "SUCH DAMAGES."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:555
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:590
 msgid "You don't have enough permissions for executing this command."
 msgstr "You don't have enough permissions for executing this command."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:560
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:569
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:595
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:604
 msgid ""
 "I don't have enough permissions to do this. Giving bot role with "
 "Administrator permission will solve all problems with permissions"
@@ -140,15 +140,15 @@ msgstr ""
 "I don't have enough permissions to do this. Giving bot role with "
 "Administrator permission will solve all problems with permissions"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:577
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:612
 msgid "Command has not enough arguments. Use command help"
 msgstr "Command has not enough arguments. Use command help"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:580
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:615
 msgid "Command not found. Use help command."
 msgstr "Command not found. Use help command."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:586
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:621
 msgid ""
 "You used incorrect arguments(check help for command), please notice that bot "
 "cannot do any calculations inside arguments"
@@ -156,69 +156,68 @@ msgstr ""
 "You used incorrect arguments(check help for command), please notice that bot "
 "cannot do any calculations inside arguments"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:599
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:634
 msgid "help"
 msgstr "help"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:600
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:635
 msgid "shows this message."
 msgstr "shows this message."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:601
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:636
 msgid "[command or module]"
 msgstr "[command or module]"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:602
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:637
 msgid "totally made for helping you!"
 msgstr "totally made for helping you!"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\godpitsa.py:48
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\godpitsa.py:76
 msgid "Module to make pitsa and hlep!"
 msgstr "Module to make pitsa and hlep!"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:56
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:84
 msgid "everything any moderator should like"
 msgstr "everything any moderator should like"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:63
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:91
 msgid "ban"
 msgstr "ban"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:64
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:119
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:92
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:147
 msgid "<user, reason>"
 msgstr "<user, reason>"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:65
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\shared.py:194
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:93
 msgid "bans person"
 msgstr "bans person"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:66
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:94
 msgid "Use to ban <user>. To prevent non-reason bans <reason> is required"
 msgstr "Use to ban <user>. To prevent non-reason bans <reason> is required"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:80
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:108
 msgid "{0} has been banned from the server"
 msgstr "{0} has been banned from the server"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:83
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:111
 msgid "cannot mute, kick or ban moderators and myself"
 msgstr "cannot mute, kick or ban moderators and myself"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:86
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:114
 msgid "purge"
 msgstr "purge"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:87
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:115
 msgid "<amount> [user]"
 msgstr "<amount> [user]"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:88
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:116
 msgid "cleans chat from messages"
 msgstr "cleans chat from messages"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:89
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:117
 msgid ""
 "Removes <amount> messages, if [user] is present, clean messages only by this "
 "user"
@@ -226,35 +225,35 @@ msgstr ""
 "Removes <amount> messages, if [user] is present, clean messages only by this "
 "user"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:113
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:141
 msgid "{0} messages was purged"
 msgstr "{0} messages was purged"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:118
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:146
 msgid "kick"
 msgstr "kick"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:120
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:148
 msgid "kicks person"
 msgstr "kicks person"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:121
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:149
 msgid "Use to kick <user>. To prevent non-reason kicks <reason> is required"
 msgstr "Use to kick <user>. To prevent non-reason kicks <reason> is required"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:133
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:161
 msgid "Cannot kick without reason"
 msgstr "Cannot kick without reason"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:138
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:166
 msgid "{0} has been kicked from the server."
 msgstr "{0} has been kicked from the server."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:141
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:169
 msgid "cannot mute, kick or ban moderators"
 msgstr "cannot mute, kick or ban moderators"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:151
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:179
 msgid ""
 "{0} Deleted a message. Content was:\n"
 ">>{1}"
@@ -262,7 +261,7 @@ msgstr ""
 "{0} Deleted a message. Content was:\n"
 ">>{1}"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:164
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:192
 msgid ""
 "{0} Changed message. Content was:\n"
 ">>{1}\n"
@@ -274,29 +273,31 @@ msgstr ""
 "Content now:\n"
 ">>{2}"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\other.py:34
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\other.py:93
+msgid "{0} Failed count on {1}! Starting from 1 again..."
+msgstr "{0} Failed count on {1}! Starting from 1 again..."
+
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\other.py:100
 msgid "Something that just exists"
-msgstr "something that just exists"
+msgstr "something that just exists."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:82
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:110
 msgid "Configurations for bot"
-msgstr "configurations for bot"
+msgstr "configurations for bot."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:88
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\shared.py:176
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:116
 msgid "config"
 msgstr "config"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:89
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:117
 msgid "<configuration of server>"
 msgstr "<configuration of server>"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:90
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:118
 msgid "changes settings. use `help config` for details"
 msgstr "changes settings. use `help config` for details"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:91
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\shared.py:169
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:119
 msgid ""
 "Changes bot's config. Available configs:\n"
 " prefix <prefix>\n"
@@ -310,51 +311,67 @@ msgstr ""
 " modlog <enable/channel/this/disable>\n"
 " language <language>"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:111
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:139
 msgid "Prefix changed successfully."
 msgstr "Prefix changed successfully."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:121
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:149
 msgid "{0} already in list"
 msgstr "{0} already in list"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:126
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:154
 msgid "Roles added to moderators"
 msgstr "Roles added to moderators"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:133
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:161
 msgid "{0} is not a moderator"
 msgstr "{0} is not a moderator"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:138
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:166
 msgid "Roles was removed from moderators"
 msgstr "Roles was removed from moderators"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:151
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:179
 msgid "Moderation log enabled"
 msgstr "Moderation log enabled"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:154
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:182
 msgid "for activating moderation log, you need to specify a channel first."
 msgstr "for activating moderation log, you need to specify a channel first."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:166
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:194
 msgid "Moderation log channel set"
 msgstr "Moderation log channel set"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:170
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:198
 msgid "Moderation log disabled"
 msgstr "Moderation log disabled"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:176
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:204
 msgid "Language changed successfully"
 msgstr "Language changed successfully"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:178
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:206
 msgid "Invalid language"
 msgstr "Invalid language"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:199
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:226
+msgid "Counting enabled"
+msgstr "Counting enabled"
+
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:229
+msgid "for activating counting, you need to specify a channel first."
+msgstr "for activating counting, you need to specify a channel first."
+
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:241
+msgid "Counting channel set"
+msgstr "Counting channel set"
+
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:245
+msgid "Counting disabled"
+msgstr "Counting disabled"
+
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:252
 msgid ""
 "Oops! Something went wrong! If this happens too often, send basic "
 "information about what you've done and this code: {0} to issue tracker"
@@ -362,49 +379,38 @@ msgstr ""
 "Ooops! Something went wrong! If this happens too often, send basic "
 "information about what you've done and this code: {0} to issue tracker"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\shared.py:165
-msgid "Changes server settings."
-msgstr "Changes server settings."
+#~ msgid "Changes server settings."
+#~ msgstr "Changes server settings."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\shared.py:166
-msgid "Settings"
-msgstr "Settings"
+#~ msgid "Settings"
+#~ msgstr "Settings"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\shared.py:178
-msgid "bots config changes"
-msgstr "bots config changes"
+#~ msgid "bots config changes"
+#~ msgstr "bots config changes"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\shared.py:183
-msgid "Commands that developers didn't put in any of modules"
-msgstr "Commands that developers didn't put in any of modules"
+#~ msgid "Commands that developers didn't put in any of modules"
+#~ msgstr "Commands that developers didn't put in any of modules"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\shared.py:184
-msgid "Other"
-msgstr "Other"
+#~ msgid "Other"
+#~ msgstr "Other"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\shared.py:190
-msgid "Commands for moderators. Also is a core for modlog"
-msgstr "Commands for moderators. Also is a core for modlog"
+#~ msgid "Commands for moderators. Also is a core for modlog"
+#~ msgstr "Commands for moderators. Also is a core for modlog"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\shared.py:191
-msgid "Moderation"
-msgstr "Moderation"
+#~ msgid "Moderation"
+#~ msgstr "Moderation"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\shared.py:195
-msgid "preson and reason"
-msgstr "preson and reason"
+#~ msgid "preson and reason"
+#~ msgstr "preson and reason"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\shared.py:197
-msgid "Ban"
-msgstr "Ban"
+#~ msgid "Ban"
+#~ msgstr "Ban"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\shared.py:202
-msgid "this module has everything for pitsa and hlep"
-msgstr "this module has everything for pitsa and hlep"
+#~ msgid "this module has everything for pitsa and hlep"
+#~ msgstr "this module has everything for pitsa and hlep"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\shared.py:203
-msgid "Pitsa's commands (and hlep's)"
-msgstr "Pitsa's commands (and hlep's)"
+#~ msgid "Pitsa's commands (and hlep's)"
+#~ msgstr "Pitsa's commands (and hlep's)"
 
 #~ msgid "Cannot ban without reason"
 #~ msgstr "Cannot ban without reason"

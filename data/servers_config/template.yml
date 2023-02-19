@@ -1,5 +1,5 @@
 prefix: "p"
-language: "ru"
+language: "en"
 disabled_commands: null
 modlog:
   channel: ""
@@ -9,3 +9,8 @@ modroles:
 everyonetrigger: false
 global_db: true
 react_to_pizza: false
+counting:
+  number: 0
+  channel: ""
+  enabled: false
+  last-counted-person: ""
