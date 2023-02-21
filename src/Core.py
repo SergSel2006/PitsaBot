@@ -28,6 +28,20 @@
 #      You should have received a copy of the GNU General Public License
 #      along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
+#
+#      This program is free software: you can redistribute it and/or modify
+#      it under the terms of the GNU General Public License as published by
+#      the Free Software Foundation, either version 3 of the License, or
+#      (at your option) any later version.
+#
+#      This program is distributed in the hope that it will be useful,
+#      but WITHOUT ANY WARRANTY; without even the implied warranty of
+#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#      GNU General Public License for more details.
+#
+#      You should have received a copy of the GNU General Public License
+#      along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
 #      This program is free software: you can redistribute it and/or modify
 #      it under the terms of the GNU General Public License as published by
 #      the Free Software Foundation, either version 3 of the License, or
@@ -99,16 +113,18 @@ def check_configs(bot: discord.ext.commands.Bot):
             dict1 = dict2
             return dict1, False
         for i in set(dict2.keys()).difference(dict1.keys()):
-            if type(dict2[i]) == dict and type(dict1[i]) == dict:
+            if type(dict2[i]) == dict and i in dict1.keys():
                 dict1[i], other_same = diff(dict1[i], dict2[i])
-                if not other_same:
-                    same = other_same
+                same = other_same
             else:
                 dict1[i] = dict2[i]
                 same = False
         for i in set(dict1.keys()).difference(dict2.keys()):
             del dict1[i]
             same = False
+        for i in filter(lambda x: type(dict2[x]) == dict, dict2.keys()):
+            dict1[i], other_same = diff(dict1[i], dict2[i])
+            same = other_same
         return dict1, same
 
     with open(template_path, mode="r", encoding='utf8') as temp:
@@ -143,6 +159,7 @@ def check_configs(bot: discord.ext.commands.Bot):
                             config_path, mode='w', encoding='utf8'
                             ) as config_raw:
                         yaml.dump(config, config_raw, Dumper)
+                        print(f"Changed config file of {guild.name}")
             temp.seek(0)
 
 

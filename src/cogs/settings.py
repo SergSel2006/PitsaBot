@@ -42,6 +42,20 @@
 #      You should have received a copy of the GNU General Public License
 #      along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
+#
+#      This program is free software: you can redistribute it and/or modify
+#      it under the terms of the GNU General Public License as published by
+#      the Free Software Foundation, either version 3 of the License, or
+#      (at your option) any later version.
+#
+#      This program is distributed in the hope that it will be useful,
+#      but WITHOUT ANY WARRANTY; without even the implied warranty of
+#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#      GNU General Public License for more details.
+#
+#      You should have received a copy of the GNU General Public License
+#      along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
 #      This program is free software: you can redistribute it and/or modify
 #      it under the terms of the GNU General Public License as published by
 #      the Free Software Foundation, either version 3 of the License, or
@@ -134,8 +148,9 @@ class Settings(commands.Cog):
             "Changes bot's config. Available configs:"
             "\n prefix <prefix>"
             "\n modrole <add/remove moderator's roles>"
-            "\n modlog <enable/channel/this/disable>"
+            "\n modlog <enable/channel (this)/disable>"
             "\n language <language>"
+            "\n counting <enable/channel (this)/disable/big (number)>"
             )
         }
 
@@ -149,7 +164,6 @@ class Settings(commands.Cog):
         try:
             if mode == "prefix":
                 config['prefix'] = options[0]
-                dump_server_config(ctx.message, config)
                 await ctx.send(_("Prefix changed successfully."))
             elif mode == "modrole":
                 roles = ctx.message.role_mentions
@@ -164,7 +178,6 @@ class Settings(commands.Cog):
                                         role.mention
                                         )
                                     )
-                        dump_server_config(ctx.message, config)
                         await ctx.send(_("Roles added to moderators"))
                     elif options[0].lower() == "remove":
                         for role in roles:
@@ -176,7 +189,6 @@ class Settings(commands.Cog):
                                         role.mention
                                         )
                                     )
-                        dump_server_config(ctx.message, config)
                         await ctx.send(_("Roles was removed from moderators"))
                 else:
                     await ctx.send(
@@ -189,7 +201,6 @@ class Settings(commands.Cog):
                 if options[0].lower() == "enable":
                     if config["modlog"]["channel"]:
                         config["modlog"]["enabled"] = True
-                        dump_server_config(ctx.message, config)
                         await ctx.send(_("Moderation log enabled"))
                     else:
                         await ctx.send(
@@ -204,39 +215,31 @@ class Settings(commands.Cog):
                     else:
                         channel = ctx.channel
                     config["modlog"]["channel"] = channel.id
-                    dump_server_config(ctx.message, config)
                     await ctx.send(_("Moderation log channel set"))
                 elif options[0].lower() == "disable":
                     config["modlog"]["enabled"] = False
-                    dump_server_config(ctx.message, config)
                     await ctx.send(_("Moderation log disabled"))
             elif mode == "language":
                 available = shared.lang_table.keys()
                 if options[0] in available:
                     config["language"] = options[0]
-                    dump_server_config(ctx.message, config)
                     await ctx.send(_("Language changed successfully"))
                 else:
                     await ctx.send(_("Invalid language"))
             elif mode == "trigger":
                 if options[0].lower() == "enable":
                     config["everyonetrigger"] = True
-                    dump_server_config(ctx.message, config)
                 else:
                     config["everyonetrigger"] = False
-                    dump_server_config(ctx.message, config)
             elif mode == "react":
                 if options[0].lower() == "enable":
                     config["react_to_pizza"] = True
-                    dump_server_config(ctx.message, config)
                 else:
                     config["react_to_pizza"] = False
-                    dump_server_config(ctx.message, config)
             elif mode == "counting":
                 if options[0].lower() == "enable":
                     if config["counting"]["channel"]:
                         config["counting"]["enabled"] = True
-                        dump_server_config(ctx.message, config)
                         await ctx.send(_("Counting enabled"))
                     else:
                         await ctx.send(
@@ -251,16 +254,24 @@ class Settings(commands.Cog):
                     else:
                         channel = ctx.channel
                     config["counting"]["channel"] = channel.id
-                    dump_server_config(ctx.message, config)
+
                     await ctx.send(_("Counting channel set"))
                 elif options[0].lower() == "disable":
                     config["counting"]["enabled"] = False
-                    dump_server_config(ctx.message, config)
+
                     await ctx.send(_("Counting disabled"))
+                elif options[0].lower() == "big":
+                    config["counting"]["huge"] = int(options[1])
+                    await ctx.send(
+                        _("Big number is now {0}").format(
+                            int(options[1])
+                            )
+                        )
             else:
                 raise NotImplementedError(
                     "Configuration mode {0} Not Implemented".format(mode)
                     )
+            dump_server_config(ctx.message, config)
         except Exception as e:
             await ctx.send(
                 _(

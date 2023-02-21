@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-02-19 23:43+0700\n"
-"PO-Revision-Date: 2023-02-19 23:46+0700\n"
+"POT-Creation-Date: 2023-02-21 13:53+0700\n"
+"PO-Revision-Date: 2023-02-21 13:55+0700\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -273,105 +273,119 @@ msgstr ""
 "Content now:\n"
 ">>{2}"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\other.py:93
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\other.py:125
 msgid "{0} Failed count on {1}! Starting from 1 again..."
 msgstr "{0} Failed count on {1}! Starting from 1 again..."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\other.py:100
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\other.py:134
+msgid ""
+"NOOOOO! What s shame, {0} Failed count on {1} (AKA Big Number)!\n"
+"Starting from 1 again..."
+msgstr ""
+"NOOOOO! What s shame, {0} Failed count on {1} (AKA Big Number)!\n"
+"Starting from 1 again..."
+
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\other.py:149
 msgid "Something that just exists"
 msgstr "something that just exists."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:110
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:124
 msgid "Configurations for bot"
 msgstr "configurations for bot."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:116
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:130
 msgid "config"
 msgstr "config"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:117
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:131
 msgid "<configuration of server>"
 msgstr "<configuration of server>"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:118
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:132
 msgid "changes settings. use `help config` for details"
 msgstr "changes settings. use `help config` for details"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:119
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:133
 msgid ""
 "Changes bot's config. Available configs:\n"
 " prefix <prefix>\n"
 " modrole <add/remove moderator's roles>\n"
-" modlog <enable/channel/this/disable>\n"
-" language <language>"
+" modlog <enable/channel (this)/disable>\n"
+" language <language>\n"
+" counting <enable/channel (this)/disable/big (number)>"
 msgstr ""
 "Changes bot's config. Available configs:\n"
 " prefix <prefix>\n"
 " modrole <add/remove moderator's roles>\n"
 " modlog <enable/channel/this/disable>\n"
-" language <language>"
+" language <language>\n"
+" counting <enable/channel (this)/disable/big (number)>"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:139
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:154
 msgid "Prefix changed successfully."
 msgstr "Prefix changed successfully."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:149
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:164
 msgid "{0} already in list"
 msgstr "{0} already in list"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:154
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:169
 msgid "Roles added to moderators"
 msgstr "Roles added to moderators"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:161
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:176
 msgid "{0} is not a moderator"
 msgstr "{0} is not a moderator"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:166
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:181
 msgid "Roles was removed from moderators"
 msgstr "Roles was removed from moderators"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:179
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:194
 msgid "Moderation log enabled"
 msgstr "Moderation log enabled"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:182
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:197
 msgid "for activating moderation log, you need to specify a channel first."
 msgstr "for activating moderation log, you need to specify a channel first."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:194
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:209
 msgid "Moderation log channel set"
 msgstr "Moderation log channel set"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:198
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:213
 msgid "Moderation log disabled"
 msgstr "Moderation log disabled"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:204
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:219
 msgid "Language changed successfully"
 msgstr "Language changed successfully"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:206
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:221
 msgid "Invalid language"
 msgstr "Invalid language"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:226
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:241
 msgid "Counting enabled"
 msgstr "Counting enabled"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:229
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:244
 msgid "for activating counting, you need to specify a channel first."
 msgstr "for activating counting, you need to specify a channel first."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:241
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:256
 msgid "Counting channel set"
 msgstr "Counting channel set"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:245
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:260
 msgid "Counting disabled"
 msgstr "Counting disabled"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:252
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:263
+msgid "Big number is now {0}"
+msgstr ""
+
+#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:273
 msgid ""
 "Oops! Something went wrong! If this happens too often, send basic "
 "information about what you've done and this code: {0} to issue tracker"
