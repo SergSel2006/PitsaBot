@@ -17,7 +17,7 @@ that it will find small community now...
 
 # Where community lives?
 
-OK, here is [Discord server](https://discord.gg/PjRsZXN48Y)
+There was discord server, but I deleted it. There will be announcment if I r5ecreate it. I totally don't have time and ideas to work...
 
 # I'm Interested! How can I help you?
 
