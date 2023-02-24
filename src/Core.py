@@ -42,6 +42,20 @@
 #      You should have received a copy of the GNU General Public License
 #      along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
+#
+#      This program is free software: you can redistribute it and/or modify
+#      it under the terms of the GNU General Public License as published by
+#      the Free Software Foundation, either version 3 of the License, or
+#      (at your option) any later version.
+#
+#      This program is distributed in the hope that it will be useful,
+#      but WITHOUT ANY WARRANTY; without even the implied warranty of
+#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#      GNU General Public License for more details.
+#
+#      You should have received a copy of the GNU General Public License
+#      along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
 #      This program is free software: you can redistribute it and/or modify
 #      it under the terms of the GNU General Public License as published by
 #      the Free Software Foundation, either version 3 of the License, or
@@ -575,7 +589,7 @@ async def license(ctx, mode=None):
 
 
 # bot launching
-async def on_tick(tick: int = 5):
+async def on_tick(tick: int = 10):
     while True:
         await asyncio.sleep(tick)
         try:
@@ -583,8 +597,7 @@ async def on_tick(tick: int = 5):
                 printw(f"High ping! {ping(Bot)} s")
             await cog_finder(
                 Bot, pathlib.Path("src", "cogs")
-                )  # should be before check_configs as after
-            # start we should synchronise our config files with cloud.
+                )
             check_configs(Bot)
         except Exception as e:
             exc_info = ''.join(traceback.format_exception(e))
@@ -594,6 +607,8 @@ async def on_tick(tick: int = 5):
 @Bot.event
 async def on_ready():
     print(f"bot is ready, ping is {ping(Bot)} seconds")
+    activity = discord.Game(name="Github")
+    await Bot.change_presence(activity=activity, status=discord.Status.online)
     asyncio.ensure_future(on_tick())
 
 
