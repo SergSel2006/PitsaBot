@@ -13,63 +13,7 @@
 #
 #      You should have received a copy of the GNU General Public License
 #      along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#
-#
-#      This program is free software: you can redistribute it and/or modify
-#      it under the terms of the GNU General Public License as published by
-#      the Free Software Foundation, either version 3 of the License, or
-#      (at your option) any later version.
-#
-#      This program is distributed in the hope that it will be useful,
-#      but WITHOUT ANY WARRANTY; without even the implied warranty of
-#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#      GNU General Public License for more details.
-#
-#      You should have received a copy of the GNU General Public License
-#      along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#
-#
-#      This program is free software: you can redistribute it and/or modify
-#      it under the terms of the GNU General Public License as published by
-#      the Free Software Foundation, either version 3 of the License, or
-#      (at your option) any later version.
-#
-#      This program is distributed in the hope that it will be useful,
-#      but WITHOUT ANY WARRANTY; without even the implied warranty of
-#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#      GNU General Public License for more details.
-#
-#      You should have received a copy of the GNU General Public License
-#      along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#
-#
-#      This program is free software: you can redistribute it and/or modify
-#      it under the terms of the GNU General Public License as published by
-#      the Free Software Foundation, either version 3 of the License, or
-#      (at your option) any later version.
-#
-#      This program is distributed in the hope that it will be useful,
-#      but WITHOUT ANY WARRANTY; without even the implied warranty of
-#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#      GNU General Public License for more details.
-#
-#      You should have received a copy of the GNU General Public License
-#      along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#
-#      This program is free software: you can redistribute it and/or modify
-#      it under the terms of the GNU General Public License as published by
-#      the Free Software Foundation, either version 3 of the License, or
-#      (at your option) any later version.
-#
-#      This program is distributed in the hope that it will be useful,
-#      but WITHOUT ANY WARRANTY; without even the implied warranty of
-#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#      GNU General Public License for more details.
-#
-#      You should have received a copy of the GNU General Public License
-#      along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# Only for l10n marking puporses.
 import gettext
 import pathlib
 import traceback
@@ -262,6 +206,37 @@ class Settings(commands.Cog):
                     await ctx.send(_("Counting disabled"))
                 elif options[0].lower() == "big":
                     config["counting"]["huge"] = int(options[1])
+                    await ctx.send(
+                        _("Big number is now {0}").format(
+                            int(options[1])
+                            )
+                        )
+            elif mode == "words":
+                if options[0].lower() == "enable":
+                    if config["words"]["channel"]:
+                        config["words"]["enabled"] = True
+                        await ctx.send(_("Words enabled"))
+                    else:
+                        await ctx.send(
+                            _(
+                                "for activating words, "
+                                "you need to specify a channel first."
+                                )
+                            )
+                elif options[0].lower() == "channel":
+                    if options[1].lower() != "this":
+                        channel = ctx.message.channel_mentions[0]
+                    else:
+                        channel = ctx.channel
+                    config["words"]["channel"] = channel.id
+
+                    await ctx.send(_("Words channel set"))
+                elif options[0].lower() == "disable":
+                    config["words"]["enabled"] = False
+
+                    await ctx.send(_("Words disabled"))
+                elif options[0].lower() == "big":
+                    config["words"]["huge"] = int(options[1])
                     await ctx.send(
                         _("Big number is now {0}").format(
                             int(options[1])

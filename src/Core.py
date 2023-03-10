@@ -13,61 +13,6 @@
 #
 #      You should have received a copy of the GNU General Public License
 #      along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#
-#
-#      This program is free software: you can redistribute it and/or modify
-#      it under the terms of the GNU General Public License as published by
-#      the Free Software Foundation, either version 3 of the License, or
-#      (at your option) any later version.
-#
-#      This program is distributed in the hope that it will be useful,
-#      but WITHOUT ANY WARRANTY; without even the implied warranty of
-#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#      GNU General Public License for more details.
-#
-#      You should have received a copy of the GNU General Public License
-#      along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#
-#
-#      This program is free software: you can redistribute it and/or modify
-#      it under the terms of the GNU General Public License as published by
-#      the Free Software Foundation, either version 3 of the License, or
-#      (at your option) any later version.
-#
-#      This program is distributed in the hope that it will be useful,
-#      but WITHOUT ANY WARRANTY; without even the implied warranty of
-#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#      GNU General Public License for more details.
-#
-#      You should have received a copy of the GNU General Public License
-#      along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#
-#
-#      This program is free software: you can redistribute it and/or modify
-#      it under the terms of the GNU General Public License as published by
-#      the Free Software Foundation, either version 3 of the License, or
-#      (at your option) any later version.
-#
-#      This program is distributed in the hope that it will be useful,
-#      but WITHOUT ANY WARRANTY; without even the implied warranty of
-#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#      GNU General Public License for more details.
-#
-#      You should have received a copy of the GNU General Public License
-#      along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#
-#      This program is free software: you can redistribute it and/or modify
-#      it under the terms of the GNU General Public License as published by
-#      the Free Software Foundation, either version 3 of the License, or
-#      (at your option) any later version.
-#
-#      This program is distributed in the hope that it will be useful,
-#      but WITHOUT ANY WARRANTY; without even the implied warranty of
-#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#      GNU General Public License for more details.
-#
-#      You should have received a copy of the GNU General Public License
-#      along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # imports
 import asyncio
@@ -129,16 +74,13 @@ def check_configs(bot: discord.ext.commands.Bot):
         for i in set(dict2.keys()).difference(dict1.keys()):
             if type(dict2[i]) == dict and i in dict1.keys():
                 dict1[i], other_same = diff(dict1[i], dict2[i])
-                same = other_same
-            else:
+                same = other_same if same else False
+            elif type(dict2[i]) == dict:
                 dict1[i] = dict2[i]
                 same = False
         for i in set(dict1.keys()).difference(dict2.keys()):
             del dict1[i]
             same = False
-        for i in filter(lambda x: type(dict2[x]) == dict, dict2.keys()):
-            dict1[i], other_same = diff(dict1[i], dict2[i])
-            same = other_same
         return dict1, same
 
     with open(template_path, mode="r", encoding='utf8') as temp:
@@ -372,38 +314,6 @@ async def evaluate(ctx):
         await ctx.send(''.join(traceback.format_exception(e)))
 
 
-# help command
-# @Bot.command()
-# async def help(ctx: commands.Context, command=None):
-#     _ = shared.load_server_language(ctx.message)
-#     if command:
-#         try:
-#             command = Bot.get_command(command)
-#             if not command.hidden:
-#                 descriptions = help_parser_3000(command, _)
-#                 builder = f"{descriptions[0]} - {command}\n{command} " \
-#                           f"<{descriptions[3]}> [{descriptions[4]}] " \
-#                           f"-> {descriptions[5]}. {descriptions[2]}"
-#                 await ctx.send(builder)
-#         except commands.errors.CommandNotFound:
-#             await ctx.send(_("Command Not Found"))
-#     else:
-#         builders = [_("PitsaBot 0.1A Pre-Release")]
-#         cogs = Bot.cogs
-#         for cog in cogs:
-#             cog_desc = help_parser_3000(cog, _)
-#             builders.append(f"\n{cog_desc[0]} - {cog_desc[1]}")
-#             for command in cogs[cog].get_commands():
-#                 if not command.hidden:
-#                     descriptions = help_parser_3000(command, _)
-#                     cbuilder = f"{command.name} " \
-#                                f"<{descriptions[3]}> " \
-#                                f"[{descriptions[4]}] -> "
-#                                f"{descriptions[5]}. {descriptions[1]}"
-#                     builders.append(cbuilder)
-#         await ctx.send("\n".join(builders))
-
-
 class TranslatableHelp(commands.HelpCommand):
     def __init__(self, **options):
         super().__init__(**options)
@@ -595,9 +505,7 @@ async def on_tick(tick: int = 10):
         try:
             if ping(Bot) > 2:
                 printw(f"High ping! {ping(Bot)} s")
-            await cog_finder(
-                Bot, pathlib.Path("src", "cogs")
-                )
+            await cog_finder(Bot, pathlib.Path("src", "cogs"))
             check_configs(Bot)
         except Exception as e:
             exc_info = ''.join(traceback.format_exception(e))

@@ -15,3 +15,12 @@ counting:
   enabled: false
   last-counted-person: 0
   huge: 100
+words:
+  last-word: ""
+  dictionary:
+    -
+  correct-count: 0
+  channel: ""
+  enabled: false
+  last-counted-person: 0
+  huge: 100
