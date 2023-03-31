@@ -149,11 +149,17 @@ class Moderation(commands.Cog):
         config = shared.find_server_config(msg)
         if config["modlog"]["enabled"] and msg.author != self.bot.user:
             ch = self.bot.get_channel(config["modlog"]["channel"])
-            await ch.send(
-                _("{0} Deleted a message. Content was:\n>>{1}").format(
-                    msg.author.name, msg.content
-                    )
+            qual_name = msg.author.name + "#" + msg.author.discriminator
+            embed = discord.Embed(color=0xE74C3C)
+            embed.set_author(
+                name=qual_name + _(" Deleted message"),
+                icon_url=msg.author.display_avatar.url
                 )
+            embed.add_field(
+                name=_("Content was:"), value=msg.content,
+                inline=False
+                )
+            await ch.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_message_edit(self, msg_before, msg):
@@ -162,16 +168,21 @@ class Moderation(commands.Cog):
         config = shared.find_server_config(msg)
         if config["modlog"]["enabled"] and msg.author != self.bot.user:
             ch = self.bot.get_channel(config["modlog"]["channel"])
-            await ch.send(
-                _(
-                    "{0} Changed message. Content was:\n>>{1}\n"
-                    "Content now:\n>>{2}"
-                    ).format(
-                    msg.author.name,
-                    msg_before.content,
-                    msg.content
-                    )
+            qual_name = msg.author.name + "#" + msg.author.discriminator
+            embed = discord.Embed(color=0xF7DC6F)
+            embed.set_author(
+                name=qual_name + _(" Changed message"),
+                icon_url=msg.author.display_avatar.url
                 )
+            embed.add_field(
+                name=_("Content was:"), value=msg_before.content,
+                inline=False
+                )
+            embed.add_field(
+                name=_("Content now:"), value=msg.content,
+                inline=True
+                )
+            await ch.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_message(self, msg):

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-02-21 13:53+0700\n"
-"PO-Revision-Date: 2023-02-21 13:55+0700\n"
+"POT-Creation-Date: 2023-03-31 21:13+0700\n"
+"PO-Revision-Date: 2023-03-31 21:16+0700\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -13,23 +13,23 @@ msgstr ""
 "X-Generator: Poedit 3.2.2\n"
 "X-Poedit-Basepath: .\n"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:427
+#: .\Core.py:368
 msgid " - No commands\n"
 msgstr " - No commands\n"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:437
+#: .\Core.py:378
 msgid "Available commands:\n"
 msgstr "Available commands:\n"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:456
+#: .\Core.py:397
 msgid "No commands available"
 msgstr "No commands available"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:485
+#: .\Core.py:426
 msgid "about"
 msgstr "about"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:488
+#: .\Core.py:429
 msgid ""
 "\n"
 "            Nice bot for all your needs.\n"
@@ -63,11 +63,11 @@ msgstr ""
 "              https://github.com/SergSel2006/PitsaBot\n"
 "            "
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:505
+#: .\Core.py:446
 msgid "license"
 msgstr "license"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:509
+#: .\Core.py:450
 msgid ""
 "PitsaBot  Copyright (C) {}  SergSel2006 (Sergey Selivanov)\n"
 "This program comes with ABSOLUTELY NO WARRANTY; for details, use 'licence "
@@ -81,7 +81,7 @@ msgstr ""
 "This is free software, and you are welcome to redistribute it under certain "
 "conditions; use `license c' for details."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:518
+#: .\Core.py:459
 msgid ""
 "  15. Disclaimer of Warranty.\n"
 "  THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY "
@@ -103,7 +103,7 @@ msgstr ""
 "YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL "
 "NECESSARY SERVICING, REPAIR OR CORRECTION."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:537
+#: .\Core.py:478
 msgid ""
 "  16. Limitation of Liability.\n"
 "  IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL "
@@ -127,12 +127,11 @@ msgstr ""
 "EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF "
 "SUCH DAMAGES."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:590
+#: .\Core.py:530
 msgid "You don't have enough permissions for executing this command."
 msgstr "You don't have enough permissions for executing this command."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:595
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:604
+#: .\Core.py:535 .\Core.py:544
 msgid ""
 "I don't have enough permissions to do this. Giving bot role with "
 "Administrator permission will solve all problems with permissions"
@@ -140,15 +139,15 @@ msgstr ""
 "I don't have enough permissions to do this. Giving bot role with "
 "Administrator permission will solve all problems with permissions"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:612
+#: .\Core.py:552
 msgid "Command has not enough arguments. Use command help"
 msgstr "Command has not enough arguments. Use command help"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:615
+#: .\Core.py:555
 msgid "Command not found. Use help command."
 msgstr "Command not found. Use help command."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:621
+#: .\Core.py:561
 msgid ""
 "You used incorrect arguments(check help for command), please notice that bot "
 "cannot do any calculations inside arguments"
@@ -156,128 +155,27 @@ msgstr ""
 "You used incorrect arguments(check help for command), please notice that bot "
 "cannot do any calculations inside arguments"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:634
+#: .\Core.py:574
 msgid "help"
 msgstr "help"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:635
+#: .\Core.py:575
 msgid "shows this message."
 msgstr "shows this message."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:636
+#: .\Core.py:576
 msgid "[command or module]"
 msgstr "[command or module]"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\Core.py:637
+#: .\Core.py:577
 msgid "totally made for helping you!"
 msgstr "totally made for helping you!"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\godpitsa.py:76
-msgid "Module to make pitsa and hlep!"
-msgstr "Module to make pitsa and hlep!"
-
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:84
-msgid "everything any moderator should like"
-msgstr "everything any moderator should like"
-
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:91
-msgid "ban"
-msgstr "ban"
-
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:92
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:147
-msgid "<user, reason>"
-msgstr "<user, reason>"
-
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:93
-msgid "bans person"
-msgstr "bans person"
-
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:94
-msgid "Use to ban <user>. To prevent non-reason bans <reason> is required"
-msgstr "Use to ban <user>. To prevent non-reason bans <reason> is required"
-
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:108
-msgid "{0} has been banned from the server"
-msgstr "{0} has been banned from the server"
-
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:111
-msgid "cannot mute, kick or ban moderators and myself"
-msgstr "cannot mute, kick or ban moderators and myself"
-
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:114
-msgid "purge"
-msgstr "purge"
-
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:115
-msgid "<amount> [user]"
-msgstr "<amount> [user]"
-
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:116
-msgid "cleans chat from messages"
-msgstr "cleans chat from messages"
-
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:117
-msgid ""
-"Removes <amount> messages, if [user] is present, clean messages only by this "
-"user"
-msgstr ""
-"Removes <amount> messages, if [user] is present, clean messages only by this "
-"user"
-
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:141
-msgid "{0} messages was purged"
-msgstr "{0} messages was purged"
-
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:146
-msgid "kick"
-msgstr "kick"
-
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:148
-msgid "kicks person"
-msgstr "kicks person"
-
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:149
-msgid "Use to kick <user>. To prevent non-reason kicks <reason> is required"
-msgstr "Use to kick <user>. To prevent non-reason kicks <reason> is required"
-
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:161
-msgid "Cannot kick without reason"
-msgstr "Cannot kick without reason"
-
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:166
-msgid "{0} has been kicked from the server."
-msgstr "{0} has been kicked from the server."
-
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:169
-msgid "cannot mute, kick or ban moderators"
-msgstr "cannot mute, kick or ban moderators"
-
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:179
-msgid ""
-"{0} Deleted a message. Content was:\n"
-">>{1}"
-msgstr ""
-"{0} Deleted a message. Content was:\n"
-">>{1}"
-
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\moderation.py:192
-msgid ""
-"{0} Changed message. Content was:\n"
-">>{1}\n"
-"Content now:\n"
-">>{2}"
-msgstr ""
-"{0} Changed message. Content was:\n"
-">>{1}\n"
-"Content now:\n"
-">>{2}"
-
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\other.py:125
+#: .\cogs\counting.py:72
 msgid "{0} Failed count on {1}! Starting from 1 again..."
 msgstr "{0} Failed count on {1}! Starting from 1 again..."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\other.py:134
+#: .\cogs\counting.py:83
 msgid ""
 "NOOOOO! What s shame, {0} Failed count on {1} (AKA Big Number)!\n"
 "Starting from 1 again..."
@@ -285,27 +183,127 @@ msgstr ""
 "NOOOOO! What s shame, {0} Failed count on {1} (AKA Big Number)!\n"
 "Starting from 1 again..."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\other.py:149
+#: .\cogs\counting.py:98
+msgid "Module to make some counting."
+msgstr "Module to make some counting."
+
+#: .\cogs\godpitsa.py:50
+msgid "Module to make pitsa and hlep!"
+msgstr "Module to make pitsa and hlep!"
+
+#: .\cogs\moderation.py:58
+msgid "everything any moderator should like"
+msgstr "everything any moderator should like"
+
+#: .\cogs\moderation.py:65
+msgid "ban"
+msgstr "ban"
+
+#: .\cogs\moderation.py:66 .\cogs\moderation.py:121
+msgid "<user, reason>"
+msgstr "<user, reason>"
+
+#: .\cogs\moderation.py:67
+msgid "bans person"
+msgstr "bans person"
+
+#: .\cogs\moderation.py:68
+msgid "Use to ban <user>. To prevent non-reason bans <reason> is required"
+msgstr "Use to ban <user>. To prevent non-reason bans <reason> is required"
+
+#: .\cogs\moderation.py:82
+msgid "{0} has been banned from the server"
+msgstr "{0} has been banned from the server"
+
+#: .\cogs\moderation.py:85
+msgid "cannot mute, kick or ban moderators and myself"
+msgstr "cannot mute, kick or ban moderators and myself"
+
+#: .\cogs\moderation.py:88
+msgid "purge"
+msgstr "purge"
+
+#: .\cogs\moderation.py:89
+msgid "<amount> [user]"
+msgstr "<amount> [user]"
+
+#: .\cogs\moderation.py:90
+msgid "cleans chat from messages"
+msgstr "cleans chat from messages"
+
+#: .\cogs\moderation.py:91
+msgid ""
+"Removes <amount> messages, if [user] is present, clean messages only by this "
+"user"
+msgstr ""
+"Removes <amount> messages, if [user] is present, clean messages only by this "
+"user"
+
+#: .\cogs\moderation.py:115
+msgid "{0} messages was purged"
+msgstr "{0} messages was purged"
+
+#: .\cogs\moderation.py:120
+msgid "kick"
+msgstr "kick"
+
+#: .\cogs\moderation.py:122
+msgid "kicks person"
+msgstr "kicks person"
+
+#: .\cogs\moderation.py:123
+msgid "Use to kick <user>. To prevent non-reason kicks <reason> is required"
+msgstr "Use to kick <user>. To prevent non-reason kicks <reason> is required"
+
+#: .\cogs\moderation.py:135
+msgid "Cannot kick without reason"
+msgstr "Cannot kick without reason"
+
+#: .\cogs\moderation.py:140
+msgid "{0} has been kicked from the server."
+msgstr "{0} has been kicked from the server."
+
+#: .\cogs\moderation.py:143
+msgid "cannot mute, kick or ban moderators"
+msgstr "cannot mute, kick or ban moderators"
+
+#: .\cogs\moderation.py:155
+msgid " Deleted message"
+msgstr " Deleted message"
+
+#: .\cogs\moderation.py:159 .\cogs\moderation.py:175
+msgid "Content was:"
+msgstr "Content was:"
+
+#: .\cogs\moderation.py:173
+msgid " Changed message"
+msgstr " Changed message"
+
+#: .\cogs\moderation.py:177
+msgid "Content now:"
+msgstr "Content now:"
+
+#: .\cogs\other.py:35
 msgid "Something that just exists"
-msgstr "something that just exists."
+msgstr "Something that just exists."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:124
+#: .\cogs\settings.py:82
 msgid "Configurations for bot"
-msgstr "configurations for bot."
+msgstr "Configurations for bot."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:130
+#: .\cogs\settings.py:88
 msgid "config"
 msgstr "config"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:131
+#: .\cogs\settings.py:89
 msgid "<configuration of server>"
 msgstr "<configuration of server>"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:132
+#: .\cogs\settings.py:90
 msgid "changes settings. use `help config` for details"
 msgstr "changes settings. use `help config` for details"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:133
+#: .\cogs\settings.py:91
 msgid ""
 "Changes bot's config. Available configs:\n"
 " prefix <prefix>\n"
@@ -321,77 +319,125 @@ msgstr ""
 " language <language>\n"
 " counting <enable/channel (this)/disable/big (number)>"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:154
+#: .\cogs\settings.py:111
 msgid "Prefix changed successfully."
 msgstr "Prefix changed successfully."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:164
+#: .\cogs\settings.py:121
 msgid "{0} already in list"
 msgstr "{0} already in list"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:169
+#: .\cogs\settings.py:125
 msgid "Roles added to moderators"
 msgstr "Roles added to moderators"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:176
+#: .\cogs\settings.py:132
 msgid "{0} is not a moderator"
 msgstr "{0} is not a moderator"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:181
+#: .\cogs\settings.py:136
 msgid "Roles was removed from moderators"
 msgstr "Roles was removed from moderators"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:194
+#: .\cogs\settings.py:148
 msgid "Moderation log enabled"
 msgstr "Moderation log enabled"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:197
+#: .\cogs\settings.py:151
 msgid "for activating moderation log, you need to specify a channel first."
 msgstr "for activating moderation log, you need to specify a channel first."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:209
+#: .\cogs\settings.py:162
 msgid "Moderation log channel set"
 msgstr "Moderation log channel set"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:213
+#: .\cogs\settings.py:165
 msgid "Moderation log disabled"
 msgstr "Moderation log disabled"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:219
+#: .\cogs\settings.py:170
 msgid "Language changed successfully"
 msgstr "Language changed successfully"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:221
+#: .\cogs\settings.py:172
 msgid "Invalid language"
 msgstr "Invalid language"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:241
+#: .\cogs\settings.py:187
 msgid "Counting enabled"
 msgstr "Counting enabled"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:244
+#: .\cogs\settings.py:190
 msgid "for activating counting, you need to specify a channel first."
 msgstr "for activating counting, you need to specify a channel first."
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:256
+#: .\cogs\settings.py:202
 msgid "Counting channel set"
 msgstr "Counting channel set"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:260
+#: .\cogs\settings.py:206
 msgid "Counting disabled"
 msgstr "Counting disabled"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:263
+#: .\cogs\settings.py:210 .\cogs\settings.py:241
 msgid "Big number is now {0}"
-msgstr ""
+msgstr "Big number is now {0}"
 
-#: C:\Users\Sergey\PycharmProjects\PitsaBot\src\cogs\settings.py:273
+#: .\cogs\settings.py:218
+msgid "Words enabled"
+msgstr "Words enabled"
+
+#: .\cogs\settings.py:221
+msgid "for activating words, you need to specify a channel first."
+msgstr "for activating words, you need to specify a channel first."
+
+#: .\cogs\settings.py:233
+msgid "Words channel set"
+msgstr "Words channel set"
+
+#: .\cogs\settings.py:237
+msgid "Words disabled"
+msgstr "Words disabled"
+
+#: .\cogs\settings.py:252
 msgid ""
 "Oops! Something went wrong! If this happens too often, send basic "
 "information about what you've done and this code: {0} to issue tracker"
 msgstr ""
 "Ooops! Something went wrong! If this happens too often, send basic "
 "information about what you've done and this code: {0} to issue tracker"
+
+#: .\cogs\words.py:74
+msgid "{0} has written wrong word on {1}! "
+msgstr "{0} has written wrong word on {1}! "
+
+#: .\cogs\words.py:85
+msgid ""
+"NOOOOO! What s shame, {0} has written wrong word on {1} (AKA Big Number)!"
+msgstr ""
+"NOOOOO! What s shame, {0} has written wrong word on {1} (AKA Big Number)!"
+
+#: .\cogs\words.py:109
+msgid "Module to play words."
+msgstr ""
+
+#~ msgid ""
+#~ "{0} Deleted a message. Content was:\n"
+#~ ">>{1}"
+#~ msgstr ""
+#~ "{0} Deleted a message. Content was:\n"
+#~ ">>{1}"
+
+#~ msgid ""
+#~ "{0} Changed message. Content was:\n"
+#~ ">>{1}\n"
+#~ "Content now:\n"
+#~ ">>{2}"
+#~ msgstr ""
+#~ "{0} Changed message. Content was:\n"
+#~ ">>{1}\n"
+#~ "Content now:\n"
+#~ ">>{2}"
 
 #~ msgid "Changes server settings."
 #~ msgstr "Changes server settings."
