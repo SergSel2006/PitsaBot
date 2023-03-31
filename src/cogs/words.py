@@ -51,14 +51,15 @@ async def words(msg: discord.Message):
     if words_["enabled"]:
         if msg.channel.id == words_["channel"]:
             target_word: str = msg.content.split(" ")[0].lower()
+            target_word.rstrip(".,?!;:|\\/\"'%&@№")
             last_word = words_["last-word"]
             if target_word[0] != "#" and target_word and target_word != "#":
-                if last_word:
+                if last_word != "":
                     if target_word not in words_["dictionary"] and \
                             target_word[0] == list(last_word)[-1] and \
                             msg.author.id != words_["last-counted-person"]:
                         words_["correct-count"] += 1
-                        if words_["number"] <= words_["huge"]:
+                        if words_["correct-count"] <= words_["huge"]:
                             await msg.add_reaction("✅")
                         else:
                             await msg.add_reaction("☑️")
@@ -83,8 +84,9 @@ async def words(msg: discord.Message):
                             await msg.channel.send(
                                 translate(
                                     _(
-                                        "NOOOOO! What s shame, {0} has written wrong "
-                                        "word on {1} (AKA Big Number)!"
+                                        "NOOOOO! What s shame, {0} has "
+                                        "written wrong word on {1} "
+                                        "(AKA Big Number)!"
                                         )
                                     ).format(
                                     msg.author.mention,
@@ -101,6 +103,8 @@ async def words(msg: discord.Message):
                     words_["dictionary"].append(target_word)
                     words_["last-counted-person"] = msg.author.id
                     await msg.add_reaction("✅")
+            if len(words_["dictionary"]) > 50:
+                words_["dictionary"].pop(-1)
             config["words"] = words_
             dump_server_config(msg, config)
 
