@@ -181,10 +181,10 @@ class Moderation(commands.Cog):
             embed_added = len(msg_before.embeds) < len(msg.embeds)
             embed.add_field(
                 name=_("Content now:"), value=msg.content + (_(
-                    " (new embed("
-                    "s))."
+                    " (new embed(s))."
                     )
-                                                             if embed_added else ""),
+                                                             if embed_added else ""
+                                                             ),
                 inline=True
                 )
             await ch.send(embed=embed)

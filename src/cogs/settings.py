@@ -107,8 +107,24 @@ class Settings(commands.Cog):
         mode = mode.lower()
         try:
             if mode == "prefix":
-                config['prefix'] = options[0]
-                await ctx.send(_("Prefix changed successfully."))
+                if options:
+                    if options[0] != "delete":
+                        config['prefix'] = options[0]
+                        await ctx.send(_("Prefix changed successfully."))
+                    else:
+                        config['prefix'] = ''
+                        await ctx.send(
+                            _(
+                                "Prefix deleted successfully. Use a"
+                                " @mention with whitespace to raise"
+                                " a command"
+                                )
+                            )
+                else:
+                    await ctx.send(
+                        _("Your prefix now is: .") +
+                        config['prefix']
+                        )
             elif mode == "modrole":
                 roles = ctx.message.role_mentions
                 if options:
