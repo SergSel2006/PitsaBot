@@ -131,7 +131,10 @@ def server_prefix(bot: commands.Bot, message):
             try:
                 config = yaml.load(config, Loader)
                 prefix = config["prefix"]
-                return prefix
+                if prefix:
+                    return prefix
+                else:
+                    return bot.user.mention + ' '
             except ValueError:
                 return bot.user.mention + ' '
     else:
