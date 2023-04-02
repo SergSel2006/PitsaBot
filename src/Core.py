@@ -133,9 +133,9 @@ def server_prefix(bot: commands.Bot, message):
                 prefix = config["prefix"]
                 return prefix
             except ValueError:
-                return bot.user.mention
+                return bot.user.mention + ' '
     else:
-        return bot.user.mention
+        return bot.user.mention + ' '
 
 
 # cog finder
