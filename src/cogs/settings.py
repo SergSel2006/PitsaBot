@@ -112,7 +112,7 @@ class Settings(commands.Cog):
                         config['prefix'] = options[0]
                         await ctx.send(_("Prefix changed successfully."))
                     else:
-                        config['prefix'] = ''
+                        config['prefix'] = None
                         await ctx.send(
                             _(
                                 "Prefix deleted successfully. Use a"
