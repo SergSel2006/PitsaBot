@@ -159,6 +159,10 @@ class Moderation(commands.Cog):
                 name=_("Content was:"), value=msg.content,
                 inline=False
                 )
+            embed.add_field(
+                name=_("At channel:"), value=msg.channel.mention,
+                inline=False
+                )
             await ch.send(embed=embed)
 
     @commands.Cog.listener()
@@ -185,7 +189,11 @@ class Moderation(commands.Cog):
                     )
                                                              if embed_added else ""
                                                              ),
-                inline=True
+                inline=False
+                )
+            embed.add_field(
+                name=_("At channel:"), value=msg.channel.mention,
+                inline=False
                 )
             await ch.send(embed=embed)
 
