@@ -64,13 +64,10 @@ def dump_server_config(message, config):
         yaml.dump(config, config_file, Dumper=Dumper)
 
 
-def can_manage_channels():
+def can_manage_server():
     async def predicate(ctx):
         perms = ctx.author.top_role.permissions
-        if (
-                perms.manage_channels or perms.administrator
-                or ctx.author.id == ctx.guild.owner_id
-        ):
+        if perms.administrator or ctx.author.id == ctx.guild.owner_id:
             return True
         else:
             return False
@@ -86,20 +83,20 @@ class Settings(commands.Cog):
 
     settings_attrs = {
         "name": _("config"),
-        "usage": _("<configuration of server>"),
+        "usage": _("<subcommand>"),
         "brief": _("changes settings. use `help config` for details"),
         "description": _(
-            "Changes bot's config. Available configs:"
-            "\n prefix <prefix>"
-            "\n modrole <add/remove moderator's roles>"
-            "\n modlog <enable/channel (this)/disable>"
-            "\n language <language>"
-            "\n counting <enable/channel (this)/disable/big (number)>"
+            "Changes bots configurations. Available subcommands:"
+            "\n  prefix <prefix>"
+            "\n  modrole <add/remove moderator's roles>"
+            "\n  modlog <enable/channel (this)/disable>"
+            "\n  language <language>"
+            "\n  counting <enable/channel (this)/disable/big (number)>"
             )
         }
 
     @commands.command(**settings_attrs)
-    @can_manage_channels()
+    @can_manage_server()
     async def config(self, ctx, mode, *options):
         lang = shared.load_server_language(ctx.message)
         _ = lang.gettext

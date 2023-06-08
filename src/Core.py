@@ -120,8 +120,8 @@ def check_configs(bot: discord.ext.commands.Bot):
 
 
 # server prefix finder, if no prefix, return mention of a bot
-def server_prefix(bot: commands.Bot, message):
-    if isinstance(message.channel, discord.TextChannel):
+def server_prefix(bot: commands.Bot, message: discord.Message):
+    if isinstance(message.channel, (discord.TextChannel, discord.Thread)):
         with open(
                 pathlib.Path(
                     "data", "servers_config", str(message.guild.id),
@@ -129,8 +129,8 @@ def server_prefix(bot: commands.Bot, message):
                     ), "r"
                 ) as config:
             try:
-                config = yaml.load(config, Loader)
-                prefix = config["prefix"]
+                config: dict = yaml.load(config, Loader)
+                prefix: str = config["prefix"]
                 if prefix:
                     return prefix
                 else:
@@ -190,6 +190,8 @@ def ping(bot: commands.Bot):
 # check for a developer
 def owner_check(ctx: commands.Context):
     return Bot.is_owner(ctx.author)
+
+
 # bot init
 
 
@@ -334,7 +336,7 @@ class TranslatableHelp(commands.HelpCommand):
                 for command in mapping[None]:
                     if not command.hidden:
                         help_payload += str(
-                            "  - "
+                            "- "
                             + (translate(command.name) if
                                command.name else
                                command.qualified_name)
@@ -354,7 +356,7 @@ class TranslatableHelp(commands.HelpCommand):
                     for command in mapping[cog]:
                         if not command.hidden:
                             help_payload += str(
-                                "  - "
+                                "- "
                                 + (translate(command.name) if
                                    command.name else
                                    command.qualified_name)
