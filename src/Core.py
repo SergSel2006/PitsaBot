@@ -132,7 +132,7 @@ def server_prefix(bot: commands.Bot, message: discord.Message):
                 config: dict = yaml.load(config, Loader)
                 prefix: str = config["prefix"]
                 if prefix:
-                    return prefix
+                    return bot.user.mention + ' ', prefix
                 else:
                     return bot.user.mention + ' '
             except ValueError:
@@ -319,6 +319,67 @@ async def evaluate(ctx):
         await ctx.send(''.join(traceback.format_exception(e)))
 
 
+# config command itself
+settings_attrs = {
+    "name": _("sysconfig"),
+    "usage": _("<subcommand>"),
+    "brief": _(
+        "changes server core settings. use `help sysconfig` for "
+        "details."
+        ),
+    "description": _(
+        "Available subcommands:"
+        "\n  prefix <prefix>"
+        "\n  language <language>"
+        )
+    }
+
+
+@Bot.command(**settings_attrs)
+@shared.can_manage_server()
+async def sysconfig(ctx, mode, *options):
+    lang = shared.load_server_language(ctx.message)
+    _ = lang.gettext
+    config = shared.find_server_config(ctx.message)
+    mode = mode.lower()
+    match mode:
+        case "prefix":
+            if options:
+                match options[0]:
+                    case "delete":
+                        config['prefix'] = None
+                        await ctx.send(
+                            _(
+                                "Prefix deleted successfully. Use a"
+                                " @mention with whitespace to raise"
+                                " a command"
+                                )
+                            )
+                    case _:
+                        config['prefix'] = "".join(options)
+                        await ctx.send(_("Prefix changed successfully."))
+            else:
+                await ctx.send(
+                    _("Your prefix now is: ") +
+                    config['prefix']
+                    )
+        case "language":
+            available = shared.lang_table.keys()
+            if options[0] in available:
+                config["language"] = options[0]
+                await ctx.send(_("Language changed successfully"))
+            else:
+                await ctx.send(_("Invalid language"))
+        case _:
+            await ctx.send(
+                _(
+                    "Invalid subcommand, use `help sysconfig` to see "
+                    "available subcommands"
+                    )
+                )
+    shared.dump_server_config(ctx.message, config)
+
+
 class TranslatableHelp(commands.HelpCommand):
     def __init__(self, **options):
         super().__init__(**options)
@@ -326,9 +387,14 @@ class TranslatableHelp(commands.HelpCommand):
     async def send_bot_help(self, mapping):
         translate = shared.load_server_language(self.context.message).gettext
         destination = self.get_destination()
-        help_payload = "PitsaBot v0.2a\nMade by SergSel2006, idea by cool " \
-                       "people from Russian Rec Room\nAvailable commands" \
-                       " and modules:\n"
+        help_payload = translate(
+            _(
+                "{0} {1}\nMade by SergSel2006, idea by "
+                "cool " \
+                "people from Russian Rec Room\nAvailable commands" \
+                " and modules:\n"
+                )
+            ).format(shared.NAME, shared.VERSION)
         for cog in mapping.keys():
             cog: commands.Cog
             if cog is None:
@@ -453,12 +519,12 @@ async def license(ctx, mode=None):
     translate = shared.load_server_language(ctx.message).gettext
     if mode is None:
         payload = _(
-            "PitsaBot  Copyright (C) {}  SergSel2006 (Sergey Selivanov)\n"
+            "{0}  Copyright (C)  SergSel2006 (Sergey Selivanov)\n"
             "This program comes with ABSOLUTELY NO WARRANTY; for details, "
             "use 'licence w'.\n"
             "This is free software, and you are welcome to redistribute it "
             "under certain conditions; use `license c' for details."
-            )
+            ).format(shared.NAME)
         await ctx.send(translate(payload).format(datetime.date.today().year))
     elif mode == 'w':
         payload = _(

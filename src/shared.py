@@ -14,13 +14,14 @@
 #      You should have received a copy of the GNU General Public License
 #      along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-"""All variables and functions that are shared across code are here"""
+"""Shared part of code and variables. Also some functionality goes here"""
 import gettext
 import logging
 import pathlib
 import sys
 
 import yaml
+from discord.ext import commands
 
 try:
     from yaml import CLoader as Loader
@@ -30,6 +31,10 @@ try:
     from yaml import CDumper as Dumper
 except ImportError:
     from yaml import Dumper as Dumper
+
+# Some useful constants.
+VERSION = "v0,3a"
+NAME = "PitsaBot"
 
 lang_table = {}
 # made to ease creating of new translations. Just add new folder and
@@ -45,11 +50,37 @@ for i in [i for i in pathlib.Path("src", "locales").iterdir()
 
 _ = gettext.gettext
 
+
 # find language from message
 def load_server_language(message):
     config = find_server_config(message)
     language = lang_table[config["language"]]
     return language
+
+
+# For creating new cogs we need this. Copy sysconfig form Core (except cases)
+# to your cog and name it reasonably. Edit for your needs AND edit
+# template.yml for your new configuration. Actually soon it will be changed.
+def dump_server_config(message, config):
+    with open(
+            pathlib.Path(
+                "data", "servers_config", str(message.guild.id),
+                "config.yml"
+                ), "w", encoding="utf8"
+            ) as config_file:
+        yaml.dump(config, config_file, Dumper=Dumper)
+
+
+# check for settings commands
+def can_manage_server():
+    async def predicate(ctx):
+        perms = ctx.author.top_role.permissions
+        if perms.administrator or ctx.author.id == ctx.guild.owner_id:
+            return True
+        else:
+            return False
+
+    return commands.check(predicate)
 
 
 # find server config by message

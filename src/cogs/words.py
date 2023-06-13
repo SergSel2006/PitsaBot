@@ -14,8 +14,6 @@
 #      You should have received a copy of the GNU General Public License
 #      along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import pathlib
-
 try:
     from yaml import CLoader as Loader
 except ImportError:
@@ -24,24 +22,15 @@ try:
     from yaml import CDumper as Dumper
 except ImportError:
     from yaml import Dumper as Dumper
-import yaml
 
-from discord.ext import commands
-import discord
 import gettext
-import shared
+
+import discord
+from discord.ext import commands
+
+from src import shared
 
 _ = gettext.gettext
-
-
-def dump_server_config(message, config):
-    with open(
-            pathlib.Path(
-                "data", "servers_config", str(message.guild.id),
-                "config.yml"
-                ), "w", encoding="utf8"
-            ) as config_file:
-        yaml.dump(config, config_file, Dumper=Dumper)
 
 
 async def words(msg: discord.Message):
@@ -106,7 +95,7 @@ async def words(msg: discord.Message):
             if len(words_["dictionary"]) > 50:
                 words_["dictionary"].pop(-1)
             config["words"] = words_
-            dump_server_config(msg, config)
+            shared.dump_server_config(msg, config)
 
 
 class Words(commands.Cog):
@@ -114,6 +103,60 @@ class Words(commands.Cog):
 
     def __init__(self, bot):
         self.bot: commands.Bot = bot
+
+    settings_attrs = {
+        "name": _("wordsconfig"),
+        "usage": _("<subcommand>"),
+        "brief": _(
+            "changes settings in game of words. use `help wordsconfig` "
+            "for details."
+            ),
+        "description": _(
+            "Available subcommands:"
+            "\n  enable"
+            "\n  channel (this)"
+            "\n  disable"
+            "\n  big (number)"
+            )
+        }
+
+    @commands.command(**settings_attrs)
+    @shared.can_manage_server()
+    async def wordsconfig(self, ctx, mode, *options):
+        lang = shared.load_server_language(ctx.message)
+        _ = lang.gettext
+        config = shared.find_server_config(ctx.message)
+        mode = mode.lower()
+        match mode:
+            case "enable":
+                if config["words"]["channel"]:
+                    config["words"]["enabled"] = True
+                    await ctx.send(_("Words enabled"))
+                else:
+                    await ctx.send(
+                        _(
+                            "for activating words, "
+                            "you need to specify a channel first."
+                            )
+                        )
+            case "channel":
+                if options[1].lower() != "this":
+                    channel = ctx.message.channel_mentions[0]
+                else:
+                    channel = ctx.channel
+                config["words"]["channel"] = channel.id
+
+                await ctx.send(_("Words channel set"))
+            case "disable":
+                config["words"]["enabled"] = False
+                await ctx.send(_("Words disabled"))
+            case "big":
+                config["words"]["huge"] = int(options[0])
+                await ctx.send(
+                    _("Big number is now {0}").format(
+                        int(options[0])
+                        )
+                    )
 
     @commands.Cog.listener()
     async def on_message(self, msg):

@@ -15,13 +15,13 @@
 #      along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-# Only for l10n marking puporses.
 import gettext
 import os
 import pathlib
 
 import discord
-import shared
+
+from src import shared
 
 try:
     from yaml import CLoader as Loader
@@ -141,6 +141,88 @@ class Moderation(commands.Cog):
                     )
             else:
                 await ctx.send(_("cannot mute, kick or ban moderators"))
+
+    settings_attrs = {
+        "name": _("modconfig"),
+        "usage": _("<subcommand>"),
+        "brief": _(
+            "changes moderation settings. use `help config` for "
+            "details."
+            ),
+        "description": _(
+            "Available subcommands:"
+            "\n  modrole <add/remove moderator's roles>"
+            "\n  modlog <enable/channel (this)/disable>"
+            )
+        }
+
+    @commands.command(**settings_attrs)
+    @shared.can_manage_server()
+    async def modconfig(self, ctx, mode, *options):
+        lang = shared.load_server_language(ctx.message)
+        _ = lang.gettext
+        config = shared.find_server_config(ctx.message)
+        mode = mode.lower()
+        match mode:
+            case "modrole":
+                roles = ctx.message.role_mentions
+                if options:
+                    match options[0].lower():
+                        case "add:":
+                            for role in roles:
+                                if role.id not in config["modroles"]:
+                                    config["modroles"].append(role.id)
+                                else:
+                                    await ctx.send(
+                                        _("{0} already in list").format(
+                                            role.mention
+                                            )
+                                        )
+                            await ctx.send(_("Roles added to moderators"))
+                        case "remove":
+                            for role in roles:
+                                if role.id in config["modroles"]:
+                                    config["modroles"].remove(role.id)
+                                else:
+                                    await ctx.send(
+                                        _("{0} is not a moderator").format(
+                                            role.mention
+                                            )
+                                        )
+                            await ctx.send(
+                                _("Roles was removed from moderators")
+                                )
+                else:
+                    await ctx.send(
+                        " ".join(
+                            [ctx.guild.get_role(i).mention for i
+                             in config["modroles"]]
+                            )
+                        )
+            case "modlog":
+                match options[0].lower():
+                    case "enable":
+                        if config["modlog"]["channel"]:
+                            config["modlog"]["enabled"] = True
+                            await ctx.send(_("Moderation log enabled"))
+                        else:
+                            await ctx.send(
+                                _(
+                                    "for activating moderation log, "
+                                    "you need to specify a channel first."
+                                    )
+                                )
+                    case "channel":
+                        if options[1].lower() != "this":
+                            channel = ctx.message.channel_mentions[0]
+                        else:
+                            channel = ctx.channel
+                        config["modlog"]["channel"] = channel.id
+                        await ctx.send(_("Moderation log channel set"))
+                    case "disable":
+                        config["modlog"]["enabled"] = False
+                        await ctx.send(_("Moderation log disabled"))
+        shared.dump_server_config(ctx.message, config)
 
     @commands.Cog.listener()
     async def on_message_delete(self, msg: discord.Message):

@@ -14,8 +14,6 @@
 #      You should have received a copy of the GNU General Public License
 #      along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import pathlib
-
 try:
     from yaml import CLoader as Loader
 except ImportError:
@@ -24,24 +22,15 @@ try:
     from yaml import CDumper as Dumper
 except ImportError:
     from yaml import Dumper as Dumper
-import yaml
 
-from discord.ext import commands
-import discord
 import gettext
-import shared
+
+import discord
+from discord.ext import commands
+
+from src import shared
 
 _ = gettext.gettext
-
-
-def dump_server_config(message, config):
-    with open(
-            pathlib.Path(
-                "data", "servers_config", str(message.guild.id),
-                "config.yml"
-                ), "w", encoding="utf8"
-            ) as config_file:
-        yaml.dump(config, config_file, Dumper=Dumper)
 
 
 async def counting(msg: discord.Message):
@@ -91,7 +80,7 @@ async def counting(msg: discord.Message):
                         )
                 counting_["number"] = 0
                 counting_["last-counted-person"] = 0
-            dump_server_config(msg, config)
+            shared.dump_server_config(msg, config)
 
 
 class Counting(commands.Cog):
@@ -99,6 +88,58 @@ class Counting(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
+    settings_attrs = {
+        "name": _("countconfig"),
+        "usage": _("<subcommand>"),
+        "brief": _("changes settings. use `help countconfig` for details."),
+        "description": _(
+            "Available subcommands:"
+            "\n  enable"
+            "\n  channel (this)"
+            "\n  disable"
+            "\n  big (number)"
+            )
+        }
+
+    @commands.command(**settings_attrs)
+    @shared.can_manage_server()
+    async def countconfig(self, ctx, mode, *options):
+        lang = shared.load_server_language(ctx.message)
+        _ = lang.gettext
+        config = shared.find_server_config(ctx.message)
+        mode = mode.lower()
+        match mode:
+            case "enable":
+                if config["counting"]["channel"]:
+                    config["counting"]["enabled"] = True
+                    await ctx.send(_("Counting enabled"))
+                else:
+                    await ctx.send(
+                        _(
+                            "for activating counting, "
+                            "you need to specify a channel first."
+                            )
+                        )
+            case "channel":
+                if options[0].lower() != "this":
+                    channel = ctx.message.channel_mentions[0]
+                else:
+                    channel = ctx.channel
+                config["counting"]["channel"] = channel.id
+
+                await ctx.send(_("Counting channel set"))
+            case "disable":
+                config["counting"]["enabled"] = False
+
+                await ctx.send(_("Counting disabled"))
+            case "big":
+                config["counting"]["huge"] = int(options[0])
+                await ctx.send(
+                    _("Big number is now {0}").format(
+                        int(options[0])
+                        )
+                    )
 
     @commands.Cog.listener()
     async def on_message(self, msg):
