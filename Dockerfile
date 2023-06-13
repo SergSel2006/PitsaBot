@@ -6,4 +6,3 @@ RUN pip install -r /tmp/requirements.txt
 COPY . /tmp/PitsaBot
 WORKDIR /tmp/PitsaBot
 CMD python /tmp/PitsaBot/src/Core.py
-

@@ -33,7 +33,7 @@ except ImportError:
     from yaml import Dumper as Dumper
 
 # Some useful constants.
-VERSION = "v0,3a"
+VERSION = "v0,3.0-alpha"
 NAME = "PitsaBot"
 
 lang_table = {}
