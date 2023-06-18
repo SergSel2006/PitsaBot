@@ -26,9 +26,8 @@ except ImportError:
 import gettext
 
 import discord
+import shared
 from discord.ext import commands
-
-from src import shared
 
 _ = gettext.gettext
 

@@ -18,10 +18,9 @@ import gettext
 import pathlib
 import traceback
 
+import shared
 import yaml
 from discord.ext import commands
-
-from src import shared
 
 try:
     from yaml import CLoader as Loader

@@ -1,11 +1,12 @@
 # PitsaBot
 
-I am introducing my bot! I'm working on it as a hobby, so, i'm not actively very improving it, sometimes i even just
+I am introducing my bot! I'm working on it as a hobby, so, I'm not actively very improving it, sometimes I even just
 don't know what to add.
 
 # What it should be?
 
-At least in my dreams this is a multi-functual bot with many original features and it is intended to replace that 2 or 3
+At least in my dreams this is a multi-functual bot with many original features, and it is intended to replace that 2 or
+3
 bots on a server that I usually see everywhere. Also, It should have very polite and good community (which is usually
 never true).
 
@@ -17,7 +18,8 @@ that it will find small community now...
 
 # Where community lives?
 
-There was discord server, but I deleted it. There will be announcment if I r5ecreate it. I totally don't have time and ideas to work...
+There was discord server, but I deleted it. There will be announcment if I recreate it. I totally don't have time and
+ideas to work...
 
 # I'm Interested! How can I help you?
 

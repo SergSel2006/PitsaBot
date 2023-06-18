@@ -20,8 +20,7 @@ import os
 import pathlib
 
 import discord
-
-from src import shared
+import shared
 
 try:
     from yaml import CLoader as Loader
