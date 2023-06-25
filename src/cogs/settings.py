@@ -66,11 +66,8 @@ class Settings(commands.Cog):
         "brief": _("changes settings. use `help config` for details."),
         "description": _(
             "Changes bots configurations. Available subcommands:"
-            "\n  prefix <prefix>"
-            "\n  modrole <add/remove moderator's roles>"
-            "\n  modlog <enable/channel (this)/disable>"
-            "\n  language <language>"
-            "\n  counting <enable/channel (this)/disable/big (number)>"
+            "\n  trigger <enable/disable>"
+            "\n  react <enable/disable>"
             )
         }
 

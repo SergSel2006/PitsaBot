@@ -19,6 +19,7 @@ import asyncio
 import datetime
 import gettext
 import logging
+import os
 import pathlib
 import sys
 import traceback
@@ -209,9 +210,11 @@ def find_until_next_arg(string):
     return string.find("-")
 
 
+config_loc = pathlib.Path(os.getenv("CONFIG_PATH")) if os.getenv(
+    "CONFIG_PATH") else pathlib.Path().cwd() / "config.yml"
 if len(sys.argv) > 2:
     if '--config' != sys.argv[1]:
-        with open('config.yml', 'r') as o:
+        with config_loc.open('r') as o:
             settings = yaml.load(o, Loader)
         if not settings:
             raise ValueError("No Settings")
@@ -220,12 +223,13 @@ if len(sys.argv) > 2:
             " ".join(sys.argv[2:find_until_next_arg(" ".join(sys.argv[2:]))])
             )
 else:
-    with open('config.yml', 'r') as o:
+    with config_loc.open('r') as o:
         settings = yaml.load(o, Loader)
     if not settings:
         raise ValueError("No Settings")
 
 # bot  itself
+# noinspection PyTypeChecker
 Bot = commands.Bot(
     command_prefix=server_prefix,
     intents=intents,
@@ -390,8 +394,8 @@ class TranslatableHelp(commands.HelpCommand):
         help_payload = translate(
             _(
                 "{0} {1}\nMade by SergSel2006, idea by "
-                "cool " \
-                "people from Russian Rec Room\nAvailable commands" \
+                "cool "
+                "people from Russian Rec Room\nAvailable commands"
                 " and modules:\n"
                 )
             ).format(shared.NAME, shared.VERSION)

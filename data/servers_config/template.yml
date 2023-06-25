@@ -24,3 +24,5 @@ words:
   enabled: false
   last-counted-person: 0
   huge: 100
+polls:
+  -
