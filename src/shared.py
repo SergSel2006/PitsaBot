@@ -73,12 +73,9 @@ def dump_server_config(message, config):
 
 # check for settings commands
 def can_manage_server():
-    async def predicate(ctx):
-        perms = ctx.author.top_role.permissions
-        if perms.administrator or ctx.author.id == ctx.guild.owner_id:
-            return True
-        else:
-            return False
+    async def predicate(ctx: commands.Context):
+        perms = ctx.author.guild_permissions
+        return perms.administrator
 
     return commands.check(predicate)
 

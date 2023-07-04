@@ -36,12 +36,13 @@ async def words(msg: discord.Message):
     translate = shared.load_server_language(msg).gettext
     config = shared.find_server_config(msg)
     words_ = config["words"]
+    prohibited = words_["prohibited_chars"]
     if words_["enabled"]:
         if msg.channel.id == words_["channel"]:
             target_word: str = msg.content.split(" ")[0].lower()
-            target_word.rstrip(".,?!;:|\\/\"'%&@№")
+            target_word.rstrip(".,?!;:|\\/\"'%&@№#")
             last_word = words_["last-word"]
-            if target_word[0] != "#" and target_word and target_word != "#":
+            if target_word[0] != "!" and target_word and target_word != "!":
                 if last_word != "":
                     if target_word not in words_["dictionary"] and \
                             target_word[0] == list(last_word)[-1] and \
@@ -51,20 +52,26 @@ async def words(msg: discord.Message):
                             await msg.add_reaction("✅")
                         else:
                             await msg.add_reaction("☑️")
-                        words_["last-word"] = target_word
+                        if target_word[-1] not in prohibited:
+                            words_["last-word"] = target_word
+                        else:
+                            for i in range(-1, -len(target_word) - 1, -1):
+                                if target_word[i] not in prohibited:
+                                    words_["last-word"] = target_word
+                                    break
+
                         words_["dictionary"].append(target_word)
                         words_["last-counted-person"] = msg.author.id
                     else:
                         await msg.add_reaction("❌")
-                        if words_["correct-count"] <= words_[
-                            "huge"]:
+                        if words_["correct-count"] <= words_["huge"]:
                             await msg.channel.send(
                                 translate(
                                     _(
                                         "{0} has written wrong word on {1}! "
                                         )
                                     ).format(
-                                    msg.author.mention,
+                                    msg.author.mention, +
                                     words_["correct-count"]
                                     )
                                 )
@@ -116,6 +123,7 @@ class Words(commands.Cog):
             "\n  channel (this)"
             "\n  disable"
             "\n  big (number)"
+            "\n  prohibit <add/remove> <char>"
             )
         }
 
@@ -139,7 +147,7 @@ class Words(commands.Cog):
                             )
                         )
             case "channel":
-                if options[1].lower() != "this":
+                if options[0].lower() != "this":
                     channel = ctx.message.channel_mentions[0]
                 else:
                     channel = ctx.channel
@@ -156,6 +164,18 @@ class Words(commands.Cog):
                         int(options[0])
                         )
                     )
+            case "prohibit":
+                match options[0].lower():
+                    case "add":
+                        config["words"]["prohibited_chars"].extend(
+                            list(options[1].lower())
+                            )
+                        await ctx.send(_("Chars added to not permitted"))
+                    case "remove":
+                        for i in options[1]:
+                            config["words"]["prohibited_chars"].pop(i)
+                        await ctx.send(_("Chars removed to not permitted"))
+        shared.dump_server_config(ctx.message, config)
 
     @commands.Cog.listener()
     async def on_message(self, msg):

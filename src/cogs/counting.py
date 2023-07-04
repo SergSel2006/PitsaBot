@@ -139,6 +139,7 @@ class Counting(commands.Cog):
                         int(options[0])
                         )
                     )
+        shared.dump_server_config(ctx.message, config)
 
     @commands.Cog.listener()
     async def on_message(self, msg):

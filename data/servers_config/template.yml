@@ -1,11 +1,10 @@
 prefix: "p"
 language: "en"
-disabled_commands: null
+disabled_commands: [ ]
 modlog:
   channel: ""
   enabled: false
-modroles:
-  - null
+modroles: [ ]
 everyonetrigger: false
 global_db: true
 react_to_pizza: false
@@ -17,12 +16,11 @@ counting:
   huge: 100
 words:
   last-word: ""
-  dictionary:
-    -
+  dictionary: [ ]
   correct-count: 0
   channel: ""
   enabled: false
   last-counted-person: 0
   huge: 100
-polls:
-  -
+  prohibited_chars: [ ]
+polls: [ ]
