@@ -23,9 +23,9 @@ async def template(ctx):
 This is used to ease work of translation, because programs never forgets to do something. Else you work without _() and
 can remove anything related to it
 
-Note that bot is intended to run from its root directory, and not src/.
+Note that bot is intended to run from project root directory, and not src/.
 
-after you done your work, run `python /usr/lib/python3.10/Tools/i18n/pygettext.py -d all -p src/locales src/` and then
+after you done your work, run `python /usr/lib/python3.10/Tools/i18n/pygettext.py -d messages -p src/locales src/`, translate code if you want and then
 simply do pull request with short description of changes, your code will be analyzed and commonly merged.
 
 ### I saw some unoptimised/potentially dangerous/bad code, how could I fix it?
@@ -36,5 +36,6 @@ Your work will make this bot better anyway.
 ## I am native speaker of 'insert your language here' and I want to help with translation of the bot.
 
 Sure! To help, fork bot, and do steps to make gettext language files. They include creating language folder, creating
-LC_MESSAGES in it, adding `all.po` file by copying template.
+LC_MESSAGES in it, adding `messages.po` file by copying template.
 Then translate by your favourite .po editor.
+The overall language path should be `src/locales/<your_lang>/LC_MESSAGES/messages.po`

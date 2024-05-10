@@ -141,6 +141,20 @@ class Moderation(commands.Cog):
             else:
                 await ctx.send(_("cannot mute, kick or ban moderators"))
 
+    warn_attrs = {
+        "name": _("warn"),
+        "usage": _("<user, reason>"),
+        "brief": _("Can be used to warn users."),
+        "description": _("Can be used to warn users. One could set maximum warn amount before kicking or banning and how long warns expire")
+    }
+
+    @commands.command(**warn_attrs)
+    @commands.check(is_moderator)
+    async def warn(self, ctx, user: discord.Member, reason):
+        # TODO: Warn design.
+        pass
+
+
     settings_attrs = {
         "name": _("modconfig"),
         "usage": _("<subcommand>"),
@@ -266,10 +280,7 @@ class Moderation(commands.Cog):
             embed_added = len(msg_before.embeds) < len(msg.embeds)
             embed.add_field(
                 name=_("Content now:"), value=msg.content + (_(
-                    " (new embed(s))."
-                    )
-                                                             if embed_added else ""
-                                                             ),
+                    " (new embed(s))." ) if embed_added else "" ),
                 inline=False
                 )
             embed.add_field(
