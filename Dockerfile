@@ -1,5 +1,5 @@
 FROM python:alpine
-RUN pip install pipenv
+RUN pip install pipenv pyenv
 COPY Pipfile* /tmp/
 WORKDIR /tmp/
 RUN pipenv sync
