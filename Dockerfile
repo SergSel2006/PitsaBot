@@ -6,4 +6,4 @@ RUN pipenv lock
 RUN cd /tmp && pipenv requirements > requirements.txt
 RUN pip install -r /tmp/requirements.txt
 COPY . /tmp/
-CMD python /tmp/src/Core.py
+CMD pipenv run python /tmp/src/Core.py
