@@ -36,7 +36,7 @@ async def counting(msg: discord.Message):
     config = shared.find_server_config(msg)
     if not config["counting"]["enabled"]:
         return
-    if msg.channel.id == config["counting"]["channel"]:
+    if msg.channel.id != config["counting"]["channel"]:
         return
     counting_ = config["counting"]
     translate = shared.load_server_language(msg).gettext
@@ -153,7 +153,7 @@ class Counting(commands.Cog):
         config = shared.find_server_config(msg)
         if not config["counting"]["enabled"]:
             return
-        if msg.channel.id == config["counting"]["channel"]:
+        if msg.channel.id != config["counting"]["channel"]:
             return
         counting_ = config["counting"]
         translate = shared.load_server_language(msg).gettext
@@ -167,7 +167,7 @@ class Counting(commands.Cog):
         config = shared.find_server_config(msg)
         if not config["counting"]["enabled"]:
             return
-        if msg.channel.id == config["counting"]["channel"]:
+        if msg.channel.id != config["counting"]["channel"]:
             return
         counting_ = config["counting"]
         translate = shared.load_server_language(msg).gettext
