@@ -34,7 +34,7 @@ except ImportError:
     from yaml import Dumper
 
 # Some useful constants.
-VERSION = "v0.3.1-alpha"
+VERSION = "v0.4.0-alpha"
 NAME = "PitsaBot"
 
 
