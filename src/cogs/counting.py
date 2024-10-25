@@ -14,14 +14,6 @@
 #      You should have received a copy of the GNU General Public License
 #      along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-try:
-    from yaml import CLoader as Loader
-except ImportError:
-    from yaml import Loader as Loader
-try:
-    from yaml import CDumper as Dumper
-except ImportError:
-    from yaml import Dumper as Dumper
 
 import gettext
 
@@ -33,13 +25,13 @@ _ = gettext.gettext
 
 
 async def counting(msg: discord.Message):
-    config = shared.find_server_config(msg)
+    config = shared.find_server_config(msg.id)
     if not config["counting"]["enabled"]:
         return
     if msg.channel.id != config["counting"]["channel"]:
         return
     counting_ = config["counting"]
-    translate = shared.load_server_language(msg).gettext
+    translate = shared.load_server_language(msg.id).gettext
     target_message: str = msg.content.split(" ")[0]
     test_str = [i in "0123456789.()/*-+%" for i in target_message]
     if all(test_str):
@@ -62,11 +54,11 @@ async def counting(msg: discord.Message):
                     _(
                         "{0} Failed count on {1}! "
                         "Starting from 1 again..."
-                        )
-                    ).format(
-                    msg.author.mention, counting_["number"]
                     )
+                ).format(
+                    msg.author.mention, counting_["number"]
                 )
+            )
         else:
             await msg.channel.send(
                 translate(
@@ -74,14 +66,14 @@ async def counting(msg: discord.Message):
                         "NOOOOO! What s shame, {0} Failed count on "
                         "{1} (AKA Big Number)!\n"
                         "Starting from 1 again..."
-                        )
-                    ).format(
-                    msg.author.mention, counting_["number"]
                     )
+                ).format(
+                    msg.author.mention, counting_["number"]
                 )
+            )
         counting_["number"] = 0
         counting_["last-counted-person"] = 0
-    shared.dump_server_config(msg, config)
+    shared.dump_server_config(msg.id, config)
 
 
 class Counting(commands.Cog):
@@ -100,8 +92,8 @@ class Counting(commands.Cog):
             "\n  channel (this)"
             "\n  disable"
             "\n  big (number)"
-            )
-        }
+        )
+    }
 
     @commands.command(**settings_attrs)
     @shared.can_manage_server()
@@ -120,8 +112,8 @@ class Counting(commands.Cog):
                         _(
                             "for activating counting, "
                             "you need to specify a channel first."
-                            )
                         )
+                    )
             case "channel":
                 if options[0].lower() != "this":
                     channel = ctx.message.channel_mentions[0]
@@ -139,29 +131,29 @@ class Counting(commands.Cog):
                 await ctx.send(
                     _("Big number is now {0}").format(
                         int(options[0])
-                        )
                     )
+                )
         shared.dump_server_config(ctx.message, config)
 
     @commands.Cog.listener()
     async def on_message(self, msg):
         if msg.author != self.bot.user:
             await counting(msg)
-    
+
     @commands.Cog.listener()
     async def on_message_delete(self, msg: discord.Message):
-        config = shared.find_server_config(msg)
+        config = shared.find_server_config(msg.id)
         if not config["counting"]["enabled"]:
             return
         if msg.channel.id != config["counting"]["channel"]:
             return
         counting_ = config["counting"]
-        translate = shared.load_server_language(msg).gettext
+        translate = shared.load_server_language(msg.id).gettext
         if msg.author.id == counting_["last-counted-person"]:
-            builder = translate(_("{0} Deleted the number.\nCurrent number is {1}")).format(msg.author.mention, counting_["number"])
+            builder = translate(_("{0} Deleted the number.\nCurrent number is {1}")).format(
+                msg.author.mention, counting_["number"])
             await msg.channel.send(builder)
-    
-    
+
     @commands.Cog.listener()
     async def on_message_edit(self, msg_, msg):
         config = shared.find_server_config(msg)
@@ -172,8 +164,10 @@ class Counting(commands.Cog):
         counting_ = config["counting"]
         translate = shared.load_server_language(msg).gettext
         if msg.author.id == counting_["last-counted-person"]:
-            builder = translate(_("{0} Changed the message.\nCurrent number is {1}. (Just in case)")).format(msg.author.mention, counting_["number"])
+            builder = translate(_("{0} Changed the message.\nCurrent number is {1}. (Just in case)")).format(
+                msg.author.mention, counting_["number"])
             await msg.channel.send(builder)
+
 
 async def setup(bot):
     await bot.add_cog(Counting(bot))

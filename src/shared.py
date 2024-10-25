@@ -22,20 +22,50 @@ import sys
 
 import yaml
 from discord.ext import commands
+import discord
 
 try:
     from yaml import CLoader as Loader
 except ImportError:
-    from yaml import Loader as Loader
+    from yaml import Loader
 try:
     from yaml import CDumper as Dumper
 except ImportError:
-    from yaml import Dumper as Dumper
+    from yaml import Dumper
 
 # Some useful constants.
 VERSION = "v0.3.1-alpha"
 NAME = "PitsaBot"
 
+
+DEFAULT_CONF = {
+    'counting': {
+        'channel': '',
+        'enabled': False,
+        'huge': 100,
+        'last-counted-person': 0,
+        'number': 0
+    },
+    'disabled_commands': [],
+    'everyonetrigger': False,
+    'global_db': True,
+    'language': 'en',
+    'modlog': {'channel': '', 'enabled': False},
+    'modroles': [],
+    'polls': [],
+    'prefix': 'p',
+    'react_to_pizza': False,
+    'words': {
+        'channel': '',
+        'correct-count': 0,
+        'dictionary': [],
+        'enabled': False,
+        'huge': 100,
+        'last-counted-person': 0,
+        'last-word': '',
+        'prohibited_chars': []
+    }
+}
 lang_table = {}
 # made to ease creating of new translations. Just add new folder and
 # this code will enable it for use (should be translated before)
@@ -43,17 +73,18 @@ lang_table = {}
 # bad idea. Now one domain is created for everything in src/
 for i in [i for i in pathlib.Path("src", "locales").iterdir()
           if i.is_dir()]:
-    i = i.stem
+    path = i.stem
     lang_table[i] = gettext.translation(
-        i, pathlib.Path("src", "locales"), languages=["all"], fallback=True
-        )
+        path, str(pathlib.Path("src", "locales")), languages=["all"],
+        fallback=True
+    )
 
 _ = gettext.gettext
 
 
 # find language from message
-def load_server_language(message):
-    config = find_server_config(message)
+def load_server_language(ident: int) -> gettext.NullTranslations:
+    config = find_server_config(ident)
     language = lang_table[config["language"]]
     return language
 
@@ -61,37 +92,79 @@ def load_server_language(message):
 # For creating new cogs we need this. Copy sysconfig form Core (except cases)
 # to your cog and name it reasonably. Edit for your needs AND edit
 # template.yml for your new configuration. Actually soon it will be changed.
-def dump_server_config(message, config):
+def dump_server_config(ident: int, config):
+    def diff_default(default, new):
+        new = new.copy()
+        for i in default.keys():
+            if type(default[i]) is dict:
+                new[i] = diff_default(default[i], new[i])
+                if new[i] == {}:
+                    new.pop(i)
+            elif new[i] == default[i]:
+                new.pop[i]
+        for i in set(new.keys()).difference(default.keys()):
+            new.pop(i)
+            print("The configuration for " + str(ident) +
+                  " contained the configuration key which is not "
+                  "in the default configuration, that means it was "
+                  "probably deprecated for a while and now deleted.\n"
+                  "Deleting it now from the configuration.")
+        return new
     with open(
             pathlib.Path(
-                "data", "servers_config", str(message.guild.id),
+                "data", "servers_config", str(ident),
                 "config.yml"
-                ), "w", encoding="utf8"
-            ) as config_file:
+            ), "w", encoding="utf8"
+    ) as config_file:
+        config = diff_default(DEFAULT_CONF, config)
         yaml.dump(config, config_file, Dumper=Dumper)
 
 
 # check for settings commands
 def can_manage_server():
     async def predicate(ctx: commands.Context):
-        perms = ctx.author.guild_permissions
-        return perms.administrator
+        if type(ctx.author) is discord.Member:
+            perms = ctx.author.guild_permissions
+            return perms.administrator
+        else:
+            return True
 
     return commands.check(predicate)
 
 
 # find server config by message
-def find_server_config(message):
-    with open(
+def find_server_config(ident: int) -> dict:
+    config: dict
+    try:
+        with open(
             pathlib.Path(
-                "data", "servers_config", str(message.guild.id),
+                "data", "servers_config", str(ident),
                 "config.yml"
-                ),
+            ),
             "r",
             encoding="utf8"
-            ) as config:
-        config = yaml.load(config, Loader=Loader)
-        return config
+        ) as fd:
+            assert type(yaml.load(fd, Loader=Loader)) is dict
+            # so mypy is not complaining again. You must have weird condition
+            # where it is wrong.
+            config = yaml.load(fd, Loader=Loader)
+    except yaml.YAMLError:
+        return DEFAULT_CONF.copy()
+    except FileNotFoundError:
+        printw("No configuration file created yet for " + str(ident))
+        return DEFAULT_CONF.copy()
+
+    def fill_defaults(default: dict, new: dict) -> dict:
+        new = new.copy()
+        for i in default.keys():
+            if type(default[i]) is dict:
+                new.setdefault(i, {})
+                new[i] = fill_defaults(default[i], new[i])
+            else:
+                new.setdefault(i, default[i])
+        return new
+    config = fill_defaults(DEFAULT_CONF, config)
+    return config
 
 
 class _ColourFormatter(logging.Formatter):
@@ -117,16 +190,16 @@ class _ColourFormatter(logging.Formatter):
         (logging.WARNING, '\x1b[33;1m'),
         (logging.ERROR, '\x1b[31m'),
         (logging.CRITICAL, '\x1b[41m'),
-        ]
+    ]
 
     FORMATS = {
         level: logging.Formatter(
             f'\x1b[30;1m%(asctime)s\x1b[0m {colour}%(levelname)-8s\x1b[0m '
             f'\x1b[35m%(name)s\x1b[0m %(message)s',
             '%Y-%m-%d %H:%M:%S',
-            )
+        )
         for level, colour in LEVEL_COLOURS
-        }
+    }
 
     def format(self, record):
         formatter = self.FORMATS.get(record.levelno)
@@ -149,7 +222,7 @@ con_logger = logging.getLogger("Bot")
 sh = logging.StreamHandler(stream=sys.stdout)
 sh.setFormatter(
     _ColourFormatter()
-    )
+)
 handler = logging.FileHandler(filename='Pitsa.log', encoding='utf-8', mode='w')
 con_logger.addHandler(sh)
 con_logger.setLevel(logging.INFO if "-d" not in sys.argv else logging.DEBUG)

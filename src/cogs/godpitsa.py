@@ -16,34 +16,11 @@
 
 
 import pathlib
-
-try:
-    from yaml import CLoader as Loader
-except ImportError:
-    from yaml import Loader as Loader
-try:
-    from yaml import CDumper as Dumper
-except ImportError:
-    from yaml import Dumper as Dumper
-import yaml
-
+import shared
 from discord.ext import commands
 import gettext
 
 _ = gettext.gettext
-
-
-def find_server_config(message):
-    with open(
-            pathlib.Path(
-                "data", "servers_config", str(message.guild.id),
-                "config.yml"
-                ),
-            "r",
-            encoding="utf8"
-            ) as config:
-        config = yaml.load(config, Loader=Loader)
-        return config
 
 
 class GodPitsa(commands.Cog):
@@ -54,7 +31,7 @@ class GodPitsa(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        config = find_server_config(message)
+        config = shared.find_server_config(message)
         if (
                 message.author.id != 869082304033751120
                 and config["react_to_pizza"]

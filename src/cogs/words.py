@@ -14,15 +14,6 @@
 #      You should have received a copy of the GNU General Public License
 #      along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-try:
-    from yaml import CLoader as Loader
-except ImportError:
-    from yaml import Loader as Loader
-try:
-    from yaml import CDumper as Dumper
-except ImportError:
-    from yaml import Dumper as Dumper
-
 import gettext
 
 import discord
@@ -33,8 +24,8 @@ _ = gettext.gettext
 
 
 async def words(msg: discord.Message):
-    translate = shared.load_server_language(msg).gettext
-    config = shared.find_server_config(msg)
+    translate = shared.load_server_language(msg.id).gettext
+    config = shared.find_server_config(msg.id)
     words_ = config["words"]
     prohibited = words_["prohibited_chars"]
     if words_["enabled"]:
@@ -69,12 +60,12 @@ async def words(msg: discord.Message):
                                 translate(
                                     _(
                                         "{0} has written wrong word on {1}! "
-                                        )
-                                    ).format(
+                                    )
+                                ).format(
                                     msg.author.mention, +
                                     words_["correct-count"]
-                                    )
                                 )
+                            )
                         else:
                             await msg.channel.send(
                                 translate(
@@ -82,12 +73,12 @@ async def words(msg: discord.Message):
                                         "NOOOOO! What s shame, {0} has "
                                         "written wrong word on {1} "
                                         "(AKA Big Number)!"
-                                        )
-                                    ).format(
+                                    )
+                                ).format(
                                     msg.author.mention,
                                     words_["correct-count"]
-                                    )
                                 )
+                            )
                         words_["correct-count"] = 0
                         words_["dictionary"] = []
                         words_["last-word"] = ""
@@ -101,13 +92,13 @@ async def words(msg: discord.Message):
             if len(words_["dictionary"]) > 50:
                 words_["dictionary"].pop(-1)
             config["words"] = words_
-            shared.dump_server_config(msg, config)
+            shared.dump_server_config(msg.id, config)
 
 
 class Words(commands.Cog):
     description = _("Module to play words.")
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot: commands.Bot = bot
 
     settings_attrs = {
@@ -116,7 +107,7 @@ class Words(commands.Cog):
         "brief": _(
             "changes settings in game of words. use `help wordsconfig` "
             "for details."
-            ),
+        ),
         "description": _(
             "Available subcommands:"
             "\n  enable"
@@ -124,8 +115,8 @@ class Words(commands.Cog):
             "\n  disable"
             "\n  big (number)"
             "\n  prohibit <add/remove> <char>"
-            )
-        }
+        )
+    }
 
     @commands.command(**settings_attrs)
     @shared.can_manage_server()
@@ -144,8 +135,8 @@ class Words(commands.Cog):
                         _(
                             "for activating words, "
                             "you need to specify a channel first."
-                            )
                         )
+                    )
             case "channel":
                 if options[0].lower() != "this":
                     channel = ctx.message.channel_mentions[0]
@@ -162,14 +153,14 @@ class Words(commands.Cog):
                 await ctx.send(
                     _("Big number is now {0}").format(
                         int(options[0])
-                        )
                     )
+                )
             case "prohibit":
                 match options[0].lower():
                     case "add":
                         config["words"]["prohibited_chars"].extend(
                             list(options[1].lower())
-                            )
+                        )
                         await ctx.send(_("Chars added to not permitted"))
                     case "remove":
                         for i in options[1]:

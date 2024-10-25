@@ -15,15 +15,6 @@
 #      along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-try:
-    from yaml import CLoader as Loader
-except ImportError:
-    from yaml import Loader as Loader
-try:
-    from yaml import CDumper as Dumper
-except ImportError:
-    from yaml import Dumper as Dumper
-
 import gettext
 
 from discord.ext import commands

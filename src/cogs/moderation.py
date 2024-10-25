@@ -22,14 +22,6 @@ import pathlib
 import discord
 import shared
 
-try:
-    from yaml import CLoader as Loader
-except ImportError:
-    from yaml import Loader as Loader
-try:
-    from yaml import CDumper as Dumper
-except ImportError:
-    from yaml import Dumper as Dumper
 
 from discord.ext import commands
 
@@ -67,8 +59,8 @@ class Moderation(commands.Cog):
         "description": _(
             "Use to ban <user>. To prevent non-reason bans "
             "<reason> is required"
-            )
-        }
+        )
+    }
 
     @commands.command(**ban_attrs)
     @commands.check(is_moderator)
@@ -79,7 +71,7 @@ class Moderation(commands.Cog):
             await man.ban(reason=reason)
             await ctx.send(
                 _("{0} has been banned from the server").format(man.name)
-                )
+            )
         else:
             await ctx.send(_("cannot mute, kick or ban moderators and myself"))
 
@@ -90,13 +82,13 @@ class Moderation(commands.Cog):
         "description": _(
             "Removes <amount> messages, if [user] is present, "
             "clean messages only by this user"
-            )
-        }
+        )
+    }
 
     @commands.command(**purge_attrs)
     @commands.check(is_moderator)
     async def purge(self, ctx, count=1, man: discord.Member = None):
-        lang = shared.load_server_language(ctx.message)
+        lang = shared.load_server_language(ctx.message.id)
         _ = lang.gettext
 
         def is_user(message):
@@ -109,10 +101,10 @@ class Moderation(commands.Cog):
         count = await ctx.channel.purge(
             limit=count, check=is_user,
             bulk=True
-            )
+        )
         msg = await ctx.send(
             _("{0} messages was purged").format(str(len(count)))
-            )
+        )
         await msg.delete(delay=5)
 
     kick_attrs = {
@@ -122,8 +114,8 @@ class Moderation(commands.Cog):
         "description": _(
             "Use to kick <user>. To prevent non-reason kicks "
             "<reason> is required"
-            )
-        }
+        )
+    }
 
     @commands.command(**kick_attrs)
     @commands.check(is_moderator)
@@ -137,7 +129,7 @@ class Moderation(commands.Cog):
                 await man.kick(reason=reason)
                 await ctx.send(
                     _("{0} has been kicked from the server.").format(man.name)
-                    )
+                )
             else:
                 await ctx.send(_("cannot mute, kick or ban moderators"))
 
@@ -145,7 +137,9 @@ class Moderation(commands.Cog):
         "name": _("warn"),
         "usage": _("<user, reason>"),
         "brief": _("Can be used to warn users."),
-        "description": _("Can be used to warn users. One could set maximum warn amount before kicking or banning and how long warns expire")
+        "description": _("Can be used to warn users. One could set maximum "
+                         "warn amount before kicking or banning and "
+                         "how long warns expire")
     }
 
     @commands.command(**warn_attrs)
@@ -154,24 +148,23 @@ class Moderation(commands.Cog):
         # TODO: Warn design.
         pass
 
-
     settings_attrs = {
         "name": _("modconfig"),
         "usage": _("<subcommand>"),
         "brief": _(
             "changes moderation settings. use `help config` for "
             "details."
-            ),
+        ),
         "description": _(
             "Available subcommands:"
             "\n  modrole <add/remove moderator's roles>"
             "\n  modlog <enable/channel (this)/disable>"
-            )
-        }
+        )
+    }
 
     @commands.command(**settings_attrs)
     @shared.can_manage_server()
-    async def modconfig(self, ctx, mode, *options):
+    async def modconfig(self, ctx, mode, *options) -> None:
         lang = shared.load_server_language(ctx.message)
         _ = lang.gettext
         config = shared.find_server_config(ctx.message)
@@ -189,8 +182,8 @@ class Moderation(commands.Cog):
                                     await ctx.send(
                                         _("{0} already in list").format(
                                             role.mention
-                                            )
                                         )
+                                    )
                             await ctx.send(_("Roles added to moderators"))
                         case "remove":
                             for role in roles:
@@ -200,18 +193,18 @@ class Moderation(commands.Cog):
                                     await ctx.send(
                                         _("{0} is not a moderator").format(
                                             role.mention
-                                            )
                                         )
+                                    )
                             await ctx.send(
                                 _("Roles was removed from moderators")
-                                )
+                            )
                 else:
                     await ctx.send(
                         " ".join(
                             [ctx.guild.get_role(i).mention for i
                              in config["modroles"]]
-                            )
                         )
+                    )
             case "modlog":
                 match options[0].lower():
                     case "enable":
@@ -223,8 +216,8 @@ class Moderation(commands.Cog):
                                 _(
                                     "for activating moderation log, "
                                     "you need to specify a channel first."
-                                    )
                                 )
+                            )
                     case "channel":
                         if options[1].lower() != "this":
                             channel = ctx.message.channel_mentions[0]
@@ -238,10 +231,10 @@ class Moderation(commands.Cog):
         shared.dump_server_config(ctx.message, config)
 
     @commands.Cog.listener()
-    async def on_message_delete(self, msg: discord.Message):
-        lang = shared.load_server_language(msg)
+    async def on_message_delete(self, msg: discord.Message) -> None:
+        lang = shared.load_server_language(msg.id)
         _ = lang.gettext
-        config = shared.find_server_config(msg)
+        config = shared.find_server_config(msg.id)
         if config["modlog"]["enabled"] and msg.author != self.bot.user:
             ch = self.bot.get_channel(config["modlog"]["channel"])
             qual_name = msg.author.name + "#" + msg.author.discriminator
@@ -249,15 +242,18 @@ class Moderation(commands.Cog):
             embed.set_author(
                 name=qual_name + _(" Deleted message"),
                 icon_url=msg.author.display_avatar.url
-                )
+            )
             embed.add_field(
                 name=_("Content was:"), value=msg.content,
                 inline=False
-                )
+            )
+            assert type(msg.channel) is not discord.DMChannel
+            assert type(msg.channel) is not discord.PartialMessageable
+            assert type(msg.channel) is not discord.GroupChannel
             embed.add_field(
                 name=_("At channel:"), value=msg.channel.mention,
                 inline=False
-                )
+            )
             await ch.send(embed=embed)
 
     @commands.Cog.listener()
@@ -272,21 +268,21 @@ class Moderation(commands.Cog):
             embed.set_author(
                 name=qual_name + _(" Changed message"),
                 icon_url=msg.author.display_avatar.url
-                )
+            )
             embed.add_field(
                 name=_("Content was:"), value=msg_before.content,
                 inline=False
-                )
+            )
             embed_added = len(msg_before.embeds) < len(msg.embeds)
             embed.add_field(
                 name=_("Content now:"), value=msg.content + (_(
-                    " (new embed(s))." ) if embed_added else "" ),
+                    " (new embed(s)).") if embed_added else ""),
                 inline=False
-                )
+            )
             embed.add_field(
                 name=_("At channel:"), value=msg.channel.mention,
                 inline=False
-                )
+            )
             await ch.send(embed=embed)
 
     @commands.Cog.listener()

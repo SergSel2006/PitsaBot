@@ -16,13 +16,13 @@
 
 # imports
 import asyncio
-import datetime
 import gettext
 import logging
 import os
 import pathlib
 import sys
 import traceback
+from typing import Callable, Mapping, TypeGuard, Any
 
 import discord
 import yaml
@@ -30,116 +30,83 @@ from discord.ext import commands
 
 from Cog_MetaFile import Cog_File_Meta
 
-try:
-    from yaml import CLoader as Loader
-except ImportError:
-    from yaml import Loader as Loader
-try:
-    from yaml import CDumper as Dumper
-except ImportError:
-    from yaml import Dumper as Dumper
+from yaml import CLoader as Loader
+from yaml import CDumper as Dumper
 
 from shared import print, printd, printc, printw
 import shared
 
-_ = gettext.gettext
+_: Callable = gettext.gettext
 
 # logger (replaces print)
 # Beautiful color formatting
 
 
-intents = discord.Intents.default()
+intents: discord.Intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
-logger = logging.getLogger('discord')
+logger: logging.Logger = logging.getLogger('discord')
 logger.setLevel(logging.INFO if "-d" not in sys.argv else logging.DEBUG)
-handler = logging.FileHandler(filename='Pitsa.log', encoding='utf-8', mode='w')
+handler: logging.FileHandler = logging.FileHandler(
+    filename='Pitsa.log', encoding='utf-8', mode='w')
 handler.setFormatter(
     logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s')
-    )
+)
 logger.addHandler(handler)
 
 
 # interesting functions
 # config checker for up-to-date keys with template
-def check_configs(bot: discord.ext.commands.Bot):
-    template_path = pathlib.Path(
-        "data", "servers_config", "template.yml"
+async def check_configs(bot: commands.Bot) -> None:
+    for guild in bot.guilds:
+        await asyncio.sleep(0)
+        guild_dir: pathlib.Path = pathlib.Path(
+            "data", "servers_config", str(guild.id)
         )
+        config_path: pathlib.Path = guild_dir / "config.yml"
+        if not guild_dir.exists():
+            print(
+                f"added config for server {guild.name} with id {guild.id}"
+            )
+            guild_dir.mkdir()
+            config_path.touch()
+            conf = shared.DEFAULT_CONF.copy()
+            langs = shared.lang_table.keys()
+            if guild.preferred_locale in langs:
+                conf["lang"] = guild.preferred_locale
+            shared.dump_server_config(guild.id, conf)
 
-    def diff(dict1: dict, dict2: dict):
-        same = True
-        if dict1 is None:
-            dict1 = dict2
-            return dict1, False
-        for i in set(dict2.keys()).difference(dict1.keys()):
-            if type(dict2[i]) == dict and i in dict1.keys():
-                dict1[i], other_same = diff(dict1[i], dict2[i])
-                same = other_same if same else False
-            elif type(dict2[i]) == dict:
-                dict1[i] = dict2[i]
-                same = False
-        for i in set(dict1.keys()).difference(dict2.keys()):
-            del dict1[i]
-            same = False
-        return dict1, same
-
-    with open(template_path, mode="r", encoding='utf8') as temp:
-        for guild in bot.guilds:
-            guild_dir = pathlib.Path(
-                "data", "servers_config", str(guild.id)
-                )
-            config_path = guild_dir / "config.yml"
-            if not guild_dir.exists():
-                print(
-                    f"added config for server {guild.name} with id {guild.id}"
-                    )
-                guild_dir.mkdir()
-                config_path.touch()
-                temp_dict = yaml.load(temp, Loader)
-                langs = shared.lang_table.keys()
-                if guild.preferred_locale in langs:
-                    temp_dict["lang"] = guild.preferred_locale
-                with open(config_path, mode="w", encoding='utf8') as config:
-                    yaml.dump(temp_dict, config, Dumper)
-
-            elif not config_path.exists():
-                with open(config_path, mode="w", encoding='utf8') as config:
-                    config.write(temp.read())
-            else:
-                with open(config_path, mode="r", encoding='utf8') as config:
-                    config = yaml.load(config, Loader)
-                    temp_dict = yaml.load(temp, Loader)
-                    config, correct = diff(config, temp_dict)
-                if not correct:
-                    with open(
-                            config_path, mode='w', encoding='utf8'
-                            ) as config_raw:
-                        yaml.dump(config, config_raw, Dumper)
-                        print(f"Changed config file of {guild.name}")
-            temp.seek(0)
+        elif not config_path.exists():
+            config_path.touch()
 
 
 # server prefix finder, if no prefix, return mention of a bot
-def server_prefix(bot: commands.Bot, message: discord.Message):
-    if isinstance(message.channel, (discord.TextChannel, discord.Thread)):
+def server_prefix(bot: commands.Bot, message: discord.Message) -> str | tuple:
+    if message.guild is not None:
         with open(
                 pathlib.Path(
                     "data", "servers_config", str(message.guild.id),
                     "config.yml"
-                    ), "r"
-                ) as config:
+                ), "r"
+        ) as config_fd:
             try:
-                config: dict = yaml.load(config, Loader)
+                config: dict = yaml.load(config_fd, Loader)
                 prefix: str = config["prefix"]
-                if prefix:
+                if prefix and bot.user:
                     return bot.user.mention + ' ', prefix
-                else:
+                elif bot.user:
                     return bot.user.mention + ' '
+                else:
+                    return "p"
             except ValueError:
-                return bot.user.mention + ' '
-    else:
+                if bot.user:
+                    return bot.user.mention + ' '
+                else:
+                    return "p"
+    elif bot.user:
         return bot.user.mention + ' '
+    else:
+        return "p"
 
 
 # cog finder
@@ -167,37 +134,37 @@ async def cog_finder(bot: commands.Bot, start_path: pathlib.Path):
     # delete meta for deleted cogs
     for cog in Cogs:
         if not Cogs[cog].self_check():
-            cog = Cogs.pop(cog)
-            if cog.active:
-                cog.unload()
-            printd(f"cog {cog.name} was deleted")
+            meta = Cogs.pop(cog)
+            if meta.active:
+                meta.unload()
+            printd(f"cog {meta.name} was deleted")
 
 
 # ping that returns seconds of latency
-def ping(bot: commands.Bot):
-    latency = bot.latency
+def ping(bot: commands.Bot) -> int:
+    latency: float = bot.latency
     try:
-        return round(latency * 1000) / 1000
+        return int(round(latency * 1000) / 1000)
     except ValueError:
         return 0
     except OverflowError:
         printc(
             "Your bot cannot connect to discord! your internet or "
             "code issue?"
-            )
+        )
         return 0
 
 
 # check for a developer
-def owner_check(ctx: commands.Context):
-    return Bot.is_owner(ctx.author)
+async def owner_check(ctx: commands.Context) -> bool:
+    return await Bot.is_owner(ctx.author)
 
 
 # bot init
 
 
 # cog list
-Cogs = dict()
+Cogs: dict[str, Cog_File_Meta] = dict()
 
 # intents
 intents = discord.Intents.default()
@@ -210,8 +177,13 @@ def find_until_next_arg(string):
     return string.find("-")
 
 
-config_loc = pathlib.Path(os.getenv("CONFIG_PATH")) if os.getenv(
-    "CONFIG_PATH") else pathlib.Path().cwd() / "config.yml"
+conf_path: str | None = os.getenv("CONFIG_PATH")
+settings: dict
+config_loc: pathlib.Path
+if conf_path:
+    config_loc = pathlib.Path(conf_path)
+else:
+    config_loc = pathlib.Path().cwd() / "config.yml"
 if len(sys.argv) > 2:
     if '--config' != sys.argv[1]:
         with config_loc.open('r') as o:
@@ -221,7 +193,7 @@ if len(sys.argv) > 2:
     else:
         settings = eval(
             " ".join(sys.argv[2:find_until_next_arg(" ".join(sys.argv[2:]))])
-            )
+        )
 else:
     with config_loc.open('r') as o:
         settings = yaml.load(o, Loader)
@@ -229,12 +201,68 @@ else:
         raise ValueError("No Settings")
 
 # bot  itself
-# noinspection PyTypeChecker
-Bot = commands.Bot(
+
+
+class CustomBot(commands.Bot):
+    settings: dict = {}
+
+    async def on_command_error(self, ctx: commands.Context,
+                               error: Exception) -> None:
+        lang: gettext.NullTranslations = shared.load_server_language(
+            ctx.message.id)
+        _: Callable = lang.gettext
+        exc_info: str = ''.join(traceback.format_exception(error))
+        if isinstance(error, commands.errors.CheckFailure):
+            await ctx.send(
+                _("You don't have enough permissions "
+                  "for executing this command.")
+            )
+        elif "discord.errors.Forbidden" in exc_info:
+            guild: discord.Guild | None = ctx.guild
+            if guild:
+                owner = guild.owner
+                if owner:
+                    if not owner.dm_channel:
+                        owner.create_dm()
+                    else:
+                        await owner.dm_channel.send(
+                            _(
+                                "I don't have enough permissions to do this. "
+                                "Giving bot role with Administrator permission"
+                                " will solve all problems with permissions"
+                            )
+                        )
+        elif isinstance(error, commands.errors.MissingRequiredArgument):
+            await ctx.send(_(
+                "Command has not enough arguments."
+                "Use command help"
+            )
+            )
+
+        elif isinstance(error, commands.errors.CommandNotFound):
+            await ctx.send(_("Command not found. Use help command."))
+            guild = ctx.guild
+            if guild:
+                print("{} issued wrong command".format(guild.id))
+        elif isinstance(error, SystemExit):
+            print("shutting down, goodbye!")
+        elif isinstance(error, commands.errors.BadArgument):
+            await ctx.send(
+                _(
+                    "You used incorrect arguments(check help for command), "
+                    "please notice that bot cannot do any calculations inside "
+                    "arguments"
+                )
+            )
+        else:
+            printw("error occured, ignoring!\n" + exc_info)
+
+
+Bot = CustomBot(
     command_prefix=server_prefix,
     intents=intents,
     owner_ids=settings["developers"]
-    )
+)
 
 
 # bot commands
@@ -243,9 +271,9 @@ Bot = commands.Bot(
 # load_cog command
 @Bot.command(hidden=True)
 @commands.check(owner_check)
-async def load_cog(ctx: commands.Context, cog):
+async def load_cog(ctx: commands.Context, cog: str) -> None:
     try:
-        meta = Cogs[cog]
+        meta: Cog_File_Meta = Cogs[cog]
     except KeyError:
         await ctx.send("Cog was not found!")
         return
@@ -255,9 +283,9 @@ async def load_cog(ctx: commands.Context, cog):
 # unload_cog command
 @Bot.command(hidden=True)
 @commands.check(owner_check)
-async def unload_cog(ctx: commands.Context, cog):
+async def unload_cog(ctx: commands.Context, cog: str) -> None:
     try:
-        meta = Cogs[cog]
+        meta: Cog_File_Meta = Cogs[cog]
     except KeyError:
         await ctx.send("Cog was not found!")
         return
@@ -267,9 +295,9 @@ async def unload_cog(ctx: commands.Context, cog):
 # reload_cog command
 @Bot.command(hidden=True)
 @commands.check(owner_check)
-async def reload_cog(ctx: commands.Context, cog):
+async def reload_cog(ctx: commands.Context, cog: str) -> None:
     try:
-        meta = Cogs[cog]
+        meta: Cog_File_Meta = Cogs[cog]
     except KeyError:
         await ctx.send("Cog was not found!")
         return
@@ -279,43 +307,46 @@ async def reload_cog(ctx: commands.Context, cog):
 # list_cogs command
 @Bot.command(hidden=True)
 @commands.check(owner_check)
-async def list_cogs(ctx: commands.Context):
-    all_cogs = '\n'.join([i.name for i in list(Cogs.values())])
-    loaded_cogs = '\n'.join([i.name for i in list(Cogs.values()) if i.active])
-    builder = f"All cogs:\n{all_cogs}\nActive cogs:\n" \
-              f"{loaded_cogs}"
+async def list_cogs(ctx: commands.Context) -> None:
+    all_cogs: str = '\n'.join([i.name for i in list(Cogs.values())])
+    loaded_cogs: str = '\n'.join(
+        [i.name for i in list(Cogs.values()) if i.active])
+    builder: str = f"All cogs:\n{all_cogs}\nActive cogs:\n" \
+        f"{loaded_cogs}"
     await ctx.send(builder)
 
 
 # eval function (bad idea but with owner check it looks normal)
 @Bot.command(hidden=True)
 @commands.check(owner_check)
-async def evaluate(ctx):
+async def evaluate(ctx: commands.Context) -> None:
     try:
+        locals_before: dict
+        locals_after: dict
         if len(ctx.message.content.split(" ")) > 1:
-            command = " ".join(ctx.message.content.split(" ")[1:])
-            compiled_code = compile(command, 'in_code', mode="exec")
+            command: str = " ".join(ctx.message.content.split(" ")[1:])
+            compiled_code: Any = compile(command, 'in_code', mode="exec")
             locals_before = locals().copy()
             exec(compiled_code)
             locals_after = locals().copy()
             locals_after.pop("locals_before")
             if locals_after != locals_before:
-                diff = set(locals_after) - set(locals_before)
+                diff: set = set(locals_after) - set(locals_before)
                 for i in diff:
                     await ctx.send(i + " = " + str(locals_after[i]))
 
                 pass
-        elif ctx.message.attachments:
-            attach = ctx.message.attachments[0]
+        elif ctx.message.attachments is not None:
+            attach: discord.Attachment = ctx.message.attachments[0]
+            assert attach.content_type is not None
             if "text" in attach.content_type:
-                data = await attach.read()
-                data = data.decode("utf-8")
+                data: str = (await attach.read()).decode("utf-8")
                 locals_before = locals().copy()
                 exec(compile(data, 'in_code', mode="exec"))
                 locals_after = locals().copy()
                 locals_after.pop("locals_before")
                 if locals_after != locals_before:
-                    result = set(locals_before) - set(locals_after)
+                    result: set = set(locals_before) - set(locals_after)
                     if result is not None:
                         for i in result:
                             await ctx.send(i + " = " + str(locals_after[i]))
@@ -324,27 +355,28 @@ async def evaluate(ctx):
 
 
 # config command itself
-settings_attrs = {
+settings_attrs: dict = {
     "name": _("sysconfig"),
     "usage": _("<subcommand>"),
     "brief": _(
         "changes server core settings. use `help sysconfig` for "
         "details."
-        ),
+    ),
     "description": _(
         "Available subcommands:"
         "\n  prefix <prefix>"
         "\n  language <language>"
-        )
-    }
+    )
+}
 
 
 @Bot.command(**settings_attrs)
 @shared.can_manage_server()
-async def sysconfig(ctx, mode, *options):
-    lang = shared.load_server_language(ctx.message)
+async def sysconfig(ctx: commands.Context, mode: str, *options) -> None:
+    lang: gettext.NullTranslations = shared.load_server_language(
+        ctx.message.id)
     _ = lang.gettext
-    config = shared.find_server_config(ctx.message)
+    config: dict = shared.find_server_config(ctx.message.id)
     mode = mode.lower()
     match mode:
         case "prefix":
@@ -357,8 +389,8 @@ async def sysconfig(ctx, mode, *options):
                                 "Prefix deleted successfully. Use a"
                                 " @mention with whitespace to raise"
                                 " a command"
-                                )
                             )
+                        )
                     case _:
                         config['prefix'] = "".join(options)
                         await ctx.send(_("Prefix changed successfully."))
@@ -366,7 +398,7 @@ async def sysconfig(ctx, mode, *options):
                 await ctx.send(
                     _("Your prefix now is: ") +
                     config['prefix']
-                    )
+                )
         case "language":
             available = shared.lang_table.keys()
             if options[0] in available:
@@ -379,28 +411,29 @@ async def sysconfig(ctx, mode, *options):
                 _(
                     "Invalid subcommand, use `help sysconfig` to see "
                     "available subcommands"
-                    )
                 )
-    shared.dump_server_config(ctx.message, config)
+            )
+    shared.dump_server_config(ctx.message.id, config)
 
 
 class TranslatableHelp(commands.HelpCommand):
     def __init__(self, **options):
         super().__init__(**options)
 
-    async def send_bot_help(self, mapping):
-        translate = shared.load_server_language(self.context.message).gettext
-        destination = self.get_destination()
-        help_payload = translate(
+    async def send_bot_help(self, mapping: Mapping) -> None:
+        translate: Callable = shared.load_server_language(
+            self.context.message.id).gettext
+        destination: discord.abc.Messageable = self.get_destination()
+        help_payload: str = translate(
             _(
                 "{0} {1}\nMade by SergSel2006, idea by "
                 "cool "
                 "people from Russian Rec Room\nAvailable commands"
                 " and modules:\n"
-                )
-            ).format(shared.NAME, shared.VERSION)
+            )
+        ).format(shared.NAME, shared.VERSION)
+        cog: commands.Cog
         for cog in mapping.keys():
-            cog: commands.Cog
             if cog is None:
                 help_payload += "Built-in" + ":\n"
                 for command in mapping[None]:
@@ -418,7 +451,7 @@ class TranslatableHelp(commands.HelpCommand):
                                if command.brief else
                                "N/A")
                             + "\n"
-                            )
+                        )
             else:
                 help_payload += translate(cog.qualified_name)
                 if any(cog.get_commands()):
@@ -438,18 +471,24 @@ class TranslatableHelp(commands.HelpCommand):
                                    if command.brief else
                                    "N/A")
                                 + "\n"
-                                )
+                            )
                 else:
                     help_payload += translate(_(" - No commands\n"))
         await destination.send(help_payload)
 
-    async def send_cog_help(self, cog):
-        translate = shared.load_server_language(self.get_destination()).gettext
-        destination = self.get_destination()
-        help_message = ''
+    async def send_cog_help(self, cog) -> None:
+        translate: Callable = shared.load_server_language(
+            self.get_destination().guild.id).gettext
+        destination: discord.abc.Messageable = self.get_destination()
+        help_message: str = ''
         help_message += translate(cog.qualified_name) + " - " \
-                        + translate(cog.description) + "\n"
-        if any(filter(lambda x: not x.hidden, cog.get_commands())):
+            + translate(cog.description) + "\n"
+        # This is required to avoid mypy about complaining
+        # that `filter` function gets wrong argument
+
+        def not_hidden(x) -> TypeGuard[bool]:
+            return not x.hidden
+        if any(filter(not_hidden, cog.get_commands())):
             help_message += translate(_("Available commands:\n"))
             for command in cog.walk_commands():
                 if not command.hidden:
@@ -466,16 +505,17 @@ class TranslatableHelp(commands.HelpCommand):
                            if command.brief else
                            "N/A")
                         + "\n"
-                        )
+                    )
 
         else:
             help_message += translate(_("No commands available"))
         await destination.send(help_message)
 
-    async def send_command_help(self, command):
-        translate = shared.load_server_language(self.get_destination()).gettext
-        destination = self.get_destination()
-        payload = ""
+    async def send_command_help(self, command) -> None:
+        translate: Callable = shared.load_server_language(
+            self.get_destination().guild.id).gettext
+        destination: discord.abc.Messageable = self.get_destination()
+        payload: str = ""
         if not command.hidden:
             payload += str(
                 (translate(command.name) if
@@ -489,167 +529,120 @@ class TranslatableHelp(commands.HelpCommand):
                    if command.description else
                    "N/A")
                 + "\n"
-                )
+            )
             await destination.send(payload)
         else:
             await destination.send(
                 "This command is hidden and no help is "
                 "here"
-                )
+            )
 
 
 @Bot.command(name=_("about"))
-async def about(ctx):
-    translate = shared.load_server_language(ctx.message).gettext
-    builder = _(
+async def about(ctx: commands.Context):
+    translate: Callable = shared.load_server_language(ctx.message.id).gettext
+    builder: str = _(
         """
             Nice bot for all your needs.
-            
+
               This bot wants to be analogue to that 2 or 3 usual bots you have
-              on any server, with all their features in one monolithic bot. 
+              on any server, with all their features in one monolithic bot.
               Also, any features except API expensive
               (like auto-translating messages) will be always free
               and not restricted (except when you restrict it by yourself)
-              Also I (Creator) want it to be as simple as possible. 
-              Licensed under GNU GPLv3, all source code available on GitHub: 
+              Also I (Creator) want it to be as simple as possible.
+              Licensed under GNU GPLv3, all source code available on GitHub:
               https://github.com/SergSel2006/PitsaBot
             """
-        )
+    )
     await ctx.send(translate(builder))
 
 
 @Bot.command(name=_("license"))
-async def license(ctx, mode=None):
-    translate = shared.load_server_language(ctx.message).gettext
-    if mode is None:
-        payload = _(
-            "{0}  Copyright (C)  SergSel2006 (Sergey Selivanov)\n"
-            "This program comes with ABSOLUTELY NO WARRANTY; for details, "
-            "use 'licence w'.\n"
-            "This is free software, and you are welcome to redistribute it "
-            "under certain conditions; use `license c' for details."
+async def license(ctx: commands.Context, mode: str | None = None) -> None:
+    translate: Callable = shared.load_server_language(ctx.message.id).gettext
+    payload: str
+    match mode:
+        case 'w':
+            payload = _(
+                '  15. Disclaimer of Warranty.\n'
+                '  THERE IS NO WARRANTY FOR THE PROGRAM, '
+                'TO THE EXTENT PERMITTED BY '
+                'APPLICABLE LAW.  EXCEPT WHEN OTHERWISE '
+                'STATED IN WRITING THE COPYRIGHT '
+                'HOLDERS AND/OR OTHER PARTIES PROVIDE '
+                'THE PROGRAM "AS IS" WITHOUT WARRANTY '
+                'OF ANY KIND, EITHER EXPRESSED OR IMPLIED, '
+                'INCLUDING, BUT NOT LIMITED TO, '
+                'THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS '
+                'FOR A PARTICULAR PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY '
+                'AND PERFORMANCE OF THE PROGRAM '
+                'IS WITH YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME '
+                'THE COST OF '
+                'ALL NECESSARY SERVICING, REPAIR OR CORRECTION.'
+            )
+            await ctx.send(translate(payload))
+        case'c':
+            payload = _(
+                '  16. Limitation of Liability.\n'
+                '  IN NO EVENT UNLESS REQUIRED '
+                'BY APPLICABLE LAW OR AGREED TO IN WRITING '
+                'WILL ANY COPYRIGHT HOLDER, OR ANY OTHER '
+                'PARTY WHO MODIFIES AND/OR CONVEYS '
+                'THE PROGRAM AS PERMITTED ABOVE, BE '
+                'LIABLE TO YOU FOR DAMAGES, INCLUDING ANY '
+                'GENERAL, SPECIAL, INCIDENTAL OR '
+                'CONSEQUENTIAL DAMAGES ARISING OUT OF THE '
+                'USE OR INABILITY TO USE THE PROGRAM '
+                '(INCLUDING BUT NOT LIMITED TO LOSS OF '
+                'DATA OR DATA BEING RENDERED INACCURATE '
+                'OR LOSSES SUSTAINED BY YOU OR THIRD '
+                'PARTIES OR A FAILURE OF THE PROGRAM '
+                'TO OPERATE WITH ANY OTHER PROGRAMS), '
+                'EVEN IF SUCH HOLDER OR OTHER PARTY '
+                'HAS BEEN ADVISED OF THE POSSIBILITY OF '
+                'SUCH DAMAGES.'
+            )
+            await ctx.send(translate(payload))
+        case _:
+            payload = _(
+                "{0}  Copyright (C)  SergSel2006 (Sergey Selivanov)\n"
+                "This program comes with ABSOLUTELY NO WARRANTY; for details, "
+                "use 'licence w'.\n"
+                "This is free software, "
+                "and you are welcome to redistribute it "
+                "under certain conditions; use `license c' for details."
             ).format(shared.NAME)
-        await ctx.send(translate(payload).format(datetime.date.today().year))
-    elif mode == 'w':
-        payload = _(
-            '  15. Disclaimer of Warranty.\n'
-            '  THERE IS NO WARRANTY FOR THE PROGRAM, '
-            'TO THE EXTENT PERMITTED BY '
-            'APPLICABLE LAW.  EXCEPT WHEN OTHERWISE '
-            'STATED IN WRITING THE COPYRIGHT '
-            'HOLDERS AND/OR OTHER PARTIES PROVIDE '
-            'THE PROGRAM "AS IS" WITHOUT WARRANTY '
-            'OF ANY KIND, EITHER EXPRESSED OR IMPLIED, '
-            'INCLUDING, BUT NOT LIMITED TO, '
-            'THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS '
-            'FOR A PARTICULAR PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY '
-            'AND PERFORMANCE OF THE PROGRAM '
-            'IS WITH YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME '
-            'THE COST OF '
-            'ALL NECESSARY SERVICING, REPAIR OR CORRECTION.'
-            )
-        await ctx.send(translate(payload))
-    elif mode == 'c':
-        payload = _(
-            '  16. Limitation of Liability.\n'
-            '  IN NO EVENT UNLESS REQUIRED '
-            'BY APPLICABLE LAW OR AGREED TO IN WRITING '
-            'WILL ANY COPYRIGHT HOLDER, OR ANY OTHER '
-            'PARTY WHO MODIFIES AND/OR CONVEYS '
-            'THE PROGRAM AS PERMITTED ABOVE, BE '
-            'LIABLE TO YOU FOR DAMAGES, INCLUDING ANY '
-            'GENERAL, SPECIAL, INCIDENTAL OR '
-            'CONSEQUENTIAL DAMAGES ARISING OUT OF THE '
-            'USE OR INABILITY TO USE THE PROGRAM '
-            '(INCLUDING BUT NOT LIMITED TO LOSS OF '
-            'DATA OR DATA BEING RENDERED INACCURATE '
-            'OR LOSSES SUSTAINED BY YOU OR THIRD '
-            'PARTIES OR A FAILURE OF THE PROGRAM '
-            'TO OPERATE WITH ANY OTHER PROGRAMS), '
-            'EVEN IF SUCH HOLDER OR OTHER PARTY '
-            'HAS BEEN ADVISED OF THE POSSIBILITY OF '
-            'SUCH DAMAGES.'
-            )
-        await ctx.send(translate(payload))
+            await ctx.send(translate(payload))
 
 
 # bot launching
-async def on_tick(tick: int = 10):
+async def on_tick(tick: int = 10) -> None:
     while True:
         await asyncio.sleep(tick)
         try:
             if ping(Bot) > 2:
                 printw(f"High ping! {ping(Bot)} s")
             await cog_finder(Bot, pathlib.Path("src", "cogs"))
-            check_configs(Bot)
+            await check_configs(Bot)
         except Exception as e:
             exc_info = ''.join(traceback.format_exception(e))
             printw(f"error occurred, ignoring!\n{exc_info}")
 
 
 @Bot.event
-async def on_ready():
+async def on_ready() -> None:
     print(f"bot is ready, ping is {ping(Bot)} seconds")
     activity = discord.Game(name="Github")
     await Bot.change_presence(activity=activity, status=discord.Status.online)
-    asyncio.ensure_future(on_tick())
+    asyncio.create_task(on_tick())
 
-
-# error handler for (almost) pretty error handling ;-)
-async def on_error(ctx, error):
-    lang = shared.load_server_language(ctx.message)
-    _ = lang.gettext
-    exc_info = ''.join(traceback.format_exception(error))
-    if isinstance(error, commands.errors.CheckFailure):
-        await ctx.send(
-            _("You don't have enough permissions for executing this command.")
-            )
-    elif "discord.errors.Forbidden" in exc_info:
-        try:
-            await ctx.guild.owner.dm_channel.send(
-                _(
-                    "I don't have enough permissions to do this. "
-                    "Giving bot role with Administrator permission will "
-                    "solve all problems with permissions"
-                    )
-                )
-        except AttributeError:
-            await ctx.guild.owner.create_dm()
-            await ctx.guild.owner.dm_channel.send(
-                _(
-                    "I don't have enough permissions to do this. "
-                    "Giving bot role with Administrator permission will "
-                    "solve all problems with permissions"
-                    )
-                )
-
-    elif isinstance(error, commands.errors.MissingRequiredArgument):
-        await ctx.send(_("Command has not enough arguments. Use command help"))
-
-    elif isinstance(error, commands.errors.CommandNotFound):
-        await ctx.send(_("Command not found. Use help command."))
-        print("{} issued wrong command".format(ctx.guild.id))
-    elif isinstance(error, SystemExit):
-        print("shutting down, goodbye!")
-    elif isinstance(error, commands.errors.BadArgument):
-        await ctx.send(
-            _(
-                "You used incorrect arguments(check help for command), "
-                "please notice that bot cannot do any calculations inside "
-                "arguments"
-                )
-            )
-    else:
-        printw("error occured, ignoring!\n" + exc_info)
-
-
-Bot.on_command_error = on_error
 Bot.settings = settings
-help_attrs = {
+help_attrs: dict = {
     "name": _("help"),
     "brief": _("shows this message."),
     "usage": _("[command or module]"),
     "description": _("totally made for helping you!"),
-    }
+}
 Bot.help_command = TranslatableHelp(command_attrs=help_attrs)
 Bot.run(settings["token"])

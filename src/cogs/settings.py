@@ -15,43 +15,13 @@
 #      along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import gettext
-import pathlib
 import traceback
 
 import shared
-import yaml
 from discord.ext import commands
 
-try:
-    from yaml import CLoader as Loader
-except ImportError:
-    from yaml import Loader as Loader
-try:
-    from yaml import CDumper as Dumper
-except ImportError:
-    from yaml import Dumper as Dumper
 
 _ = gettext.gettext
-
-
-def load_language(lang):
-    with open(
-            pathlib.Path("locales", f"{lang}.yml"), "r",
-            encoding="utf8"
-            ) as lang:
-        lang = yaml.load(lang, Loader=Loader)
-        return lang
-
-
-def find_server_config(message):
-    with open(
-            pathlib.Path(
-                "..", "data", "servers_config", str(message.guild.id),
-                "config.yml"
-                ), "r", encoding="utf8"
-            ) as config:
-        config = yaml.load(config, Loader=Loader)
-        return config
 
 
 class Settings(commands.Cog):
@@ -68,8 +38,8 @@ class Settings(commands.Cog):
             "Changes bots configurations. Available subcommands:"
             "\n  trigger <enable/disable>"
             "\n  react <enable/disable>"
-            )
-        }
+        )
+    }
 
     @commands.command(**settings_attrs)
     @shared.can_manage_server()
@@ -92,7 +62,7 @@ class Settings(commands.Cog):
             else:
                 raise NotImplementedError(
                     "Configuration mode {0} Not Implemented".format(mode)
-                    )
+                )
             shared.dump_server_config(ctx.message, config)
         except Exception as e:
             await ctx.send(
@@ -100,13 +70,13 @@ class Settings(commands.Cog):
                     "Oops! Something went wrong! If this happens too often,"
                     " send basic information about"
                     " what you've done and this code: {0} to issue tracker"
-                    ).format(ctx.guild.id)
-                )
+                ).format(ctx.guild.id)
+            )
             exc_info = ''.join(traceback.format_exception(e))
             shared.printe(
                 "While configuring {0}, error occurred and ignored."
                 "\n{1}".format(ctx.guild.id, exc_info)
-                )
+            )
 
 
 async def setup(bot):
