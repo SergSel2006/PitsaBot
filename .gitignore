@@ -120,6 +120,7 @@ dmypy.json
 
 # essential things on local machine.
 /config.yml
+/config.json
 /.stignore
 /.stfolder/
 /data/servers_config/

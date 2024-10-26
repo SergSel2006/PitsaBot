@@ -25,13 +25,10 @@ import traceback
 from typing import Callable, Mapping, TypeGuard, Any
 
 import discord
-import yaml
+import json
 from discord.ext import commands
 
 from Cog_MetaFile import Cog_File_Meta
-
-from yaml import CLoader as Loader
-from yaml import CDumper as Dumper
 
 from shared import print, printd, printc, printw
 import shared
@@ -181,7 +178,7 @@ else:
 if len(sys.argv) > 2:
     if '--config' != sys.argv[1]:
         with config_loc.open('r') as o:
-            settings = yaml.load(o, Loader)
+            settings = json.load(o)
         if not settings:
             raise ValueError("No Settings")
     else:
@@ -190,7 +187,7 @@ if len(sys.argv) > 2:
         )
 else:
     with config_loc.open('r') as o:
-        settings = yaml.load(o, Loader)
+        settings = json.load(o)
     if not settings:
         raise ValueError("No Settings")
 
