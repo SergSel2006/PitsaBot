@@ -101,7 +101,7 @@ def dump_server_config(ident: int, config):
                 if new[i] == {}:
                     new.pop(i)
             elif new[i] == default[i]:
-                new.pop[i]
+                new.pop(i)
         for i in set(new.keys()).difference(default.keys()):
             new.pop(i)
             print("The configuration for " + str(ident) +
