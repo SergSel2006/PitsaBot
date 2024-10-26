@@ -83,26 +83,20 @@ async def check_configs(bot: commands.Bot) -> None:
 # server prefix finder, if no prefix, return mention of a bot
 def server_prefix(bot: commands.Bot, message: discord.Message) -> str | tuple:
     if message.guild is not None:
-        with open(
-                pathlib.Path(
-                    "data", "servers_config", str(message.guild.id),
-                    "config.yml"
-                ), "r"
-        ) as config_fd:
-            try:
-                config: dict = yaml.load(config_fd, Loader)
-                prefix: str = config["prefix"]
-                if prefix and bot.user:
-                    return bot.user.mention + ' ', prefix
-                elif bot.user:
-                    return bot.user.mention + ' '
-                else:
-                    return "p"
-            except ValueError:
-                if bot.user:
-                    return bot.user.mention + ' '
-                else:
-                    return "p"
+        try:
+            config: dict = shared.find_server_config(message.guild.id)
+            prefix: str = config["prefix"]
+            if prefix and bot.user:
+                return bot.user.mention + ' ', prefix
+            elif bot.user:
+                return bot.user.mention + ' '
+            else:
+                return "p"
+        except KeyError:
+            if bot.user:
+                return bot.user.mention + ' '
+            else:
+                return "p"
     elif bot.user:
         return bot.user.mention + ' '
     else:
@@ -209,7 +203,7 @@ class CustomBot(commands.Bot):
     async def on_command_error(self, ctx: commands.Context,
                                error: Exception) -> None:
         lang: gettext.NullTranslations = shared.load_server_language(
-            ctx.message.id)
+            ctx.guild.id)
         _: Callable = lang.gettext
         exc_info: str = ''.join(traceback.format_exception(error))
         if isinstance(error, commands.errors.CheckFailure):
@@ -374,9 +368,9 @@ settings_attrs: dict = {
 @shared.can_manage_server()
 async def sysconfig(ctx: commands.Context, mode: str, *options) -> None:
     lang: gettext.NullTranslations = shared.load_server_language(
-        ctx.message.id)
+        ctx.guild.id)
     _ = lang.gettext
-    config: dict = shared.find_server_config(ctx.message.id)
+    config: dict = shared.find_server_config(ctx.guild.id)
     mode = mode.lower()
     match mode:
         case "prefix":
@@ -413,7 +407,7 @@ async def sysconfig(ctx: commands.Context, mode: str, *options) -> None:
                     "available subcommands"
                 )
             )
-    shared.dump_server_config(ctx.message.id, config)
+    shared.dump_server_config(ctx.guild.id, config)
 
 
 class TranslatableHelp(commands.HelpCommand):
@@ -422,7 +416,7 @@ class TranslatableHelp(commands.HelpCommand):
 
     async def send_bot_help(self, mapping: Mapping) -> None:
         translate: Callable = shared.load_server_language(
-            self.context.message.id).gettext
+            self.context.guild.id).gettext
         destination: discord.abc.Messageable = self.get_destination()
         help_payload: str = translate(
             _(
@@ -540,7 +534,8 @@ class TranslatableHelp(commands.HelpCommand):
 
 @Bot.command(name=_("about"))
 async def about(ctx: commands.Context):
-    translate: Callable = shared.load_server_language(ctx.message.id).gettext
+    translate: Callable = shared.load_server_language(
+        ctx.guild.id).gettext
     builder: str = _(
         """
             Nice bot for all your needs.
@@ -560,7 +555,7 @@ async def about(ctx: commands.Context):
 
 @Bot.command(name=_("license"))
 async def license(ctx: commands.Context, mode: str | None = None) -> None:
-    translate: Callable = shared.load_server_language(ctx.message.id).gettext
+    translate: Callable = shared.load_server_language(ctx.guild.id).gettext
     payload: str
     match mode:
         case 'w':

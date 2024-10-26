@@ -74,7 +74,7 @@ lang_table = {}
 for i in [i for i in pathlib.Path("src", "locales").iterdir()
           if i.is_dir()]:
     path = i.stem
-    lang_table[i] = gettext.translation(
+    lang_table[path] = gettext.translation(
         path, str(pathlib.Path("src", "locales")), languages=["all"],
         fallback=True
     )
@@ -144,12 +144,7 @@ def find_server_config(ident: int) -> dict:
             "r",
             encoding="utf8"
         ) as fd:
-            assert type(yaml.load(fd, Loader=Loader)) is dict
-            # so mypy is not complaining again. You must have weird condition
-            # where it is wrong.
             config = yaml.load(fd, Loader=Loader)
-    except yaml.YAMLError:
-        return DEFAULT_CONF.copy()
     except FileNotFoundError:
         printw("No configuration file created yet for " + str(ident))
         return DEFAULT_CONF.copy()
@@ -163,8 +158,11 @@ def find_server_config(ident: int) -> dict:
             else:
                 new.setdefault(i, default[i])
         return new
-    config = fill_defaults(DEFAULT_CONF, config)
-    return config
+    if config is not None:
+        config = fill_defaults(DEFAULT_CONF, config)
+        return config
+    else:
+        return DEFAULT_CONF.copy()
 
 
 class _ColourFormatter(logging.Formatter):

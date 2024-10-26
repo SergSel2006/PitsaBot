@@ -24,8 +24,8 @@ _ = gettext.gettext
 
 
 async def words(msg: discord.Message):
-    translate = shared.load_server_language(msg.id).gettext
-    config = shared.find_server_config(msg.id)
+    translate = shared.load_server_language(msg.guild.id).gettext
+    config = shared.find_server_config(msg.guild.id)
     words_ = config["words"]
     prohibited = words_["prohibited_chars"]
     if words_["enabled"]:
@@ -92,7 +92,7 @@ async def words(msg: discord.Message):
             if len(words_["dictionary"]) > 50:
                 words_["dictionary"].pop(-1)
             config["words"] = words_
-            shared.dump_server_config(msg.id, config)
+            shared.dump_server_config(msg.guild.id, config)
 
 
 class Words(commands.Cog):

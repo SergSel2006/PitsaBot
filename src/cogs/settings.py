@@ -44,9 +44,9 @@ class Settings(commands.Cog):
     @commands.command(**settings_attrs)
     @shared.can_manage_server()
     async def config(self, ctx, mode, *options):
-        lang = shared.load_server_language(ctx.message)
+        lang = shared.load_server_language(ctx.guild.id)
         _ = lang.gettext
-        config = shared.find_server_config(ctx.message)
+        config = shared.find_server_config(ctx.guild.id)
         mode = mode.lower()
         try:
             if mode == "trigger":
@@ -63,7 +63,7 @@ class Settings(commands.Cog):
                 raise NotImplementedError(
                     "Configuration mode {0} Not Implemented".format(mode)
                 )
-            shared.dump_server_config(ctx.message, config)
+            shared.dump_server_config(ctx.guild.id, config)
         except Exception as e:
             await ctx.send(
                 _(

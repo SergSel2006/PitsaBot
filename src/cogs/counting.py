@@ -25,13 +25,13 @@ _ = gettext.gettext
 
 
 async def counting(msg: discord.Message):
-    config = shared.find_server_config(msg.id)
+    config = shared.find_server_config(msg.guild.id)
     if not config["counting"]["enabled"]:
         return
     if msg.channel.id != config["counting"]["channel"]:
         return
     counting_ = config["counting"]
-    translate = shared.load_server_language(msg.id).gettext
+    translate = shared.load_server_language(msg.guild.id).gettext
     target_message: str = msg.content.split(" ")[0]
     test_str = [i in "0123456789.()/*-+%" for i in target_message]
     if all(test_str):
@@ -73,7 +73,7 @@ async def counting(msg: discord.Message):
             )
         counting_["number"] = 0
         counting_["last-counted-person"] = 0
-    shared.dump_server_config(msg.id, config)
+    shared.dump_server_config(msg.guild.id, config)
 
 
 class Counting(commands.Cog):
@@ -98,9 +98,9 @@ class Counting(commands.Cog):
     @commands.command(**settings_attrs)
     @shared.can_manage_server()
     async def countconfig(self, ctx, mode, *options):
-        lang = shared.load_server_language(ctx.message)
+        lang = shared.load_server_language(ctx.guild.id)
         _ = lang.gettext
-        config = shared.find_server_config(ctx.message)
+        config = shared.find_server_config(ctx.guild.id)
         mode = mode.lower()
         match mode:
             case "enable":
@@ -133,7 +133,7 @@ class Counting(commands.Cog):
                         int(options[0])
                     )
                 )
-        shared.dump_server_config(ctx.message, config)
+        shared.dump_server_config(ctx.guild.id, config)
 
     @commands.Cog.listener()
     async def on_message(self, msg):
@@ -142,13 +142,13 @@ class Counting(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, msg: discord.Message):
-        config = shared.find_server_config(msg.id)
+        config = shared.find_server_config(msg.guild.id)
         if not config["counting"]["enabled"]:
             return
         if msg.channel.id != config["counting"]["channel"]:
             return
         counting_ = config["counting"]
-        translate = shared.load_server_language(msg.id).gettext
+        translate = shared.load_server_language(msg.guild.id).gettext
         if msg.author.id == counting_["last-counted-person"]:
             builder = translate(_("{0} Deleted the number.\nCurrent number is {1}")).format(
                 msg.author.mention, counting_["number"])
@@ -156,13 +156,13 @@ class Counting(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, msg_, msg):
-        config = shared.find_server_config(msg)
+        config = shared.find_server_config(msg.guild.id)
         if not config["counting"]["enabled"]:
             return
         if msg.channel.id != config["counting"]["channel"]:
             return
         counting_ = config["counting"]
-        translate = shared.load_server_language(msg).gettext
+        translate = shared.load_server_language(msg.guild.id).gettext
         if msg.author.id == counting_["last-counted-person"]:
             builder = translate(_("{0} Changed the message.\nCurrent number is {1}. (Just in case)")).format(
                 msg.author.mention, counting_["number"])

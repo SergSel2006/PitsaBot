@@ -15,7 +15,6 @@
 #      along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-import pathlib
 import shared
 from discord.ext import commands
 import gettext
@@ -31,7 +30,8 @@ class GodPitsa(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        config = shared.find_server_config(message)
+        config = shared.find_server_config(message.guild.id)
+
         if (
                 message.author.id != 869082304033751120
                 and config["react_to_pizza"]

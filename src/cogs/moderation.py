@@ -29,7 +29,7 @@ _ = gettext.gettext
 
 
 def is_moderator(ctx, man=None):
-    config = shared.find_server_config(ctx.message)
+    config = shared.find_server_config(ctx.guild.id)
     roles = ctx.author.roles if man is None else man.roles
     modroles = config["modroles"]
     for role in roles:
@@ -65,7 +65,7 @@ class Moderation(commands.Cog):
     @commands.command(**ban_attrs)
     @commands.check(is_moderator)
     async def ban(self, ctx, man: discord.Member, reason):
-        lang = shared.load_server_language(ctx.message)
+        lang = shared.load_server_language(ctx.guild.id)
         _ = lang.gettext
         if not is_moderator(ctx, man) and man.id != self.bot.user.id:
             await man.ban(reason=reason)
@@ -88,7 +88,7 @@ class Moderation(commands.Cog):
     @commands.command(**purge_attrs)
     @commands.check(is_moderator)
     async def purge(self, ctx, count=1, man: discord.Member = None):
-        lang = shared.load_server_language(ctx.message.id)
+        lang = shared.load_server_language(ctx.guild.id)
         _ = lang.gettext
 
         def is_user(message):
@@ -120,7 +120,7 @@ class Moderation(commands.Cog):
     @commands.command(**kick_attrs)
     @commands.check(is_moderator)
     async def kick(self, ctx, man: discord.Member, reason):
-        lang = shared.load_server_language(ctx.message)
+        lang = shared.load_server_language(ctx.guild.id)
         _ = lang.gettext
         if not reason:
             await ctx.send(_("Cannot kick without reason"))
@@ -165,9 +165,9 @@ class Moderation(commands.Cog):
     @commands.command(**settings_attrs)
     @shared.can_manage_server()
     async def modconfig(self, ctx, mode, *options) -> None:
-        lang = shared.load_server_language(ctx.message)
+        lang = shared.load_server_language(ctx.guild.id)
         _ = lang.gettext
-        config = shared.find_server_config(ctx.message)
+        config = shared.find_server_config(ctx.guild.id)
         mode = mode.lower()
         match mode:
             case "modrole":
@@ -228,13 +228,13 @@ class Moderation(commands.Cog):
                     case "disable":
                         config["modlog"]["enabled"] = False
                         await ctx.send(_("Moderation log disabled"))
-        shared.dump_server_config(ctx.message, config)
+        shared.dump_server_config(ctx.guild.id, config)
 
     @commands.Cog.listener()
     async def on_message_delete(self, msg: discord.Message) -> None:
-        lang = shared.load_server_language(msg.id)
+        lang = shared.load_server_language(msg.guild.id)
         _ = lang.gettext
-        config = shared.find_server_config(msg.id)
+        config = shared.find_server_config(msg.guild.id)
         if config["modlog"]["enabled"] and msg.author != self.bot.user:
             ch = self.bot.get_channel(config["modlog"]["channel"])
             qual_name = msg.author.name + "#" + msg.author.discriminator
@@ -258,9 +258,9 @@ class Moderation(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, msg_before, msg):
-        lang = shared.load_server_language(msg)
+        lang = shared.load_server_language(msg.guild.id)
         _ = lang.gettext
-        config = shared.find_server_config(msg)
+        config = shared.find_server_config(msg.guild.id)
         if config["modlog"]["enabled"] and msg.author != self.bot.user:
             ch = self.bot.get_channel(config["modlog"]["channel"])
             qual_name = msg.author.name + "#" + msg.author.discriminator
@@ -288,7 +288,7 @@ class Moderation(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, msg):
         if isinstance(msg.channel, discord.abc.Messageable):
-            config = shared.find_server_config(msg)
+            config = shared.find_server_config(msg.guild.id)
             if msg.mention_everyone and config["everyonetrigger"]:
                 await msg.channel.send("TRIGGERED")
 
